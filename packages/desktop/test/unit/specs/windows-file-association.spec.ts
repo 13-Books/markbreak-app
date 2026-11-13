@@ -31,8 +31,8 @@ const customInstall = macroBody('customInstall')
 const customUnInstall = macroBody('customUnInstall')
 
 describe('Windows Markdown file association (build/windows/installer.nsh)', () => {
-  it('keeps the ProgId name an existing "Open with" choice points at', () => {
-    expect(script).toMatch(/!define\s+MT_PROGID\s+"MarkText\.Document"/)
+  it('keeps a stable ProgId that "Open with" can pin, distinct from the upstream editor', () => {
+    expect(script).toMatch(/!define\s+MT_PROGID\s+"MarkBreak\.Document"/)
   })
 
   it('registers without prompting, so no answer can leave the ProgId deleted', () => {
@@ -51,11 +51,11 @@ describe('Windows Markdown file association (build/windows/installer.nsh)', () =
   })
 
   it('quotes the executable path in every open command it writes', () => {
-    const commands = script.match(/shell\\open\\command[\s\S]*?marktext\.exe/g) ?? []
+    const commands = script.match(/shell\\open\\command[\s\S]*?markbreak\.exe/g) ?? []
     expect(commands.length, 'no open command is written').toBeGreaterThan(0)
     for (const command of commands) {
-      // Unquoted, `C:\Program Files\...\marktext.exe "%1"` runs `C:\Program`.
-      expect(command).toContain('"$INSTDIR\\marktext.exe')
+      // Unquoted, `C:\Program Files\...\markbreak.exe "%1"` runs `C:\Program`.
+      expect(command).toContain('"$INSTDIR\\markbreak.exe')
     }
   })
 

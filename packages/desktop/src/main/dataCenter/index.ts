@@ -21,7 +21,8 @@ interface DataCenterPaths {
 }
 
 class DataCenter extends TypedEmitter<DataCenterEvents> {
-  private readonly _serviceName = 'marktext'
+  // Keychain entries are per product, so this install does not read the upstream editor's tokens.
+  private readonly _serviceName = 'markbreak'
   private readonly _encryptKeys: string[] = []
   private readonly _defaults: Record<string, unknown>
   // Unavailable storage uses detached defaults without allowing writes to replace the original.

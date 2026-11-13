@@ -28,30 +28,13 @@ export default function(): MenuItemConstructorOptions {
     {
       label: t('menu.help.markdownReference'),
       click() {
-        shell.openExternal(
-          'https://marktext.me/docs/markdown-syntax'
-        )
+        shell.openExternal('https://markbreak.com/SPEC.md')
       }
     },
     {
       label: t('menu.help.changelog'),
       click() {
-        shell.openExternal('https://github.com/marktext/marktext/releases')
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: t('menu.help.followUs'),
-      click() {
-        shell.openExternal('https://twitter.com/marktextapp')
-      }
-    },
-    {
-      label: t('menu.help.support'),
-      click() {
-        shell.openExternal('https://github.com/sponsors/marktext')
+        shell.openExternal('https://markbreak.app/#download')
       }
     },
     {
@@ -60,19 +43,19 @@ export default function(): MenuItemConstructorOptions {
     {
       label: t('menu.help.askQuestion'),
       click() {
-        shell.openExternal('https://github.com/marktext/marktext/discussions')
+        shell.openExternal('https://markbreak.app/guides/')
       }
     },
     {
       label: t('menu.help.reportBug'),
       click() {
-        shell.openExternal('https://github.com/marktext/marktext/issues')
+        shell.openExternal('https://markbreak.app')
       }
     },
     {
       label: t('menu.help.viewSource'),
       click() {
-        shell.openExternal('https://github.com/marktext/marktext')
+        shell.openExternal('https://markbreak.com')
       }
     },
     {
@@ -81,6 +64,7 @@ export default function(): MenuItemConstructorOptions {
     {
       label: t('menu.help.license'),
       click() {
+        // The editor base is MIT. This item opens that license.
         shell.openExternal('https://github.com/marktext/marktext/blob/develop/LICENSE')
       }
     }

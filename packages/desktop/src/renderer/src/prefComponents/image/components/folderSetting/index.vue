@@ -30,7 +30,7 @@
         <bool
           id="setting-imagePreferRelativeDirectory"
           :description="preferenceLabel('imagePreferRelativeDirectory')"
-          more="https://marktext.me/docs/images"
+          more="https://markbreak.app/guides/"
           :bool="imagePreferRelativeDirectory"
           :on-change="(value) => onSelectChange('imagePreferRelativeDirectory', value)"
         />

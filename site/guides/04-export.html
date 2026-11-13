@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Step 4 — Export &amp; verify · MarkBreak</title>
+  <meta name="description" content="Export MarkBreak manuscripts through Pandoc and verify hard page breaks in Docx." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="guides.css" />
+</head>
+<body>
+  <nav class="nav" aria-label="Primary">
+    <a class="nav-brand" href="../">MarkBreak</a>
+    <div class="nav-links">
+      <a href="./">Guides</a>
+      <a href="https://markbreak.com">Specification</a>
+      <a href="../edit.html?theme=nightfox">Try online</a>
+      <a href="../#download">Download</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <p class="kicker"><span class="n">4</span> Getting started</p>
+    <h1>Export &amp; verify</h1>
+    <p class="lede">The profile is the contract. The gate proves the break survived.</p>
+
+    <h2>Export</h2>
+    <p>
+      MarkBreak is a profile of Pandoc Markdown.
+      Send the manuscript through Pandoc to Docx (or your press path).
+      Roles should surface as Pandoc Divs with <code>role=…</code>.
+      Hard breaks must remain hard breaks — not soft suggestions.
+    </p>
+
+    <h2>Verify</h2>
+    <p>
+      On the open profile repo, the check fails when Word has no real page break:
+    </p>
+    <pre><code>powershell -File tools/verify.ps1</code></pre>
+    <p>
+      Prefer fixtures over folklore. When a bug class repeats, extend the gates.
+      See <a href="https://markbreak.com">markbreak.com</a> and
+      <a href="https://markbreak.com/SPEC.md">Specification</a>.
+    </p>
+
+    <h2>Where layout lives</h2>
+    <p>
+      Relay, Word, and InDesign are fulfillments.
+      Fix the dialect here; fix compose there.
+      The writer’s job is to emit a clean MarkBreak file.
+    </p>
+
+    <div class="pager">
+      <a href="03-pagebreak.html">Back</a>
+      <a class="next" href="../edit.html">Open the writer</a>
+    </div>
+  </main>
+
+  <footer>
+    <a href="../">markbreak.app</a> ·
+    <a href="https://markbreak.com/SPEC.md">Specification</a>
+  </footer>
+</body>
+</html>

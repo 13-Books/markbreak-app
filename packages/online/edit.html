@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MarkBreak — editor</title>
+  <script>
+    try {
+      var saved = JSON.parse(localStorage.getItem('markbreak.online') || '{}')
+      if (saved.showToc === false) document.documentElement.classList.add('hide-toc')
+    } catch (e) {}
+  </script>
+  <meta name="description" content="Online MarkBreak editor. Open Markdown or CSV via URL, file, or ?text=." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="title-bar">
+    <button type="button" class="menu-button" id="btnMenu" aria-label="Menu" aria-haspopup="menu" aria-expanded="false" aria-controls="appMenu">&#9776;</button>
+    <div class="title" id="filename">Untitled</div>
+    <div class="title-actions">
+      <span class="status" id="status"></span>
+      <span class="words" id="words"></span>
+    </div>
+    <nav id="appMenu" class="app-menu" hidden role="menu" aria-label="Menu"></nav>
+  </header>
+  <div class="workspace">
+    <aside class="outline" id="outline">
+      <button type="button" class="outline-toggle" id="btnOutline" aria-expanded="true" aria-controls="outline-body" aria-label="Hide contents">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path id="outline-icon" d="m11 6-6 6 6 6m7-12-6 6 6 6" />
+        </svg>
+      </button>
+      <div class="outline-body" id="outline-body">
+        <div class="outline-title">Contents</div>
+        <nav id="toc" class="toc" aria-label="Contents"></nav>
+      </div>
+    </aside>
+    <section class="sheet" id="sheet">
+      <textarea id="source" class="source-editor" spellcheck="true" placeholder="# Start writing…"></textarea>
+      <div id="csv" class="csv-view"></div>
+      <div id="editor"></div>
+    </section>
+  </div>
+  <input type="file" id="file" hidden accept=".md,.markdown,.txt,.csv,.tsv,text/markdown,text/plain,text/csv" />
+  <dialog id="urlDialog" class="prefs-dialog">
+    <form id="urlForm">
+      <div class="prefs-head">
+        <h2>Open URL</h2>
+        <button type="button" id="urlCancel">Cancel</button>
+      </div>
+      <div class="prefs-body">
+        <label class="row">Address <input id="url" type="url" placeholder="https://…/file.md" spellcheck="false" /></label>
+        <div class="url-actions">
+          <button type="submit">Open</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="prefsDialog" class="prefs-dialog">
+    <form method="dialog">
+      <div class="prefs-head">
+        <h2>Preferences</h2>
+        <button type="submit" value="close">Close</button>
+      </div>
+      <div class="prefs-body">
+        <fieldset>
+          <legend>Theme</legend>
+          <label class="row">Theme <select id="theme"></select></label>
+        </fieldset>
+        <fieldset>
+          <legend>Editor</legend>
+          <label class="row">Font size <input id="fontSize" type="number" min="12" max="32" step="1" /></label>
+          <label class="row">Line height <input id="lineHeight" type="number" min="1" max="2.4" step="0.1" /></label>
+          <label class="row">Code font size <input id="codeFontSize" type="number" min="12" max="28" step="1" /></label>
+          <label class="row">Editor width <input id="editorLineWidth" type="text" placeholder="750px" spellcheck="false" /></label>
+          <label class="check"><input id="hideQuickInsertHint" type="checkbox" /> Hide the insert hint</label>
+          <label class="check"><input id="codeBlockLineNumbers" type="checkbox" /> Line numbers in code blocks</label>
+          <label class="check"><input id="wrapCodeBlocks" type="checkbox" /> Wrap code blocks</label>
+          <label class="check"><input id="trimCodeBlockEmptyLines" type="checkbox" /> Trim extra blank lines in code</label>
+        </fieldset>
+        <fieldset>
+          <legend>Writing</legend>
+          <label class="check"><input id="autoPairBracket" type="checkbox" /> Pair brackets</label>
+          <label class="check"><input id="autoPairMarkdownSyntax" type="checkbox" /> Pair Markdown marks</label>
+          <label class="check"><input id="autoPairQuote" type="checkbox" /> Pair quotes</label>
+        </fieldset>
+      </div>
+    </form>
+  </dialog>
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html>

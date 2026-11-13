@@ -1,0 +1,190 @@
+:root {
+  --ink: #07131f;
+  --paper: #f4f8fc;
+  --muted: #4a6074;
+  --teal: #0d9f8a;
+  --teal-deep: #087a6a;
+  --flare: #ff7a45;
+  --line: rgba(7, 19, 31, 0.12);
+  --code-bg: #102437;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: Sora, system-ui, sans-serif;
+  background:
+    radial-gradient(800px 420px at 100% 0%, rgba(255, 122, 69, 0.16), transparent 55%),
+    radial-gradient(900px 480px at 0% 0%, rgba(13, 159, 138, 0.16), transparent 50%),
+    var(--paper);
+  line-height: 1.6;
+}
+a { color: var(--teal-deep); }
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem;
+}
+.nav-brand {
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  color: var(--ink);
+}
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.nav-links a { color: var(--muted); text-decoration: none; }
+.nav-links a:hover { color: var(--ink); }
+.wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 4rem;
+}
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal-deep);
+  margin: 0 0 0.85rem;
+}
+.kicker .n {
+  display: inline-flex;
+  width: 1.45rem;
+  height: 1.45rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  letter-spacing: 0;
+}
+h1 {
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 2.7rem);
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  margin: 0 0 0.85rem;
+}
+.lede {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin: 0 0 1.75rem;
+}
+h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+  margin: 2rem 0 0.6rem;
+}
+p, li { color: var(--muted); }
+p { margin: 0 0 1rem; }
+ul { padding-left: 1.2rem; margin: 0 0 1rem; }
+code {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.9em;
+  background: rgba(7, 19, 31, 0.06);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  color: #e7f4ff;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
+}
+pre code { background: none; padding: 0; color: inherit; }
+.t { color: #7be7d4; }
+.r { color: #ffb089; }
+.dim { color: rgba(231, 244, 255, 0.45); }
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.pager a {
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.7);
+}
+.pager a.next {
+  background: var(--ink);
+  color: #f4f8fc;
+  border-color: var(--ink);
+}
+.pager a:hover { border-color: var(--teal); }
+.pager a.next:hover { background: var(--teal-deep); border-color: var(--teal-deep); }
+.step-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
+}
+.step-list a {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  text-decoration: none;
+  color: inherit;
+  padding: 1rem 1.05rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--line);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.step-list a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(13, 159, 138, 0.45);
+}
+.step-list .n {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.step-list h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.2rem;
+}
+.step-list p { margin: 0; font-size: 0.92rem; }
+footer {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 2.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+footer a { color: var(--teal-deep); text-decoration: none; font-weight: 500; }

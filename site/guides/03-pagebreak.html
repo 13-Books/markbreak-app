@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Step 3 — Mark the page break · MarkBreak</title>
+  <meta name="description" content="Write hard page breaks into MarkBreak manuscripts with //--- or \\newpage." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="guides.css" />
+</head>
+<body>
+  <nav class="nav" aria-label="Primary">
+    <a class="nav-brand" href="../">MarkBreak</a>
+    <div class="nav-links">
+      <a href="./">Guides</a>
+      <a href="https://markbreak.com">Specification</a>
+      <a href="../edit.html?theme=nightfox">Try online</a>
+      <a href="../#download">Download</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <p class="kicker"><span class="n">3</span> Getting started</p>
+    <h1>Mark the page break</h1>
+    <p class="lede">Print needs a mark in the file. Write the turn where the page must start.</p>
+
+    <h2>Default break</h2>
+    <p>
+      Use <code>\newpage</code> (blank lines around it) or the authoring form <code>//---</code>.
+      Both mean: start the next flow unit — a page when you are not in columns.
+    </p>
+    <pre><code>The gate was never gospel.
+
+<span class="t">//---</span>
+
+# After the break</code></pre>
+
+    <h2>What is not a page break</h2>
+    <ul>
+      <li><code>---</code> is a scene pause (thematic break), not a page turn</li>
+      <li>A <code>#</code> heading alone does not start a print chapter page</li>
+      <li>CSS tricks in an HTML preview are not the manuscript contract</li>
+    </ul>
+
+    <h2>Authoring tip</h2>
+    <p>
+      Keep <code>//---</code> on its own line. The writer should leave it visible in the file
+      so export and verify see the same mark you wrote.
+    </p>
+
+    <div class="pager">
+      <a href="02-role.html">Back</a>
+      <a class="next" href="04-export.html">Next: Export &amp; verify</a>
+    </div>
+  </main>
+
+  <footer>
+    <a href="../">markbreak.app</a> ·
+    <a href="https://markbreak.com/SPEC.md">Specification</a>
+  </footer>
+</body>
+</html>

@@ -50,7 +50,6 @@ export const preferencesWinOptions: Readonly<BrowserWindowConstructorOptions> = 
   useContentSize: true,
   show: true,
   frame: false,
-  titleBarStyle: 'hiddenInset',
   thickFrame: !isOsx,
   zoomFactor: 1.0
 } as BrowserWindowConstructorOptions)
@@ -84,6 +83,7 @@ export const LINE_ENDING_REG = /(?:\r\n|\n)/g
 export const LF_LINE_ENDING_REG = /(?:[^\r]\n)|(?:^\n$)/
 export const CRLF_LINE_ENDING_REG = /\r\n/
 
-export const GITHUB_REPO_URL = 'https://github.com/marktext/marktext'
+// Issue links stay on this product. Do not point them at the upstream tracker.
+export const GITHUB_REPO_URL = 'https://github.com/markbreak/markbreak-app'
 export const URL_REG =
   /^http(s)?:\/\/([a-z0-9\-._~]+\.[a-z]{2,}|[0-9.]+|localhost|\[[a-f0-9.:]+\])(:[0-9]{1,5})?(\/[\S]+)?/i

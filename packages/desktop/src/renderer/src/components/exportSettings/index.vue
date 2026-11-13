@@ -155,7 +155,7 @@
           </div>
           <cur-select
             :description="t('exportSettings.theme.theme')"
-            more="https://marktext.me/docs/export-themes"
+            more="https://markbreak.app/guides/"
             :value="theme"
             :options="themeList"
             :on-change="(value: unknown) => onSelectChange('theme', value)"

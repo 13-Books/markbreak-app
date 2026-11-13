@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MarkBreak — write print manuscripts</title>
+  <meta name="description" content="MarkBreak — writing from start to printed. Set the role. Mark the page break. Keep the source synced." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #07131f;
+      --ink-soft: #132536;
+      --paper: #f4f8fc;
+      --mist: #d7e6f2;
+      --muted: #4a6074;
+      --teal: #0d9f8a;
+      --teal-deep: #087a6a;
+      --flare: #ff7a45;
+      --line: rgba(7, 19, 31, 0.12);
+      --glow: rgba(13, 159, 138, 0.28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Sora, system-ui, sans-serif;
+      background:
+        radial-gradient(900px 520px at 85% -10%, rgba(255, 122, 69, 0.22), transparent 55%),
+        radial-gradient(1100px 640px at -5% 0%, rgba(13, 159, 138, 0.2), transparent 50%),
+        linear-gradient(180deg, #eaf3fa 0%, var(--paper) 38%, #e7f1f4 100%);
+      line-height: 1.55;
+    }
+    a { color: var(--teal-deep); }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      max-width: 68rem;
+      margin: 0 auto;
+      padding: 1.1rem 1.5rem;
+    }
+    .nav-brand {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem 1.15rem;
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+    .nav-links a { color: var(--muted); text-decoration: none; }
+    .nav-links a:hover { color: var(--ink); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: min(92vh, 54rem);
+      display: grid;
+      align-items: end;
+      max-width: 68rem;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3.5rem;
+    }
+    .hero-copy { max-width: min(46rem, 100%); z-index: 2; }
+    .hero .brand {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(3.2rem, 9vw, 5.6rem);
+      letter-spacing: -0.045em;
+      line-height: 0.92;
+      margin: 0 0 1.1rem;
+      animation: rise 0.7s ease both;
+    }
+    .hero h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(1.45rem, 3.2vw, 2rem);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin: 0 0 0.85rem;
+      max-width: none;
+      white-space: nowrap;
+      animation: rise 0.7s ease 0.08s both;
+    }
+    .hero .lede {
+      margin: 0 0 1.6rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: none;
+      white-space: nowrap;
+      animation: rise 0.7s ease 0.14s both;
+    }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      animation: rise 0.7s ease 0.2s both;
+    }
+    .cta a {
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.78rem 1.2rem;
+      border-radius: 999px;
+      transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+    .cta a.primary {
+      background: var(--ink);
+      color: #f7fcff;
+    }
+    .cta a.primary:hover { background: var(--teal-deep); transform: translateY(-1px); }
+    .cta a.secondary {
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+    .cta a.secondary:hover { border-color: var(--teal); color: var(--teal-deep); }
+
+    .hero-stage {
+      position: absolute;
+      inset: auto 0 0 auto;
+      width: min(52%, 34rem);
+      height: min(78%, 36rem);
+      pointer-events: none;
+      z-index: 1;
+      animation: floatIn 1s ease 0.15s both;
+    }
+    .hero-glow {
+      position: absolute;
+      inset: 8% 4% 12% 8%;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255, 122, 69, 0.45), transparent 42%),
+        radial-gradient(circle at 70% 70%, rgba(13, 159, 138, 0.5), transparent 46%);
+      filter: blur(18px);
+      animation: pulse 5.5s ease-in-out infinite;
+    }
+    .editor-mock {
+      position: absolute;
+      inset: 4% 6% 2% 10%;
+      border-radius: 18px;
+      background: linear-gradient(165deg, #102437 0%, #0a1826 100%);
+      color: #d7e8f4;
+      box-shadow:
+        0 30px 60px rgba(7, 19, 31, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+      padding: 1.1rem 1.2rem 1.3rem;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      overflow: hidden;
+    }
+    .editor-mock .chrome {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+    }
+    .editor-mock .chrome i {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      display: block;
+    }
+    .editor-mock .chrome i:nth-child(1) { background: #ff7a45; }
+    .editor-mock .chrome i:nth-child(2) { background: #f0c14a; }
+    .editor-mock .chrome i:nth-child(3) { background: #0d9f8a; }
+    .editor-mock .kw { color: #7be7d4; }
+    .editor-mock .role { color: #ffb089; }
+    .editor-mock .break { color: #9ecbff; }
+    .editor-mock .dim { color: rgba(215, 232, 244, 0.45); }
+
+    .band {
+      max-width: 68rem;
+      margin: 0 auto;
+      padding: 0 1.5rem 1.25rem;
+    }
+    section.block {
+      padding: 3.2rem 0 3.75rem;
+      border-top: 1px solid var(--line);
+    }
+    section.block:first-of-type {
+      padding-bottom: 1.875rem;
+    }
+    section.block#download {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      padding-bottom: 2.5rem;
+    }
+    section.block h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(1.6rem, 3vw, 2.1rem);
+      letter-spacing: -0.03em;
+      margin: 0 0 0.7rem;
+      max-width: none;
+      white-space: nowrap;
+    }
+    section.block > p {
+      color: var(--muted);
+      margin: 0 0 1.4rem;
+      max-width: 42ch;
+    }
+    .split {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1.5rem 2rem;
+      align-items: start;
+    }
+    p code, li code {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 1.05em;
+      font-weight: 400;
+      line-height: 1;
+      vertical-align: baseline;
+      background: rgba(7, 19, 31, 0.06);
+      padding: 0.12em 0.38em;
+      border-radius: 4px;
+    }
+    pre {
+      margin: 0;
+      background: var(--ink);
+      color: #e7f4ff;
+      padding: 1.1rem 1.15rem;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      box-shadow: 0 16px 40px rgba(7, 19, 31, 0.18);
+    }
+    pre .t { color: #7be7d4; }
+    pre .r { color: #ffb089; }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1rem;
+      margin-bottom: 0.875rem;
+    }
+    .pill {
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(13, 159, 138, 0.12);
+      color: var(--teal-deep);
+    }
+    .pill.warm {
+      background: rgba(255, 122, 69, 0.14);
+      color: #b84a1f;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+    .step {
+      text-decoration: none;
+      color: inherit;
+      padding: 1.15rem 1rem 1.2rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+      min-height: 9.5rem;
+    }
+    .step:hover {
+      transform: translateY(-3px);
+      border-color: rgba(13, 159, 138, 0.45);
+      box-shadow: 0 14px 30px rgba(7, 19, 31, 0.08);
+    }
+    .step .n {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.7rem;
+      height: 1.7rem;
+      border-radius: 50%;
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .step h3 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.15rem;
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.02em;
+    }
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .download-head {
+      margin-bottom: 1.85rem;
+    }
+    .os-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+    .os-row a {
+      flex: 1 1 10rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      min-height: 3.1rem;
+      padding: 0.75rem 1.15rem;
+      border-radius: 999px;
+      font-weight: 600;
+      text-decoration: none;
+      background: var(--ink);
+      color: #f4f8fc;
+      transition: background 0.18s ease, transform 0.18s ease;
+      white-space: nowrap;
+    }
+    .os-row a:hover { background: var(--teal-deep); transform: translateY(-1px); }
+    .os-row a .os-meta {
+      font-weight: 500;
+      font-size: 0.78rem;
+      color: rgba(244, 248, 252, 0.55);
+    }
+    .site-footer {
+      margin-top: 0.75rem;
+      background:
+        linear-gradient(180deg, transparent, rgba(7, 19, 31, 0.03) 20%),
+        #0b1826;
+      color: rgba(244, 248, 252, 0.72);
+    }
+    .site-footer a {
+      color: rgba(244, 248, 252, 0.78);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .site-footer a:hover { color: #7be7d4; }
+    .footer-inner {
+      max-width: 68rem;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+      gap: 2rem 1.5rem;
+    }
+    .footer-brand {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      letter-spacing: -0.03em;
+      color: #f4f8fc;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 0.55rem;
+    }
+    .footer-brand:hover { color: #7be7d4; }
+    .footer-tag {
+      margin: 0;
+      max-width: 28ch;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: rgba(244, 248, 252, 0.55);
+    }
+    .footer-col h2 {
+      margin: 0 0 0.85rem;
+      font-family: Sora, system-ui, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(244, 248, 252, 0.42);
+    }
+    .footer-col ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.55rem;
+    }
+    .footer-col a { font-size: 0.92rem; }
+    .footer-bar {
+      max-width: 68rem;
+      margin: 0 auto;
+      padding: 1.1rem 1.5rem 1.75rem;
+      border-top: 1px solid rgba(244, 248, 252, 0.1);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem 1.25rem;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: rgba(244, 248, 252, 0.42);
+    }
+    .footer-bar a { color: rgba(244, 248, 252, 0.55); font-weight: 500; }
+    .footer-bar a:hover { color: #7be7d4; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes floatIn {
+      from { opacity: 0; transform: translate(18px, 24px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.85; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
+
+    @media (max-width: 900px) {
+      .hero { min-height: auto; padding-bottom: 2rem; }
+      .hero h1,
+      .hero .lede,
+      section.block h2 { white-space: normal; }
+      .hero-stage {
+        position: relative;
+        width: 100%;
+        height: 19.25rem;
+        inset: auto;
+        margin: 1.75rem 0 0;
+      }
+      .editor-mock { inset: 0; }
+      .split, .steps { grid-template-columns: 1fr; }
+      .os-row a { flex: 1 1 100%; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Primary">
+    <a class="nav-brand" href="./">MarkBreak</a>
+    <div class="nav-links">
+      <a href="guides/">Guides</a>
+      <a href="https://markbreak.com">Specification</a>
+      <a href="edit.html?theme=nightfox">Try online</a>
+      <a href="#download">Download</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="brand">MarkBreak</p>
+      <h1>Writing from start to printed.</h1>
+      <p class="lede">Set the role. Mark the page break. Keep the source synced.</p>
+      <div class="cta">
+        <a class="primary" href="#download">Download desktop</a>
+        <a class="secondary" href="edit.html?theme=nightfox">Try online</a>
+      </div>
+    </div>
+    <div class="hero-stage" aria-hidden="true">
+      <div class="hero-glow"></div>
+      <div class="editor-mock">
+        <div class="chrome"><i></i><i></i><i></i></div>
+        <div><span class="dim">---</span></div>
+        <div><span class="kw">title:</span> "Commit Don't Push"</div>
+        <div><span class="kw">role:</span> <span class="role">chapter</span></div>
+        <div><span class="dim">---</span></div>
+        <div>&nbsp;</div>
+        <div># Genesis</div>
+        <div>&nbsp;</div>
+        <div>The gate was never gospel.</div>
+        <div>&nbsp;</div>
+        <div><span class="break">//---</span></div>
+        <div>&nbsp;</div>
+        <div># After the break</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="band">
+    <section class="block">
+      <h2>Built for the page, not the feed.</h2>
+      <p>
+        Headings start chapters on a Kindle. Print needs a mark in the file.
+        MarkBreak is the writer that keeps that contract visible while you draft.
+      </p>
+      <div class="pill-row">
+        <span class="pill">YAML roles</span>
+        <span class="pill">Page breaks in-file</span>
+        <span class="pill warm">Pandoc-ready</span>
+        <span class="pill">Online + desktop</span>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="split">
+        <div>
+          <h2>The dialect stays small.</h2>
+          <p>
+            One role per file. A hard break when the next page must start.
+            The open rules live on markbreak.com; the app writes files that follow them.
+          </p>
+          <p>
+            Prefer <code>role:</code> in YAML. Use <code>//---</code> or <code>\newpage</code> for flow breaks.
+            A scene pause is still <code>---</code>.
+          </p>
+        </div>
+        <pre><code><span class="dim">---</span>
+<span class="t">role:</span> <span class="r">epilog</span>
+<span class="dim">---</span>
+
+# After the gates
+
+The check fails when Word
+has no real page break.
+
+<span class="t">//---</span></code></pre>
+      </div>
+    </section>
+
+    <section class="block" id="guides">
+      <h2>Getting started</h2>
+      <p>Four short steps — open, label, break, ship.</p>
+      <div class="steps">
+        <a class="step" href="guides/01-open.html">
+          <span class="n">1</span>
+          <h3>Open the writer</h3>
+          <p>Online now. Desktop when you want a window.</p>
+        </a>
+        <a class="step" href="guides/02-role.html">
+          <span class="n">2</span>
+          <h3>Set the role</h3>
+          <p>Chapter, epilog, dedication — in YAML.</p>
+        </a>
+        <a class="step" href="guides/03-pagebreak.html">
+          <span class="n">3</span>
+          <h3>Mark the break</h3>
+          <p>Write the page turn into the file.</p>
+        </a>
+        <a class="step" href="guides/04-export.html">
+          <span class="n">4</span>
+          <h3>Export &amp; verify</h3>
+          <p>Pandoc out. Gate the Docx.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="block" id="download">
+      <div class="download-head">
+        <div>
+          <h2>Download MarkBreak</h2>
+          <p>Open a blank page and write the first line of your new book. MarkBreak keeps the path clear all the way to print.</p>
+        </div>
+      </div>
+      <div class="os-row">
+        <a href="https://github.com/markbreak/markbreak-app/releases/latest">
+          Windows <span class="os-meta">.exe</span>
+        </a>
+        <a href="https://github.com/markbreak/markbreak-app/releases/latest">
+          macOS <span class="os-meta">.dmg</span>
+        </a>
+        <a href="https://github.com/markbreak/markbreak-app/releases/latest">
+          Linux <span class="os-meta">AppImage</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <a class="footer-brand" href="./">MarkBreak</a>
+        <p class="footer-tag">Writing from start to printed.</p>
+      </div>
+      <div class="footer-col">
+        <h2>Download</h2>
+        <ul>
+          <li><a href="https://github.com/markbreak/markbreak-app/releases/latest">Windows</a></li>
+          <li><a href="https://github.com/markbreak/markbreak-app/releases/latest">macOS</a></li>
+          <li><a href="https://github.com/markbreak/markbreak-app/releases/latest">Linux</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="guides/">Getting started</a></li>
+          <li><a href="guides/02-role.html">Set the role</a></li>
+          <li><a href="guides/03-pagebreak.html">Mark the break</a></li>
+          <li><a href="guides/04-export.html">Export &amp; verify</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Specification</h2>
+        <ul>
+          <li><a href="https://markbreak.com">markbreak.com</a></li>
+          <li><a href="https://markbreak.com/SPEC.md">Read the specification</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <span>© 2026 MarkBreak</span>
+      <span>
+        <a href="#download">Download</a>
+        ·
+        <a href="edit.html?theme=nightfox">Try online</a>
+      </span>
+    </div>
+  </footer>
+</body>
+</html>
