@@ -41,7 +41,7 @@ const urlDialog = document.getElementById('urlDialog') as HTMLDialogElement
 const fileInput = document.getElementById('file') as HTMLInputElement
 const appMenu = document.getElementById('appMenu') as HTMLElement
 const btnMenu = document.getElementById('btnMenu') as HTMLButtonElement
-const statusEl = document.getElementById('status') as HTMLElement
+const toastEl = document.getElementById('toast') as HTMLElement
 const fontSizeInput = document.getElementById('fontSize') as HTMLInputElement
 const lineHeightInput = document.getElementById('lineHeight') as HTMLInputElement
 const codeFontSizeInput = document.getElementById('codeFontSize') as HTMLInputElement
@@ -74,9 +74,25 @@ if (requestedTheme && themeNames.includes(requestedTheme)) {
 applyTheme(prefs.theme)
 applyEditorWidth(prefs.editorLineWidth)
 
+let toastTimer = 0
+
 function setStatus (msg: string, err = false): void {
-  statusEl.textContent = msg
-  statusEl.classList.toggle('err', err)
+  window.clearTimeout(toastTimer)
+  if (!msg) {
+    toastEl.hidden = true
+    toastEl.textContent = ''
+    toastEl.classList.remove('err')
+    return
+  }
+  toastEl.textContent = msg
+  toastEl.classList.toggle('err', err)
+  toastEl.hidden = false
+  // Errors linger; ordinary notes clear so the title bar stays quiet.
+  toastTimer = window.setTimeout(() => {
+    toastEl.hidden = true
+    toastEl.textContent = ''
+    toastEl.classList.remove('err')
+  }, err ? 8000 : 3200)
 }
 
 function fileName (): string {
@@ -515,16 +531,39 @@ async function copyShareLink (): Promise<void> {
   }
 }
 
-function saveFile (): void {
+async function saveFile (): Promise<void> {
   const name = fileName()
   const filename = name === 'Untitled' ? 'Untitled.md' : name
-  const blob = new Blob([encodeForSave(currentText())], { type: 'text/markdown;charset=utf-8' })
+  const body = encodeForSave(currentText())
+  const picker = window.showSaveFilePicker
+  if (typeof picker === 'function') {
+    try {
+      const handle = await picker.call(window, {
+        suggestedName: filename,
+        types: [{
+          description: 'Markdown',
+          accept: { 'text/markdown': ['.md', '.markdown', '.txt'] }
+        }]
+      })
+      const writable = await handle.createWritable()
+      await writable.write(body)
+      await writable.close()
+      setStatus('Saved ' + (handle.name || filename))
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      const message = error instanceof Error ? error.message : String(error)
+      setStatus('Could not save: ' + message, true)
+    }
+    return
+  }
+  // Download fallback cannot detect Cancel in the browser dialog — do not claim Saved.
+  const blob = new Blob([body], { type: 'text/markdown;charset=utf-8' })
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
   link.download = filename
   link.click()
   URL.revokeObjectURL(link.href)
-  setStatus('Saved ' + filename)
+  setStatus('Download started — ' + filename)
 }
 
 function newDocument (): void {
@@ -707,13 +746,16 @@ function placeSubmenus (): void {
   const margin = 8
   appMenu.querySelectorAll<HTMLElement>('.submenu').forEach((panel) => {
     if (getComputedStyle(panel).display === 'none') return
-    panel.style.top = '-5px'
+    // Always fly out beside the row; only nudge up if the panel would clip the viewport.
+    panel.style.top = '0'
+    panel.style.left = ''
     panel.style.maxHeight = ''
     const rect = panel.getBoundingClientRect()
-    let shift = 0
-    if (rect.bottom > window.innerHeight - margin) shift -= rect.bottom - (window.innerHeight - margin)
-    if (rect.top + shift < margin) shift += margin - (rect.top + shift)
-    panel.style.top = `${-5 + shift}px`
+    const overflow = rect.bottom - (window.innerHeight - margin)
+    if (overflow > 0) {
+      const maxUp = rect.top - margin
+      panel.style.top = `${-Math.min(overflow, Math.max(0, maxUp))}px`
+    }
     if (panel.querySelector('.menu-branch')) return
     const placed = panel.getBoundingClientRect()
     const room = window.innerHeight - margin - Math.max(margin, placed.top)
@@ -759,7 +801,7 @@ async function runAction (action: string): Promise<void> {
       urlInput.focus()
       break
     case 'save':
-      saveFile()
+      void saveFile()
       break
     case 'share':
       await copyShareLink()
@@ -834,7 +876,7 @@ document.addEventListener('keydown', (event) => {
     fileInput.click()
   } else if (key === 's') {
     event.preventDefault()
-    saveFile()
+    void saveFile()
   } else if (key === 'n') {
     event.preventDefault()
     newDocument()

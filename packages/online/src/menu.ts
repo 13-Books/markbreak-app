@@ -12,7 +12,7 @@ export function renderMenu (
   entries: MenuEntry[],
   onAction: (action: string) => void
 ): void {
-  root.replaceChildren(...entries.map((entry) => renderEntry(entry)))
+  root.replaceChildren(...renderEntries(entries))
   root.onclick = (event) => {
     const button = (event.target as Element).closest('button[data-action]')
     if (!(button instanceof HTMLButtonElement) || button.disabled) return
@@ -22,7 +22,12 @@ export function renderMenu (
   }
 }
 
-function renderEntry (entry: MenuEntry): HTMLElement {
+function renderEntries (entries: MenuEntry[]): HTMLElement[] {
+  const reserveCheck = entries.some((entry) => entry.checked !== undefined)
+  return entries.map((entry) => renderEntry(entry, reserveCheck))
+}
+
+function renderEntry (entry: MenuEntry, reserveCheck: boolean): HTMLElement {
   if (entry.label === '—' || entry.action === 'sep') {
     const rule = document.createElement('div')
     rule.className = 'menu-sep'
@@ -40,7 +45,7 @@ function renderEntry (entry: MenuEntry): HTMLElement {
     const submenu = document.createElement('div')
     submenu.className = 'submenu'
     submenu.setAttribute('role', 'menu')
-    submenu.append(...entry.children.map((child) => renderEntry(child)))
+    submenu.append(...renderEntries(entry.children))
     branch.append(row, submenu)
     return branch
   }
@@ -51,10 +56,13 @@ function renderEntry (entry: MenuEntry): HTMLElement {
   if (entry.action) button.dataset.action = entry.action
   if (entry.disabled) button.disabled = true
   if (entry.checked) button.setAttribute('aria-checked', 'true')
-  const mark = document.createElement('span')
-  mark.className = 'mark'
-  mark.textContent = entry.checked ? '✓' : ''
-  button.append(mark, labelSpan(entry.label))
+  if (reserveCheck) {
+    const mark = document.createElement('span')
+    mark.className = 'mark'
+    mark.textContent = entry.checked ? '✓' : ''
+    button.append(mark)
+  }
+  button.append(labelSpan(entry.label))
   if (entry.accel) {
     const accel = document.createElement('span')
     accel.className = 'accel'
