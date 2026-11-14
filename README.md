@@ -41,11 +41,14 @@ That writes `site/edit.html`.
 
 ## Dialect export (Docx)
 
-With Pandoc installed and sibling `../markbreak` present:
+Profile is pinned via submodule `dialect/markbreak` (**0.2.0**). Init once, then export with Pandoc installed:
 
 ```powershell
+git submodule update --init --recursive
 powershell -File dialect/export.ps1 -InputFile path\to\manuscript.md -Format docx
 ```
+
+See [dialect/README.md](dialect/README.md).
 
 ## Releases
 
@@ -63,4 +66,4 @@ Artifacts land on the GitHub Releases page linked from [markbreak.app](https://m
 ## License
 
 - Editor base: MIT (copyright retained — see LICENSE, third-party notices, UPSTREAM.md)
-- MarkBreak product code under `dialect/` and branding: proprietary unless noted
+- MarkBreak product bridge under `dialect/` (except the MIT-licensed `dialect/markbreak` submodule) and branding: proprietary unless noted

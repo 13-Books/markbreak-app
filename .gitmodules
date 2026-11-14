@@ -1,0 +1,3 @@
+[submodule "dialect/markbreak"]
+	path = dialect/markbreak
+	url = https://github.com/13-Books/markbreak.git
