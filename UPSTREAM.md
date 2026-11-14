@@ -11,10 +11,16 @@ This repo is the **MarkBreak product overlay**. Editor features land on [`13-Boo
 
 ## Remotes (`D:\repos\markbreak-app`)
 
-- `upstream` → `https://github.com/13-Books/marktext.git` (merge/rebase base)
+- `upstream` → `https://github.com/13-Books/marktext.git` (merge/rebase base; fetch **only** `develop`)
 - `origin` → `https://github.com/13-Books/markbreak-app.git` (this product repo)
 
 Do **not** point this repo’s `upstream` at `marktext/marktext`. Sync from MarkText official through the middle fork only.
+
+Fetch refspec (keeps the branch list clean):
+
+```text
+remote.upstream.fetch=+refs/heads/develop:refs/remotes/upstream/develop
+```
 
 ## Feature clone (`D:\repos\marktext`)
 
