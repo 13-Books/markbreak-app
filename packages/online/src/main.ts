@@ -29,7 +29,7 @@ import { resolveTocHeading } from './toc'
 
 import './style.css'
 
-const SPEC_URL = 'https://markbreak.com/SPEC.md'
+const SPEC_URL = 'https://markbreak.com/specification.md'
 
 const source = document.getElementById('source') as HTMLTextAreaElement
 const csvView = document.getElementById('csv') as HTMLElement
@@ -683,7 +683,7 @@ function menuEntries (): MenuEntry[] {
     { label: 'Theme', children: [{ label: 'Light', children: themeItems(false) }, { label: 'Dark', children: themeItems(true) }] },
     {
       label: 'Help',
-      children: [{ label: 'Read the spec', action: 'spec' }]
+      children: [{ label: 'Read the specification', action: 'spec' }]
     }
   ]
 }
@@ -804,7 +804,7 @@ async function runAction (action: string): Promise<void> {
       clearRecent()
       break
     case 'spec':
-      hintPath = 'SPEC.md'
+      hintPath = 'specification.md'
       forcedMode = 'markdown'
       await loadUrl(SPEC_URL)
       break

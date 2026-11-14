@@ -28,7 +28,7 @@ export default function(): MenuItemConstructorOptions {
     {
       label: t('menu.help.markdownReference'),
       click() {
-        shell.openExternal('https://markbreak.com/SPEC.md')
+        shell.openExternal('https://markbreak.com/specification.md')
       }
     },
     {

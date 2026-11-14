@@ -649,7 +649,7 @@ const commands: CommandDescriptor[] = [
   {
     id: 'docs.markdown-syntax',
     execute: async() => {
-      window.electron.shell.openExternal('https://markbreak.com/SPEC.md')
+      window.electron.shell.openExternal('https://markbreak.com/specification.md')
     }
   },
 
