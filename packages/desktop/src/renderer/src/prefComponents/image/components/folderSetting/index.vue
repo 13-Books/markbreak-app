@@ -30,7 +30,7 @@
         <bool
           id="setting-imagePreferRelativeDirectory"
           :description="preferenceLabel('imagePreferRelativeDirectory')"
-          more="https://markbreak.app/guides/"
+          :more="PRODUCT.guidesUrl"
           :bool="imagePreferRelativeDirectory"
           :on-change="(value) => onSelectChange('imagePreferRelativeDirectory', value)"
         />
@@ -66,6 +66,7 @@ import { preferenceLabel } from '@/prefComponents/registry'
 
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
+import { PRODUCT } from 'common/product'
 import { useI18n } from 'vue-i18n'
 import { usePreferencesStore } from '@/store/preferences'
 import type { PreferencesState } from '@/store/preferences'

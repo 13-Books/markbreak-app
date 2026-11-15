@@ -3,6 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { expect, test } from '@playwright/test'
 import type { ElectronApplication, Page } from 'playwright'
+import { PRODUCT } from '../../src/common/product'
 import { delaySessionStateWrites, expectNoRendererErrors, launchElectron, openProjectFolder, sendIpcToRenderer } from './helpers'
 import type { IFileState } from '../../src/shared/types/files'
 import type { ApplicationState } from '../../src/shared/types/applicationState'
@@ -153,7 +154,7 @@ test('blocks a folder move while another window has an open descendant', async()
   await expect(second.getByRole('textbox', { name: 'Document', exact: true })).toContainText('Child text')
   await page.bringToFront()
   await row(path.join(directory, 'chapter')).dragTo(row(path.join(directory, 'notes')))
-  await expect(page.getByText('Close this file and any documents inside this folder in other MarkBreak windows before moving it.')).toBeVisible()
+  await expect(page.getByText(`Close this file and any documents inside this folder in other ${PRODUCT.name} windows before moving it.`)).toBeVisible()
   expect(fs.existsSync(child)).toBe(true)
   expect(fs.existsSync(path.join(directory, 'notes', 'chapter'))).toBe(false)
   await expectNoRendererErrors(app)

@@ -2,6 +2,7 @@ import path from 'path'
 import { app } from 'electron'
 import os from 'os'
 import { isDirectory } from 'common/filesystem'
+import { PRODUCT } from 'common/product'
 import parseArgs, { userArguments, type ParsedArgs } from './parser'
 import { getPath } from '../utils'
 
@@ -12,12 +13,12 @@ const cli = (): ParsedArgs => {
   let argv = userArguments(process.argv, !!process.defaultApp, app.getAppPath())
   if (import.meta.env.DEV) {
     // Don't pass Electron's development arguments through, and keep dev data in its own directory.
-    argv = ['--user-data-dir', path.join(getPath('appData'), 'markbreak-dev')]
+    argv = ['--user-data-dir', path.join(getPath('appData'), PRODUCT.devUserDataDir)]
   }
 
   const args = parseArgs(argv, true)
   if (args['--help']) {
-    write(`Usage: markbreak [commands] [path ...]
+    write(`Usage: ${PRODUCT.cliName} [commands] [path ...]
 
   Available commands:
 
@@ -36,7 +37,7 @@ const cli = (): ParsedArgs => {
   }
 
   if (args['--version']) {
-    writeLine(`MarkBreak: ${MARKTEXT_VERSION_STRING}`)
+    writeLine(`${PRODUCT.name}: ${MARKTEXT_VERSION_STRING}`)
     writeLine(`Node.js: ${process.versions.node}`)
     writeLine(`Electron: ${process.versions.electron}`)
     writeLine(`Chromium: ${process.versions.chrome}`)
@@ -47,7 +48,7 @@ const cli = (): ParsedArgs => {
   // Check for portable mode and ensure the user data path is absolute. We assume
   // that the path is writable if not this lead to an application crash.
   if (!args['--user-data-dir']) {
-    const portablePath = path.join(app.getAppPath(), '..', '..', 'markbreak-user-data')
+    const portablePath = path.join(app.getAppPath(), '..', '..', PRODUCT.portableUserDataDir)
     if (isDirectory(portablePath)) {
       args['--user-data-dir'] = portablePath
     }

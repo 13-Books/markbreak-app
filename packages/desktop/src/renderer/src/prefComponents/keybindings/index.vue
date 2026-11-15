@@ -5,7 +5,7 @@
       {{ t('preferences.keybindings.description') }}
       <help-link
         class="shortcut-docs"
-        href="https://markbreak.app/guides/"
+        :href="guidesUrl"
         :label="t('preferences.keybindings.online')"
       />
     </setting-note>
@@ -108,7 +108,10 @@ import { settingTargetId, openSetting } from '../settingLocation'
 import { acceleratorToLabel } from '@/util/accelerator'
 import { isMac } from '@/util'
 import HelpLink from '../common/helpLink.vue'
+import { PRODUCT } from 'common/product'
 import { useI18n } from 'vue-i18n'
+
+const guidesUrl = PRODUCT.guidesUrl
 
 const { t } = useI18n()
 const keybindings = useKeybindingsStore()

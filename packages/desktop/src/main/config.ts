@@ -1,5 +1,6 @@
 import path from 'path'
 import type { BrowserWindowConstructorOptions } from 'electron'
+import { PRODUCT } from 'common/product'
 
 export const isOsx: boolean = process.platform === 'darwin'
 export const isWindows: boolean = process.platform === 'win32'
@@ -84,6 +85,6 @@ export const LF_LINE_ENDING_REG = /(?:[^\r]\n)|(?:^\n$)/
 export const CRLF_LINE_ENDING_REG = /\r\n/
 
 // Issue links stay on this product. Do not point them at the upstream tracker.
-export const GITHUB_REPO_URL = 'https://github.com/markbreak/markbreak-app'
+export const GITHUB_REPO_URL = PRODUCT.githubRepoUrl
 export const URL_REG =
   /^http(s)?:\/\/([a-z0-9\-._~]+\.[a-z]{2,}|[0-9.]+|localhost|\[[a-f0-9.:]+\])(:[0-9]{1,5})?(\/[\S]+)?/i

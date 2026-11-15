@@ -18,7 +18,7 @@
         class="title"
         @dblclick.stop="toggleMaxmizeOnMacOS"
       >
-        <span v-if="!filename">MarkBreak</span>
+        <span v-if="!filename">{{ appName }}</span>
         <span v-else>
           <span
             class="save-dot"
@@ -153,11 +153,14 @@ import { isMac as isOsxPlatform } from '@/util'
 import { pathBreadcrumb } from './pathBreadcrumb'
 import { buildWindowTitle } from './windowTitle'
 import { useEditorStore } from '@/store/editor'
+import { PRODUCT } from 'common/product'
 import { useI18n } from 'vue-i18n'
 import { ArrowRight } from '@element-plus/icons-vue'
 import IconTooltip from '@/components/iconTooltip/index.vue'
 import DocumentStatistics from './documentStatistics.vue'
 import type { FileWordCount } from '@shared/types/files'
+
+const appName = PRODUCT.name
 
 interface ProjectInfo {
   name?: string

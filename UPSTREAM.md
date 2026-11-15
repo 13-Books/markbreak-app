@@ -9,7 +9,7 @@ marktext/marktext  →  13-Books/marktext  →  13-Books/markbreak-app
 
 This repo is the **MarkBreak product overlay**. Editor features land on [`13-Books/marktext`](https://github.com/13-Books/marktext) first; this tree keeps product naming and print packaging.
 
-## Remotes (`D:\repos\markbreak-app`)
+## Remotes (this repo)
 
 - `upstream` → `https://github.com/13-Books/marktext.git` (merge/rebase base; fetch **only** `develop`)
 - `origin` → `https://github.com/13-Books/markbreak-app.git` (this product repo)
@@ -22,7 +22,7 @@ Fetch refspec (keeps the branch list clean):
 remote.upstream.fetch=+refs/heads/develop:refs/remotes/upstream/develop
 ```
 
-## Feature clone (`D:\repos\marktext`)
+## Feature clone (middle-fork working copy)
 
 Separate working copy of the middle fork:
 
@@ -54,7 +54,9 @@ Then keep only MarkBreak-specific commits on top in this repo.
 
 ## Identity
 
-User-visible product name is **MarkBreak**: window title, About, menus, installer ProgId `MarkBreak.Document`, executable `markbreak`, AppUserModelId `com.markbreak.app`, user-data and keychain names. Help links go to markbreak.app and markbreak.com. The License item still opens the MIT license from the editor base.
+Runtime display name and product URLs live only in [`packages/desktop/src/common/product.ts`](packages/desktop/src/common/product.ts). Locales use `{appName}`; do not scatter MarkBreak literals in feature code. Packaging twins (`electron-builder.yml`, `package.json`, `installer.nsh`) must stay in sync with that module (ProgId `MarkBreak.Document`, executable `markbreak`, AppUserModelId `com.markbreak.app`). The License item still opens the MIT license from the editor base.
+
+Feature PRs to the middle fork must not introduce MarkBreak display strings — keep MarkText names there.
 
 Leave these alone so refreshing from `upstream` (`13-Books/marktext`) stays small:
 

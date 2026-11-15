@@ -6,6 +6,7 @@ import { isChildOfDirectory } from 'common/filesystem/paths'
 import BaseWindow, { WindowLifecycle, WindowType } from './base'
 import type Accessor from '../app/accessor'
 import { zoomIn, zoomOut } from './utils'
+import { PRODUCT } from 'common/product'
 import { TITLE_BAR_HEIGHT, editorWinOptions, isLinux, isOsx } from '../config'
 import { showEditorContextMenu } from '../contextMenu/editor'
 import { switchLanguage } from '../spellchecker'
@@ -150,7 +151,7 @@ class EditorWindow extends BaseWindow {
       const { response } = await dialog.showMessageBox(win, {
         type: 'warning',
         buttons: ['Close', 'Reload', 'Keep It Open'],
-        message: 'MarkBreak has crashed',
+        message: `${PRODUCT.name} has crashed`,
         detail: msg
       })
 

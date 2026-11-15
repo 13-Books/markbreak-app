@@ -1,4 +1,4 @@
-const APP_NAME = 'MarkBreak'
+import { PRODUCT } from 'common/product'
 
 // Linux/Windows window managers, taskbars and task switchers identify the
 // application from the trailing "- AppName" of the title. macOS already shows
@@ -16,5 +16,5 @@ export function buildWindowTitle(
   }
 
   if (isOsx) return title
-  return title ? `${title} - ${APP_NAME}` : APP_NAME
+  return title ? `${title} - ${PRODUCT.name}` : PRODUCT.name
 }

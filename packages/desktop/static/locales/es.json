@@ -102,21 +102,21 @@
       "reportBug": "Reportar Error",
       "viewSource": "Ver Código Fuente",
       "followUs": "Síguenos",
-      "support": "Apoyar MarkBreak",
+      "support": "Apoyar {appName}",
       "license": "Licencia",
       "about": "Acerca de",
       "checkUpdates": "Buscar Actualizaciones"
     },
     "marktext": {
-      "title": "MarkBreak",
-      "about": "Acerca de MarkBreak",
+      "title": "{appName}",
+      "about": "Acerca de {appName}",
       "checkUpdates": "Buscar Actualizaciones...",
       "preferences": "Preferencias",
       "services": "Servicios",
-      "hide": "Ocultar MarkBreak",
+      "hide": "Ocultar {appName}",
       "hideOthers": "Ocultar Otros",
       "showAll": "Mostrar",
-      "quit": "Salir de MarkBreak"
+      "quit": "Salir de {appName}"
     },
     "view": {
       "view": "Ver",
@@ -293,7 +293,7 @@
       "conflict": "The destination already contains an item with this name. Rename it before trying again.",
       "missing": "The source or destination no longer exists. Refresh the folder and try again.",
       "permission": "The item could not be moved. Check folder permissions and whether another application is using it.",
-      "openElsewhere": "Close this file and any documents inside this folder in other MarkBreak windows before moving it.",
+      "openElsewhere": "Close this file and any documents inside this folder in other {appName} windows before moving it.",
       "destinationOpen": "A document is already open at the destination path. Close it before trying again."
     }
   },
@@ -410,7 +410,7 @@
   },
   "import": {
     "title": "Importar o Abrir",
-    "description": "Arrastra aquí para obtener tu contenido en MarkBreak"
+    "description": "Arrastra aquí para obtener tu contenido en {appName}"
   },
   "preferences": {
     "title": "Preferencias",
@@ -633,7 +633,7 @@
         "lastSuccessTime": "Última vez exitosa",
         "invalidScript": "Introduce la ruta de un script existente y ejecutable."
       },
-      "defaultBehavior": "El comportamiento predeterminado después de pegar o arrastrar la imagen a MarkBreak"
+      "defaultBehavior": "El comportamiento predeterminado después de pegar o arrastrar la imagen a {appName}"
     },
     "markdown": {
       "title": "Markdown",
@@ -664,10 +664,10 @@
           "simple": "Simple"
         },
         "mermaidLightTheme": {
-          "title": "Tema de Mermaid para temas claros de MarkBreak"
+          "title": "Tema de Mermaid para temas claros de {appName}"
         },
         "mermaidDarkTheme": {
-          "title": "Tema de Mermaid para temas oscuros de MarkBreak"
+          "title": "Tema de Mermaid para temas oscuros de {appName}"
         },
         "plantumlServer": {
           "title": "URL del servidor PlantUML"
@@ -782,7 +782,7 @@
   },
   "commands": {
     "mt": {
-      "hide": "Ocultar MarkBreak",
+      "hide": "Ocultar {appName}",
       "hideOthers": "Ocultar Otros"
     },
     "file": {
@@ -939,7 +939,7 @@
     "fileExists": "El archivo {filename} ya existe",
     "files": "Archivos",
     "importWarning": "Advertencia de importación",
-    "installPandoc": "No se encontró Pandoc. Instálalo, o define la variable de entorno MARKTEXT_PANDOC con la ruta del ejecutable de pandoc y reinicia MarkBreak.",
+    "installPandoc": "No se encontró Pandoc. Instálalo, o define la variable de entorno MARKTEXT_PANDOC con la ruta del ejecutable de pandoc y reinicia {appName}.",
     "exportWarning": "Advertencia de exportación",
     "exportWarningMore": "…y {count} más",
     "keepOpen": "Mantener abierto",
@@ -956,7 +956,7 @@
     "configSchemaViolation": "Violación del esquema de configuración",
     "copyError": "Error de copia",
     "initializationFailed": "Falló la inicialización {hint}",
-    "otherInstanceDetected": "Otra instancia de MarkBreak ya está ejecutándose",
+    "otherInstanceDetected": "Otra instancia de {appName} ya está ejecutándose",
     "report": "Reportar",
     "startupError": "Error de inicio",
     "terminatedDueToError": "Terminado debido a error",

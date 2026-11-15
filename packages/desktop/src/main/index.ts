@@ -12,6 +12,7 @@ import { getLogLevel } from './utils'
 import Accessor from './app/accessor'
 import App from './app'
 import { t } from './i18n'
+import { PRODUCT } from 'common/product'
 import { registerSandboxIpcHandlers } from './ipc'
 import { setPlantumlServerSource } from './ipc/diagram'
 
@@ -49,7 +50,7 @@ initializeLogger(appEnvironment)
 
 crashReporter.start({
   companyName: '',
-  productName: 'MarkBreak',
+  productName: PRODUCT.name,
   uploadToServer: false, // collect locally
   compress: true
 })
@@ -91,7 +92,7 @@ registerSandboxIpcHandlers({
   }
 })
 
-electronApp.setAppUserModelId('com.markbreak.app')
+electronApp.setAppUserModelId(PRODUCT.appId)
 
 app.on('browser-window-created', (_, window) => {
   optimizer.watchWindowShortcuts(window)

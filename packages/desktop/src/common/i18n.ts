@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { PRODUCT } from './product'
 
 export type Translations = Record<string, unknown>
 
@@ -100,8 +101,10 @@ function getTranslation(
     return key
   }
 
+  // Product name is always available as {appName}; call-site params override.
+  const merged: Record<string, string | number> = { appName: PRODUCT.name, ...params }
   let result = probe
-  for (const [param, replacement] of Object.entries(params)) {
+  for (const [param, replacement] of Object.entries(merged)) {
     result = result.replace(new RegExp(`\\{${param}\\}`, 'g'), () => String(replacement))
   }
 

@@ -1,5 +1,6 @@
 import { createI18n } from 'vue-i18n'
 import { compile, type MessageCompiler } from '@intlify/core-base'
+import { applyProductTokens } from 'common/applyProductTokens'
 import bus from '../bus'
 import enTranslations from '../../../../static/locales/en.json'
 
@@ -29,7 +30,7 @@ const i18n = createI18n({
   legacy: false,
   locale: 'en', // default is en
   fallbackLocale: 'en',
-  messages: { en: enTranslations }, // Load en by default only
+  messages: { en: applyProductTokens(enTranslations) }, // Load en by default only
   modifiers: {
     '@': () => '@'
   },
@@ -79,7 +80,7 @@ export const setLanguage = async(locale: string): Promise<void> => {
     if (!translation) return
 
     if (!globalI18n.availableLocales.includes(locale)) {
-      globalI18n.setLocaleMessage(locale, translation)
+      globalI18n.setLocaleMessage(locale, applyProductTokens(translation))
       console.log(`🌐 Loaded and set new locale: ${locale}`)
     }
   }

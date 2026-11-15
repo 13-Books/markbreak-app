@@ -155,7 +155,7 @@
           </div>
           <cur-select
             :description="t('exportSettings.theme.theme')"
-            more="https://markbreak.app/guides/"
+            :more="PRODUCT.guidesUrl"
             :value="theme"
             :options="themeList"
             :on-change="(value: unknown) => onSelectChange('theme', value)"
@@ -292,6 +292,7 @@ import FontTextBox from '@/prefComponents/common/fontTextBox/index.vue'
 import Range from '@/prefComponents/common/range/index.vue'
 import TextBox from '@/prefComponents/common/textBox/index.vue'
 import { getPageSizeList, getHeaderFooterTypes, getExportThemeList } from './exportOptions'
+import { PRODUCT } from 'common/product'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()

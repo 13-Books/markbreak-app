@@ -1,3 +1,4 @@
+import { PRODUCT } from 'common/product'
 import bus from '../bus'
 import { delay, isMac } from '@/util'
 import { isUpdatable } from './utils'
@@ -643,13 +644,13 @@ const commands: CommandDescriptor[] = [
   {
     id: 'docs.user-guide',
     execute: async() => {
-      window.electron.shell.openExternal('https://markbreak.app/guides/')
+      window.electron.shell.openExternal(PRODUCT.guidesUrl)
     }
   },
   {
     id: 'docs.markdown-syntax',
     execute: async() => {
-      window.electron.shell.openExternal('https://markbreak.com/specification.md')
+      window.electron.shell.openExternal(PRODUCT.specificationUrl)
     }
   },
 

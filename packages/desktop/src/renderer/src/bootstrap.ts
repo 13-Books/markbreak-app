@@ -1,5 +1,6 @@
 import log from 'electron-log/renderer'
 import { logger as muyaLogger } from '@muyajs/core'
+import { PRODUCT } from 'common/product'
 import RendererPaths from './node/paths'
 
 let exceptionLogger: (s: unknown) => void = (s) => console.error(s)
@@ -97,6 +98,7 @@ const handleRendererError = (event: ErrorEvent | PromiseRejectionEvent | Event):
 }
 
 const bootstrapRenderer = (): void => {
+  document.title = PRODUCT.name
   window.addEventListener('error', handleRendererError)
   window.addEventListener('unhandledrejection', handleRendererError)
 

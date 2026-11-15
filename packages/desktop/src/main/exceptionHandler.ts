@@ -9,6 +9,7 @@
 import { app, clipboard, crashReporter, dialog, ipcMain } from 'electron'
 import os from 'os'
 import log from 'electron-log'
+import { PRODUCT } from 'common/product'
 import { t } from './i18n'
 
 type ErrorType = 'main' | 'renderer'
@@ -101,8 +102,8 @@ const setupExceptionHandler = (): void => {
   })
 
   crashReporter.start({
-    companyName: 'MarkBreak',
-    productName: 'MarkBreak',
+    companyName: PRODUCT.name,
+    productName: PRODUCT.name,
     submitURL: 'http://0.0.0.0/',
     uploadToServer: false,
     compress: true

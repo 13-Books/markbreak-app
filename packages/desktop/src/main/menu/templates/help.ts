@@ -1,6 +1,7 @@
 import path from 'path'
 import { shell, type BrowserWindow, type MenuItemConstructorOptions } from 'electron'
 import { isFile } from 'common/filesystem'
+import { PRODUCT } from 'common/product'
 import * as actions from '../actions/help'
 import { checkUpdates } from '../actions/marktext'
 import { t } from '../../i18n'
@@ -28,13 +29,13 @@ export default function(): MenuItemConstructorOptions {
     {
       label: t('menu.help.markdownReference'),
       click() {
-        shell.openExternal('https://markbreak.com/specification.md')
+        shell.openExternal(PRODUCT.specificationUrl)
       }
     },
     {
       label: t('menu.help.changelog'),
       click() {
-        shell.openExternal('https://markbreak.app/#download')
+        shell.openExternal(PRODUCT.downloadUrl)
       }
     },
     {
@@ -43,19 +44,19 @@ export default function(): MenuItemConstructorOptions {
     {
       label: t('menu.help.askQuestion'),
       click() {
-        shell.openExternal('https://markbreak.app/guides/')
+        shell.openExternal(PRODUCT.guidesUrl)
       }
     },
     {
       label: t('menu.help.reportBug'),
       click() {
-        shell.openExternal('https://markbreak.app')
+        shell.openExternal(PRODUCT.siteUrl)
       }
     },
     {
       label: t('menu.help.viewSource'),
       click() {
-        shell.openExternal('https://markbreak.com')
+        shell.openExternal(PRODUCT.dialectUrl)
       }
     },
     {

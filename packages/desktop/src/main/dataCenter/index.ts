@@ -7,6 +7,7 @@ import Store, { type Schema } from 'electron-store'
 import log from 'electron-log'
 import { ensureDirSync } from 'common/filesystem'
 import { IMAGE_EXTENSIONS } from 'common/filesystem/paths'
+import { PRODUCT } from 'common/product'
 import { TypedEmitter } from '@shared/types/typedEmitter'
 
 const DATA_CENTER_NAME = 'dataCenter'
@@ -22,7 +23,7 @@ interface DataCenterPaths {
 
 class DataCenter extends TypedEmitter<DataCenterEvents> {
   // Keychain entries are per product, so this install does not read the upstream editor's tokens.
-  private readonly _serviceName = 'markbreak'
+  private readonly _serviceName = PRODUCT.serviceName
   private readonly _encryptKeys: string[] = []
   private readonly _defaults: Record<string, unknown>
   // Unavailable storage uses detached defaults without allowing writes to replace the original.

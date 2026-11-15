@@ -45,11 +45,12 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useMainStore } from '@/store'
 import bus from '../../bus'
 import MarkTextLogo from '../../assets/images/logo.png'
+import { PRODUCT } from 'common/product'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const name = 'MarkBreak'
+const name = PRODUCT.name
 const copyright = t('about.copyright', { year: new Date().getFullYear() })
 const copyrightContributors = t('about.copyrightContributors')
 const showAboutDialog = ref(false)

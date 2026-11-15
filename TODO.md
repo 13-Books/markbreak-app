@@ -4,7 +4,7 @@
 
 Decommission local `bookmd` by porting the focus-writer prototype into this app. Dialect law lives in submodule `dialect/markbreak` (pinned profile **0.2.0**). Tracking stays in this file (private repo). Optional epic stub: [#1](https://github.com/13-Books/markbreak-app/issues/1).
 
-**Golden reference (after archive):** `docs/prototype/focus-writer/` — port from there. Source today: `D:\repos\bookmd\prototype\focus-writer`.
+**Golden reference (after archive):** `docs/prototype/focus-writer/` — port from there. Source today: sibling `bookmd` repo `prototype/focus-writer` (until archived).
 
 **Defaults (locked)**
 
@@ -25,7 +25,7 @@ Decommission local `bookmd` by porting the focus-writer prototype into this app.
 - [ ] **Print-proof PDF** — Export PDF uses Pages proof + print/printToPDF with geometry; not only generic MarkText PDF.
 - [ ] **Pandoc Docx/PDF in UI** — App invokes or clearly wires `dialect/export.ps1` so Docx keeps real page breaks.
 - [ ] **Guides** — `site/guides/04-export.html` (and related) match print-proof PDF vs Docx story.
-- [ ] **Decommission bookmd** — No unique specification/tools only in bookmd; README/HOLE no longer treat bookmd as home; archive or delete `D:\repos\bookmd` after checklist above is done.
+- [ ] **Decommission bookmd** — No unique specification/tools only in bookmd; README/HOLE no longer treat bookmd as home; archive or delete the local `bookmd` checkout after checklist above is done.
 
 **Out of scope for this pass:** IDML; enabling Issues on public marktext; iA outreach notes.
 
