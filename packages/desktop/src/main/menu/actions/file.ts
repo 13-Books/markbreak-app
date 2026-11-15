@@ -35,6 +35,7 @@ import pandoc, {
   listLinkedMedia,
   shouldMirrorMedia
 } from '../../utils/pandoc'
+import { readBookPage, siblingRig, writeWithProfile } from '../../utils/markbreakExport'
 import { t, getCurrentLanguage } from '../../i18n'
 import type { PandocExportPayload, TabOptions } from '@shared/types/files'
 
@@ -129,7 +130,22 @@ const handleResponseForExport = async(e: IpcMainEvent, payload: ExportPayload): 
           generateTaggedPDF: true,
           generateDocumentOutline: true
         }
-        Object.assign(options, getPdfPageOptions(pageOptions))
+        const bookPage = readBookPage(siblingRig(pathname))
+        if (bookPage) {
+          options.pageSize = {
+            width: bookPage.widthMm * 1000,
+            height: bookPage.heightMm * 1000
+          }
+          options.margins = {
+            marginType: 'custom',
+            top: bookPage.top / 25.4,
+            bottom: bookPage.bottom / 25.4,
+            left: bookPage.left / 25.4,
+            right: bookPage.right / 25.4
+          }
+        } else {
+          Object.assign(options, getPdfPageOptions(pageOptions))
+        }
         const data = await win.webContents.printToPDF(options)
         removePrintServiceFromWindow(win)
         await writeFile(filePath, data, extension, 'binary')
@@ -215,36 +231,46 @@ const handlePandocExport = async(e: IpcMainEvent, payload: PandocExportPayload):
     if (canceled || !chosen || win.isDestroyed()) return
     filePath = chosen
     await assertExportDestination(pathname, filePath)
-    // The reader is built once the export is certain: naming `tex_math_gfm` needs pandoc
-    // to have answered `--list-extensions`, and a cancelled dialog should not pay for it.
-    const reader = getPandocReader(
-      {
-        superSubScript: superSubScript === true,
-        githubAlerts: githubAlerts === true,
-        footnotes: footnote === true,
-        texMathDollars: texMathDollars === true,
-        texMathGfm: texMathGfm === true,
-        texMathSingleBackslash: texMathSingleBackslash === true,
-        texMathDoubleBackslash: texMathDoubleBackslash === true,
-        fancyLists: fancyLists === true
-      },
-      await getReaderExtensions()
-    )
-    // The plain-text writers keep images as links, so the pictures are mirrored along.
-    const linksMedia = formatLinksMedia(format.target)
-    const media = linksMedia ? await listLinkedMedia(markdown, reader) : []
+    const profileFormat = format.target === 'docx' || format.target === 'pdf'
+      ? format.target as 'docx' | 'pdf'
+      : null
+    let warnings = ''
+    let linksMedia = false
+    if (profileFormat) {
+      await writeWithProfile(markdown, profileFormat, filePath, siblingRig(pathname))
+    } else {
+      // The reader is built once the export is certain: naming `tex_math_gfm` needs pandoc
+      // to have answered `--list-extensions`, and a cancelled dialog should not pay for it.
+      const reader = getPandocReader(
+        {
+          superSubScript: superSubScript === true,
+          githubAlerts: githubAlerts === true,
+          footnotes: footnote === true,
+          texMathDollars: texMathDollars === true,
+          texMathGfm: texMathGfm === true,
+          texMathSingleBackslash: texMathSingleBackslash === true,
+          texMathDoubleBackslash: texMathDoubleBackslash === true,
+          fancyLists: fancyLists === true
+        },
+        await getReaderExtensions()
+      )
+      // The plain-text writers keep images as links, so the pictures are mirrored along.
+      linksMedia = formatLinksMedia(format.target)
+      const media = linksMedia ? await listLinkedMedia(markdown, reader) : []
 
-    const { warnings } = await pandoc.toFile(format.target, filePath, markdown, {
-      cwd: sourceDir,
-      resourcePath: sourceDir,
-      mirrorMedia: linksMedia && shouldMirrorMedia(media, sourceDir, filePath),
-      reader,
-      // Only EPUB takes a title, for its title page; `lang` is the app's, not the spawn locale.
-      metadata: {
-        ...(format.target === 'epub3' ? { title: title || stem } : {}),
-        lang: getPandocLanguage(getCurrentLanguage())
-      }
-    })
+      const result = await pandoc.toFile(format.target, filePath, markdown, {
+        cwd: sourceDir,
+        resourcePath: sourceDir,
+        mirrorMedia: linksMedia && shouldMirrorMedia(media, sourceDir, filePath),
+        reader,
+        // Only EPUB takes a title, for its title page; `lang` is the app's, not the spawn locale.
+        metadata: {
+          ...(format.target === 'epub3' ? { title: title || stem } : {}),
+          lang: getPandocLanguage(getCurrentLanguage())
+        }
+      })
+      warnings = result.warnings
+    }
 
     // Pandoc can exit successfully after replacing unreadable images with alt text; surface its nonblank warnings.
     const message = summarizePandocWarnings(warnings)

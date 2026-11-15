@@ -48,7 +48,7 @@ Then keep only MarkBreak-specific commits on top in this repo.
 
 - MarkBreak branding, pricing, markbreak.app chrome
 - YAML `role:` / print matter UX packaged as product
-- `//---` / `\newpage` dialect and Pandoc verify gates
+- `//break` / `//break page` dialect and Pandoc verify gates
 - RigWorks `.rig` export (`rig.story.flow.role`, `breakType`)
 - `dialect/`, `site/`, `packages/online`, and MarkBreak-named modules
 

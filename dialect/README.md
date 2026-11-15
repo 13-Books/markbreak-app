@@ -5,14 +5,18 @@ The Pandoc filter and fixtures live in **[13-Books/markbreak](https://github.com
 | Path | Role |
 |------|------|
 | `markbreak/` | Git submodule — pinned profile |
-| `export.ps1` | Docx/PDF via Pandoc + submodule filter |
-| `export-rig.ps1` | Minimal RigWorks JSON from a manuscript |
+| `export.sh` | Docx/PDF via Pandoc + submodule filter |
 
-**Pinned profile:** `0.2.0` (`v0.2.0`). See `markbreak/VERSION` after init.
+**Pinned profile:** `0.4.0` (`v0.4.0`). See `markbreak/VERSION` after init.
 
-```powershell
+```bash
 git submodule update --init --recursive
-powershell -File dialect/export.ps1 -InputFile path\to\manuscript.md -Format docx
+bash dialect/export.sh --input path/to/manuscript.md --format docx
+bash dialect/export.sh --input path/to/manuscript.md --format pdf --rig path/to/book.rig.json
 ```
+
+The chapter may name `layout` and `meta`. `layout` is the RigWorks page. `meta` is the publication file. A sibling `.rig.json` is used when `layout` is absent. `--rig` overrides both.
+
+Needs bash, Node, and Pandoc. On Windows, run it from Git Bash (the app looks for Git Bash itself).
 
 Do not add a second `markbreak.lua` here. Bump the submodule to a newer `vX.Y.Z` when the app adopts a new profile.

@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Focus — prototype</title>
+  <style>
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("fonts/SourceSerif4Variable-Roman.woff2") format("woff2");
+      font-weight: 200 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("fonts/SourceSerif4Variable-Italic.woff2") format("woff2");
+      font-weight: 200 900;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Atkinson Hyperlegible Next";
+      src: url("fonts/AtkinsonHyperlegibleNext-Variable.woff2") format("woff2");
+      font-weight: 200 800;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Atkinson Hyperlegible Next";
+      src: url("fonts/AtkinsonHyperlegibleNext-Italic-Variable.woff2") format("woff2");
+      font-weight: 200 800;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Bricolage Grotesque";
+      src: url("fonts/BricolageGrotesque-Variable.woff2") format("woff2");
+      font-weight: 200 800;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("fonts/InterVariable.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Inter";
+      src: url("fonts/InterVariable-Italic.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "IBM Plex Sans";
+      src: url("fonts/IBMPlexSansVar-Roman.woff2") format("woff2");
+      font-weight: 100 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "IBM Plex Sans";
+      src: url("fonts/IBMPlexSansVar-Italic.woff2") format("woff2");
+      font-weight: 100 700;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    :root {
+      /* Cool neutral surface — not sepia / Kindle paper */
+      --bg: #f3f3f1;
+      --bg2: #eaeae8;
+      --ink: #1a1a1a;
+      --ink-dim: rgba(26, 26, 26, 0.28);
+      --ink-mid: rgba(26, 26, 26, 0.5);
+      --accent: #2a6f5b;
+      --chrome: rgba(26, 26, 26, 0.08);
+      --page: #ffffff;
+      --page-edge: rgba(26, 26, 26, 0.1);
+      --measure: 36rem;
+      --size: 1.25rem;
+      --leading: 1.65;
+      --tracking: -0.003em;
+      --indent: 0rem;
+      --page-ratio: 0.707;
+      --page-screen-w: 28rem;
+      --m-top: 1.5rem;
+      --m-right: 1.4rem;
+      --m-bottom: 1.6rem;
+      --m-left: 1.4rem;
+      --grain: 0.04;
+      --face: "Atkinson Hyperlegible Next", "Segoe UI", system-ui, sans-serif;
+      --md-h: #1f4f8a;
+      --md-break: #2a6f5b;
+      --md-code: #7a3e9d;
+      --md-em: #5a5548;
+      --md-strong: #1a1a1a;
+      --md-link: #1f4f8a;
+      --md-quote: #5a6570;
+      --md-hr: #8a8a84;
+    }
+
+    html.theme-dark {
+      --bg: #121212;
+      --bg2: #1a1a1a;
+      --ink: #e6e6e4;
+      --ink-dim: rgba(230, 230, 228, 0.22);
+      --ink-mid: rgba(230, 230, 228, 0.48);
+      --accent: #7dbaa0;
+      --chrome: rgba(230, 230, 228, 0.1);
+      --page: #181818;
+      --page-edge: rgba(255, 255, 255, 0.08);
+      --grain: 0.06;
+      --md-h: #8cb4e8;
+      --md-break: #7dbaa0;
+      --md-code: #c9a0e8;
+      --md-em: #b0aaa0;
+      --md-strong: #e6e6e4;
+      --md-link: #8cb4e8;
+      --md-quote: #9aa3ab;
+      --md-hr: #6a6a66;
+    }
+
+    html.theme-system { color-scheme: light dark; }
+
+    @media (prefers-color-scheme: dark) {
+      html.theme-system {
+        --bg: #121212;
+        --bg2: #1a1a1a;
+        --ink: #e6e6e4;
+        --ink-dim: rgba(230, 230, 228, 0.22);
+        --ink-mid: rgba(230, 230, 228, 0.48);
+        --accent: #7dbaa0;
+        --chrome: rgba(230, 230, 228, 0.1);
+        --page: #181818;
+        --page-edge: rgba(255, 255, 255, 0.08);
+        --grain: 0.06;
+        --md-h: #8cb4e8;
+        --md-break: #7dbaa0;
+        --md-code: #c9a0e8;
+        --md-em: #b0aaa0;
+        --md-strong: #e6e6e4;
+        --md-link: #8cb4e8;
+        --md-quote: #9aa3ab;
+        --md-hr: #6a6a66;
+      }
+    }
+
+    * { scrollbar-width: none; }
+    *::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--face);
+      font-optical-sizing: auto;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: var(--grain);
+      mix-blend-mode: multiply;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E"),
+        radial-gradient(120% 80% at 50% 0%, var(--bg2), transparent 55%),
+        linear-gradient(180deg, transparent, rgba(0,0,0,0.04));
+      background-size: 180px 180px, 100% 100%, 100% 100%;
+    }
+
+    html.theme-dark body::before,
+    html.theme-system body::before { mix-blend-mode: soft-light; }
+
+    @media (prefers-color-scheme: light) {
+      html.theme-system body::before { mix-blend-mode: multiply; }
+    }
+
+    html.no-texture body::before { display: none; }
+
+    header.bar, main, .prefs, footer.hint, #testBanner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header.bar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 1rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      border-bottom: 1px solid var(--chrome);
+      user-select: none;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(8px);
+      flex-wrap: wrap;
+    }
+
+    header.bar .brand { color: var(--accent); font-weight: 600; }
+    header.bar .spacer { flex: 1; min-width: 0.5rem; }
+    header.bar .seg {
+      display: inline-flex;
+      border: 1px solid var(--chrome);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-right: 0.35rem;
+    }
+    header.bar .seg button {
+      border-radius: 0;
+      padding: 0.35rem 0.55rem;
+    }
+    header.bar .seg button + button {
+      border-left: 1px solid var(--chrome);
+    }
+
+    header.bar button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--ink-mid);
+      font: inherit;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    header.bar button:hover,
+    header.bar button.on {
+      color: var(--ink);
+      background: var(--chrome);
+    }
+
+    header.bar kbd {
+      font-family: ui-monospace, monospace;
+      font-size: 0.65rem;
+      opacity: 0.7;
+      margin-left: 0.2rem;
+    }
+
+    main.workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+
+    body.view-split main.workspace { grid-template-columns: 1fr 1fr; }
+    body.view-pages main.workspace,
+    body.view-spreads main.workspace,
+    body.view-source main.workspace { grid-template-columns: 1fr; }
+
+    body.view-pages .pane.write,
+    body.view-spreads .pane.write { display: none; }
+    body.view-source .pane.pages { display: none; }
+
+    .pane {
+      min-height: 0;
+      overflow: auto;
+      padding: 7vh 1.5rem 18vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    body.view-split .pane.pages,
+    body.view-pages .pane.pages,
+    body.view-spreads .pane.pages {
+      display: flex;
+    }
+
+    body.view-split .pane.pages {
+      border-left: 1px solid var(--chrome);
+      background: color-mix(in srgb, var(--bg2) 55%, var(--bg));
+    }
+
+    body.view-pages .pane.pages,
+    body.view-spreads .pane.pages {
+      background: color-mix(in srgb, var(--bg2) 40%, var(--bg));
+    }
+
+    .sheet {
+      width: min(100%, var(--measure));
+    }
+
+    #editor {
+      width: 100%;
+      min-height: 70vh;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--face);
+      font-size: var(--size);
+      font-weight: 450;
+      line-height: var(--leading);
+      letter-spacing: var(--tracking);
+      text-indent: var(--indent);
+      caret-color: var(--accent);
+      padding: 0;
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      tab-size: 2;
+      box-sizing: border-box;
+    }
+
+    #editor:empty::before {
+      content: attr(data-placeholder);
+      color: var(--ink-dim);
+      pointer-events: none;
+    }
+
+    /* Focus only on the surface that owns the caret — never both panes. */
+    body.focus-on #editor:focus-within .s { color: var(--ink-dim); }
+    body.focus-on #editor:focus-within .s.active { color: var(--ink); }
+
+    /* While dragging a native selection, drop sentence dim so we don't double-paint. */
+    body.focus-on.selecting #editor:focus-within .s,
+    body.focus-on.selecting .page .body:focus-within .s {
+      color: var(--ink);
+    }
+
+    /* Source markdown color coding (rigMarkdown-ish cue colors) */
+    body.syntax-on #editor .md-h { color: var(--md-h); font-weight: 600; }
+    body.syntax-on #editor .md-break { color: var(--md-break); }
+    body.syntax-on #editor .md-code { color: var(--md-code); font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; }
+    body.syntax-on #editor .md-em { color: var(--md-em); font-style: italic; }
+    body.syntax-on #editor .md-strong { color: var(--md-strong); font-weight: 650; }
+    body.syntax-on #editor .md-link { color: var(--md-link); }
+    body.syntax-on #editor .md-quote { color: var(--md-quote); }
+    body.syntax-on #editor .md-hr { color: var(--md-hr); }
+
+    body.focus-on.syntax-on #editor:focus-within .s:not(.active) .md-h,
+    body.focus-on.syntax-on #editor:focus-within .s:not(.active) .md-break,
+    body.focus-on.syntax-on #editor:focus-within .s:not(.active) .md-code,
+    body.focus-on.syntax-on #editor:focus-within .s:not(.active) .md-em,
+    body.focus-on.syntax-on #editor:focus-within .s:not(.active) .md-strong,
+    body.focus-on.syntax-on #editor:focus-within .s:not(.active) .md-link,
+    body.focus-on.syntax-on #editor:focus-within .s:not(.active) .md-quote,
+    body.focus-on.syntax-on #editor:focus-within .s:not(.active) .md-hr {
+      color: inherit;
+      font-weight: inherit;
+      font-style: inherit;
+    }
+
+    #editor .cmd { color: var(--md-break); }
+
+    /* One selection paint: browser only (no parallel .range chrome). */
+    #editor::selection,
+    #editor *::selection,
+    .page .body::selection,
+    .page .body *::selection {
+      background: color-mix(in srgb, var(--accent) 35%, transparent);
+      color: var(--ink);
+    }
+
+    .pages-inner {
+      width: min(100%, 32rem);
+      display: flex;
+      flex-direction: column;
+      gap: 1.35rem;
+    }
+
+    body.view-pages .pages-inner {
+      width: min(100%, var(--measure));
+    }
+
+    body.view-spreads .pages-inner {
+      width: min(100%, 56rem);
+      gap: 2rem;
+    }
+
+    .spread {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      align-items: stretch;
+    }
+
+    .spread .page {
+      min-height: 22rem;
+    }
+
+    .spread .page.verso .folio { left: 1rem; right: auto; }
+    .spread .page.recto .folio { right: 1rem; left: auto; }
+
+    .spread .page.blank {
+      background: transparent;
+      border-style: dashed;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .spread .page.blank .body {
+      min-height: 16rem;
+      opacity: 0;
+    }
+
+    .page {
+      background: var(--page);
+      border: 1px solid var(--page-edge);
+      border-radius: 6px;
+      box-shadow: none;
+      width: min(100%, var(--page-screen-w));
+      aspect-ratio: var(--page-ratio);
+      height: auto;
+      max-height: none;
+      padding: var(--m-top) var(--m-right) var(--m-bottom) var(--m-left);
+      min-height: 0;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .page .folio {
+      position: absolute;
+      bottom: calc(var(--m-bottom) * 0.35);
+      right: calc(var(--m-right) * 0.55);
+      font-family: system-ui, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: var(--ink-mid);
+      pointer-events: none;
+    }
+
+    .page .body {
+      outline: none;
+      height: 100%;
+      min-height: 8rem;
+      font-family: var(--face);
+      font-size: calc(var(--size) * 0.95);
+      font-weight: 450;
+      line-height: var(--leading);
+      letter-spacing: var(--tracking);
+      text-indent: var(--indent);
+      caret-color: var(--accent);
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      color: var(--ink);
+      overflow: auto;
+    }
+
+    .page .body:empty::before {
+      content: "Write this page…";
+      color: var(--ink-dim);
+      pointer-events: none;
+    }
+
+    body.focus-on .page .body:focus-within .s { color: var(--ink-dim); }
+    body.focus-on .page .body:focus-within .s.active { color: var(--ink); }
+
+    .page-tools {
+      display: flex;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+      font-family: system-ui, sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .page-tools button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--ink-mid);
+      cursor: pointer;
+      padding: 0.25rem 0.4rem;
+      border-radius: 4px;
+      font: inherit;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .page-tools button:hover {
+      color: var(--ink);
+      background: var(--chrome);
+    }
+
+    .prefs {
+      display: none;
+      position: fixed;
+      top: 2.75rem;
+      right: 1rem;
+      width: min(28rem, calc(100vw - 2rem));
+      max-height: calc(100vh - 4rem);
+      overflow: auto;
+      background: var(--page);
+      border: 1px solid var(--chrome);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+      border-radius: 10px;
+      padding: 0.85rem 1rem 1.1rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      z-index: 5;
+    }
+
+    body.prefs-open .prefs { display: block; }
+
+    .prefs .prefs-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .prefs h2 {
+      margin: 0;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      font-weight: 600;
+    }
+
+    .prefs-tabs {
+      display: flex;
+      gap: 0.15rem;
+      border-bottom: 1px solid var(--chrome);
+      margin-bottom: 0.35rem;
+    }
+
+    .prefs-tabs button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--ink-mid);
+      font: inherit;
+      font-size: 0.78rem;
+      padding: 0.45rem 0.55rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .prefs-tabs button.on {
+      color: var(--ink);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .prefs-panel { display: none; }
+    .prefs-panel.on { display: block; }
+
+    .prefs label.row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.42rem 0;
+      border-top: 1px solid var(--chrome);
+      font-size: 0.85rem;
+      color: var(--ink);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .prefs label.row.stack {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+
+    .prefs .pair {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .prefs .pair input[type="number"] {
+      width: 4.2rem;
+      font: inherit;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.35rem;
+      border: 1px solid var(--chrome);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .prefs .margins {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.4rem;
+    }
+
+    .prefs .margins label {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      color: var(--ink-mid);
+      align-items: center;
+    }
+
+    .prefs .margins input {
+      width: 3.6rem;
+      font: inherit;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.3rem;
+      border: 1px solid var(--chrome);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .prefs select,
+    .prefs input[type="range"] { font: inherit; max-width: 11rem; }
+
+    .prefs .unit {
+      font-size: 0.72rem;
+      color: var(--ink-mid);
+      min-width: 1.6rem;
+    }
+
+    .prefs .note {
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--ink-mid);
+      line-height: 1.45;
+    }
+
+    .export-grid {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 0.5rem;
+    }
+
+    .export-grid button {
+      appearance: none;
+      border: 1px solid var(--chrome);
+      background: var(--bg);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.85rem;
+      text-align: left;
+      padding: 0.55rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .export-grid button:hover { border-color: var(--accent); }
+    .export-grid button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .export-grid .sub {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--ink-mid);
+      margin-top: 0.15rem;
+    }
+
+    .export-menu {
+      display: none;
+      position: fixed;
+      top: 2.75rem;
+      right: 1rem;
+      width: min(18rem, calc(100vw - 2rem));
+      background: var(--page);
+      border: 1px solid var(--chrome);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+      border-radius: 10px;
+      padding: 0.55rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      z-index: 6;
+    }
+
+    body.export-open .export-menu { display: block; }
+    body.export-open .prefs { display: none; }
+
+    @media print {
+      header.bar, footer.hint, .prefs, .export-menu, #testBanner, .page-tools, .pane.write {
+        display: none !important;
+      }
+      html, body, .pane.pages, .pages-inner, .page, .page .body {
+        background: #fff !important;
+        color: #111 !important;
+        box-shadow: none !important;
+        filter: none !important;
+      }
+      body::before { display: none !important; }
+      body, .pane.pages { padding: 0 !important; margin: 0 !important; }
+
+      /* No focus dimming / syntax chrome on paper */
+      .s, .s.active,
+      .md-h, .md-break, .md-code, .md-em, .md-strong, .md-link, .md-quote, .md-hr, .cmd {
+        color: #111 !important;
+        background: transparent !important;
+        opacity: 1 !important;
+      }
+      .md-h { font-weight: 700 !important; }
+      .md-break, .cmd { display: none !important; }
+
+      .page {
+        break-after: page;
+        break-inside: avoid;
+        border: 0 !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        aspect-ratio: auto !important;
+        min-height: 0 !important;
+        height: auto !important;
+        padding: 18mm 16mm !important;
+      }
+      .page .body {
+        font-size: 11pt !important;
+        line-height: 1.5 !important;
+        text-indent: 0 !important;
+        overflow: visible !important;
+        min-height: 0 !important;
+        height: auto !important;
+      }
+      .page .folio {
+        color: #444 !important;
+        bottom: 10mm !important;
+        right: 14mm !important;
+      }
+
+      body.printing .page .body:empty::before {
+        content: none !important;
+        display: none !important;
+      }
+
+      /* Never print placeholders or empty sheets */
+      .page .body:empty::before,
+      #editor:empty::before {
+        content: none !important;
+        display: none !important;
+      }
+      .page:has(> .body:empty),
+      .spread .page.blank {
+        display: none !important;
+      }
+
+      .spread {
+        display: block !important;
+        filter: none !important;
+        gap: 0 !important;
+      }
+      .pages-inner { width: 100% !important; gap: 0 !important; }
+    }
+
+    footer.hint {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.55rem 1rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.03em;
+      color: var(--ink-mid);
+      background: linear-gradient(transparent, var(--bg) 35%);
+      pointer-events: none;
+      text-align: center;
+      z-index: 2;
+    }
+
+    body.chrome-hidden header.bar,
+    body.chrome-hidden footer.hint,
+    body.chrome-hidden .prefs {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #testBanner {
+      display: none;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.75rem;
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid var(--chrome);
+      white-space: pre-wrap;
+    }
+
+    body.testing #testBanner { display: block; }
+    body.testing #testBanner.pass { background: #14351f; color: #b7f0c8; }
+    body.testing #testBanner.fail { background: #3a1414; color: #ffc9c9; }
+  </style>
+</head>
+<body>
+  <div id="testBanner" aria-live="polite"></div>
+
+  <header class="bar">
+    <span class="brand">Focus</span>
+    <span>prototype</span>
+    <span class="spacer"></span>
+    <div class="seg" role="group" aria-label="View">
+      <button type="button" id="btnViewSource" title="Manuscript source">Source</button>
+      <button type="button" id="btnViewSplit" title="Source + pages">Split</button>
+      <button type="button" id="btnViewPages" title="Paged writing only">Pages</button>
+      <button type="button" id="btnViewSpreads" title="Facing spreads">Spreads</button>
+    </div>
+    <button type="button" id="btnFocus" title="Focus mode">Focus <kbd>⌃⇧F</kbd></button>
+    <button type="button" id="btnBreak" title="Insert page break">Break <kbd>⌃⇧Enter</kbd></button>
+    <button type="button" id="btnExport" title="Export">Export</button>
+    <button type="button" id="btnPrefs" title="Settings">Settings <kbd>⌃,</kbd></button>
+    <button type="button" id="btnChrome" title="Hide chrome">Zen <kbd>⌃\</kbd></button>
+  </header>
+
+  <div class="export-menu" id="exportMenu" role="menu" aria-label="Export">
+    <div class="export-grid">
+      <button type="button" data-export="md">Markdown<span class="sub">Folio .md · //break</span></button>
+      <button type="button" data-export="docx">Docx<span class="sub">Pandoc + markbreak.lua</span></button>
+      <button type="button" data-export="pdf">PDF<span class="sub">Print dialog / pandoc if installed</span></button>
+      <button type="button" data-export="html">HTML<span class="sub">Paged preview snapshot</span></button>
+      <button type="button" data-export="idml" disabled>IDML<span class="sub">Coming — Relay / InDesign ingest</span></button>
+    </div>
+  </div>
+
+  <div class="prefs" id="prefs" role="dialog" aria-label="Settings">
+    <div class="prefs-head">
+      <h2>Settings</h2>
+    </div>
+    <div class="prefs-tabs" role="tablist">
+      <button type="button" class="on" data-tab="type" role="tab">Type</button>
+      <button type="button" data-tab="page" role="tab">Page</button>
+      <button type="button" data-tab="view" role="tab">View</button>
+      <button type="button" data-tab="export" role="tab">Export</button>
+    </div>
+
+    <div class="prefs-panel on" id="tab-type" role="tabpanel">
+      <label class="row">Typeface
+        <select id="prefFace">
+          <option value="atkinson">Atkinson Hyperlegible</option>
+          <option value="bricolage">Bricolage Grotesque</option>
+          <option value="inter">Inter</option>
+          <option value="plex">IBM Plex Sans</option>
+          <option value="serif">Source Serif 4</option>
+        </select>
+      </label>
+      <label class="row">Size
+        <span class="pair">
+          <input type="range" id="prefSize" min="0.8" max="2.6" step="0.05" value="1.25" />
+          <input type="number" id="prefSizeNum" min="0.8" max="2.6" step="0.05" value="1.25" />
+          <span class="unit">rem</span>
+        </span>
+      </label>
+      <label class="row">Leading
+        <span class="pair">
+          <input type="range" id="prefLeading" min="1.15" max="2.4" step="0.05" value="1.65" />
+          <input type="number" id="prefLeadingNum" min="1.15" max="2.4" step="0.05" value="1.65" />
+        </span>
+      </label>
+      <label class="row">Tracking
+        <span class="pair">
+          <input type="range" id="prefTracking" min="-0.04" max="0.08" step="0.001" value="-0.003" />
+          <input type="number" id="prefTrackingNum" min="-0.04" max="0.08" step="0.001" value="-0.003" />
+          <span class="unit">em</span>
+        </span>
+      </label>
+      <label class="row">First-line indent
+        <span class="pair">
+          <input type="range" id="prefIndent" min="0" max="4" step="0.05" value="0" />
+          <input type="number" id="prefIndentNum" min="0" max="4" step="0.05" value="0" />
+          <span class="unit">rem</span>
+        </span>
+      </label>
+      <label class="row">Measure
+        <span class="pair">
+          <input type="range" id="prefMeasure" min="20" max="48" step="0.5" value="36" />
+          <input type="number" id="prefMeasureNum" min="20" max="48" step="0.5" value="36" />
+          <span class="unit">rem</span>
+        </span>
+      </label>
+    </div>
+
+    <div class="prefs-panel" id="tab-page" role="tabpanel">
+      <label class="row">Page size
+        <select id="prefPageSize">
+          <option value="a5">A5</option>
+          <option value="a4">A4</option>
+          <option value="letter">US Letter</option>
+          <option value="trade" selected>Trade 6×9 in</option>
+          <option value="mass">Mass-market ~4.25×6.87</option>
+        </select>
+      </label>
+      <label class="row">Orientation
+        <select id="prefOrient">
+          <option value="portrait">Portrait</option>
+          <option value="landscape">Landscape</option>
+        </select>
+      </label>
+      <label class="row stack">Margins (mm)
+        <div class="margins">
+          <label>Top <input type="number" id="prefMT" min="0" max="80" step="1" value="20" /></label>
+          <label>Right <input type="number" id="prefMR" min="0" max="80" step="1" value="18" /></label>
+          <label>Bottom <input type="number" id="prefMB" min="0" max="80" step="1" value="22" /></label>
+          <label>Left <input type="number" id="prefML" min="0" max="80" step="1" value="18" /></label>
+        </div>
+      </label>
+      <p class="note">Page size and margins drive the Pages / Spreads proof. <code>export.sh</code> writes the RigWorks page into Docx and PDF.</p>
+    </div>
+
+    <div class="prefs-panel" id="tab-view" role="tabpanel">
+      <label class="row">Theme
+        <select id="prefTheme">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <label class="row">Surface grain
+        <input type="checkbox" id="prefTexture" />
+      </label>
+      <label class="row">Focus mode
+        <input type="checkbox" id="prefFocus" checked />
+      </label>
+      <label class="row">Source color
+        <input type="checkbox" id="prefSyntax" checked />
+      </label>
+      <label class="row">Spellcheck
+        <input type="checkbox" id="prefSpell" />
+      </label>
+    </div>
+
+    <div class="prefs-panel" id="tab-export" role="tabpanel">
+      <div class="export-grid">
+        <button type="button" data-export="md">Markdown<span class="sub">Canonical Folio manuscript</span></button>
+        <button type="button" data-export="docx">Docx<span class="sub">Requires Pandoc — writes via export.sh</span></button>
+        <button type="button" data-export="pdf">PDF<span class="sub">Browser print, or Pandoc if available</span></button>
+        <button type="button" data-export="html">HTML<span class="sub">Self-contained preview</span></button>
+        <button type="button" data-export="idml" disabled>IDML<span class="sub">Not in prototype — use Relay after Docx</span></button>
+      </div>
+      <p class="note">Authoring break is <code>//break</code>. The filter turns it into the Word break. Run <code>export.sh</code> next to this prototype for Docx/PDF on disk.</p>
+    </div>
+  </div>
+
+  <main class="workspace">
+    <section class="pane write">
+      <div class="sheet">
+        <div
+          id="editor"
+          contenteditable="true"
+          role="textbox"
+          aria-multiline="true"
+          spellcheck="false"
+          data-placeholder="Begin.  /np  or  //break  for a break."
+        ></div>
+      </div>
+    </section>
+    <section class="pane pages" id="pagesPane" aria-label="Paged writing">
+      <div class="pages-inner" id="pagesInner"></div>
+    </section>
+  </main>
+
+  <footer class="hint">
+    Source · Split · Pages · Spreads — write in any of them · /np or Break inserts //break · Esc closes zen / prefs
+  </footer>
+
+  <script>
+    const BREAK = "//break";
+    const JOIN = "\n\n" + BREAK + "\n\n";
+    const SAMPLE = `# Focus
+
+A Windows writing surface prototype. The point is not features — it is type you want to stay inside, long measure, quiet chrome.
+
+When **Focus** mode is on, only the sentence under your caret stays bright. The rest softens. You keep moving.
+
+${BREAK}
+
+That \`//break\` line is a Folio break: intentional pages, not accidental wrapping.
+
+> Write something you mean. Leave the ribbon behind.`;
+
+    const editor = document.getElementById("editor");
+    const pagesInner = document.getElementById("pagesInner");
+    const prefsEl = document.getElementById("prefs");
+    const testBanner = document.getElementById("testBanner");
+
+    const btnViewSource = document.getElementById("btnViewSource");
+    const btnViewSplit = document.getElementById("btnViewSplit");
+    const btnViewPages = document.getElementById("btnViewPages");
+    const btnViewSpreads = document.getElementById("btnViewSpreads");
+    const btnFocus = document.getElementById("btnFocus");
+    const btnBreak = document.getElementById("btnBreak");
+    const btnPrefs = document.getElementById("btnPrefs");
+    const btnChrome = document.getElementById("btnChrome");
+
+    const prefTheme = document.getElementById("prefTheme");
+    const prefFace = document.getElementById("prefFace");
+    const prefTexture = document.getElementById("prefTexture");
+    const prefFocus = document.getElementById("prefFocus");
+    const prefSyntax = document.getElementById("prefSyntax");
+    const prefSpell = document.getElementById("prefSpell");
+    const prefSize = document.getElementById("prefSize");
+    const prefSizeNum = document.getElementById("prefSizeNum");
+    const prefLeading = document.getElementById("prefLeading");
+    const prefLeadingNum = document.getElementById("prefLeadingNum");
+    const prefTracking = document.getElementById("prefTracking");
+    const prefTrackingNum = document.getElementById("prefTrackingNum");
+    const prefIndent = document.getElementById("prefIndent");
+    const prefIndentNum = document.getElementById("prefIndentNum");
+    const prefMeasure = document.getElementById("prefMeasure");
+    const prefMeasureNum = document.getElementById("prefMeasureNum");
+    const prefPageSize = document.getElementById("prefPageSize");
+    const prefOrient = document.getElementById("prefOrient");
+    const prefMT = document.getElementById("prefMT");
+    const prefMR = document.getElementById("prefMR");
+    const prefMB = document.getElementById("prefMB");
+    const prefML = document.getElementById("prefML");
+    const btnExport = document.getElementById("btnExport");
+    const exportMenu = document.getElementById("exportMenu");
+
+    const PREFS_KEY = "focus-proto-prefs-v4";
+    const TEXT_KEY = "focus-proto-text";
+    const BREAK_RE = /(?:^|\n)[ \t]*(?:\/\/break(?:[ \t]+(?:page|odd|even))?|\\newpage)[ \t]*(?:\n|$)/;
+    const FACES = {
+      atkinson: '"Atkinson Hyperlegible Next", "Segoe UI", system-ui, sans-serif',
+      bricolage: '"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif',
+      inter: '"Inter", "Segoe UI", system-ui, sans-serif',
+      plex: '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif',
+      serif: '"Source Serif 4", "Palatino Linotype", Palatino, serif',
+    };
+    // Physical page sizes in mm (width × height, portrait)
+    const PAGE_SIZES = {
+      a5: { w: 148, h: 210 },
+      a4: { w: 210, h: 297 },
+      letter: { w: 215.9, h: 279.4 },
+      trade: { w: 152.4, h: 228.6 },
+      mass: { w: 107.95, h: 174.5 },
+    };
+
+    let suppress = false;
+    let model = "";
+    let pagesDirtyFrom = null; // "source" | "pages" | null
+    let activePageIndex = 0;
+
+    function loadPrefs() {
+      try { return JSON.parse(localStorage.getItem(PREFS_KEY) || "{}"); }
+      catch { return {}; }
+    }
+
+    function savePrefs(p) {
+      localStorage.setItem(PREFS_KEY, JSON.stringify(p));
+    }
+
+    let state = Object.assign({
+      theme: "system",
+      face: "atkinson",
+      texture: false,
+      focus: true,
+      syntax: true,
+      spell: false,
+      size: 1.25,
+      leading: 1.65,
+      tracking: -0.003,
+      indent: 0,
+      measure: 36,
+      pageSize: "trade",
+      orient: "portrait",
+      marginTop: 20,
+      marginRight: 18,
+      marginBottom: 22,
+      marginLeft: 18,
+      view: "split",
+      prefsTab: "type",
+    }, loadPrefs());
+    state.size = Math.min(2.6, Math.max(0.8, Number(state.size) || 1.25));
+    state.leading = Math.min(2.4, Math.max(1.15, Number(state.leading) || 1.65));
+
+    function migrateAuthorBreaks(text) {
+      return String(text || "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n")
+        .replace(/(^|\n)[ \t]*\\newpage[ \t]*(?=\n|$)/g, "$1" + BREAK);
+    }
+
+    function normalizeText(t) {
+      return migrateAuthorBreaks(t);
+    }
+
+    function escHtml(p) {
+      return p.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function sentenceSpans(text) {
+      const parts = [];
+      const re = /[ \t]*\/\/break(?:[ \t]+(?:page|odd|even))?[ \t]*|[ \t]*\\newpage[ \t]*|[^.!?…\n]+(?:[.!?…]+(?:["”']+)?)?|\n+/g;
+      let m;
+      while ((m = re.exec(text)) !== null) parts.push(m[0]);
+      if (!parts.length) parts.push(text || "");
+      return parts;
+    }
+
+    function isGapSpan(p) {
+      // Newlines / blank space between prose — never the "active sentence".
+      return !p || /^[\n\r \t]+$/.test(p);
+    }
+
+    function spanIndexAt(text, offset, parts) {
+      let pos = 0;
+      let idx = parts.length - 1;
+      for (let i = 0; i < parts.length; i++) {
+        const next = pos + parts[i].length;
+        // Inclusive end so caret after the last char of a sentence still lights it.
+        if (offset <= next) {
+          idx = i;
+          break;
+        }
+        pos = next;
+      }
+      // Caret at the start of a paragraph sits on the preceding \\n+ span.
+      // Prefer the following prose (same brightness as sitting at the end).
+      if (isGapSpan(parts[idx])) {
+        for (let j = idx + 1; j < parts.length; j++) {
+          if (!isGapSpan(parts[j])) return j;
+        }
+        for (let j = idx - 1; j >= 0; j--) {
+          if (!isGapSpan(parts[j])) return j;
+        }
+      }
+      return idx;
+    }
+
+    /** Color-code Folio / Markdown markers in already-escaped HTML. */
+    function decorateMd(html) {
+      let s = html;
+      s = s.replace(/\\newpage/g, '<span class="md-break">\\newpage</span>');
+      s = s.replace(/\/\/break(?: page| odd| even)?/g, '<span class="md-break cmd">$&</span>');
+      s = s.replace(/(^|\n)(#{1,6}[ \t]+)([^\n]*)/g, '$1<span class="md-h">$2$3</span>');
+      s = s.replace(/(^|\n)(&gt;[^\n]*)/g, '$1<span class="md-quote">$2</span>');
+      s = s.replace(/(^|\n)((?:-\s*){3,}|(?:\*\s*){3,}|(?:_\s*){3,})(?=\n|$)/g, '$1<span class="md-hr">$2</span>');
+      s = s.replace(/`([^`\n]+)`/g, '<span class="md-code">`$1`</span>');
+      s = s.replace(/(\*\*|__)([^*_\n]+?)\1/g, '<span class="md-strong">$1$2$1</span>');
+      s = s.replace(/(^|[^\*])\*([^*\n]+)\*(?!\*)/g, '$1<span class="md-em">*$2*</span>');
+      s = s.replace(/(\[[^\]]+\]\([^)]+\))/g, '<span class="md-link">$1</span>');
+      return s;
+    }
+
+    function markCmds(html) {
+      return state.syntax ? decorateMd(html) : html
+        .replace(/\/\/break(?: page| odd| even)?/g, '<span class="cmd">$&</span>')
+        .replace(/\\newpage/g, '<span class="cmd">\\newpage</span>');
+    }
+
+    function splitPages(text) {
+      return normalizeText(text)
+        .split(BREAK_RE)
+        .map((c) => c.replace(/^\n+|\n+$/g, ""));
+    }
+
+    function joinPages(parts) {
+      return parts.map((p) => p.replace(/^\n+|\n+$/g, "")).join(JOIN);
+    }
+
+    function plainFromEditable(el) {
+      return normalizeText(serializeEditable(el));
+    }
+
+    /** Serialize contenteditable → plain text. Maps <br>/blocks to \\n. */
+    function serializeEditable(root) {
+      let out = "";
+      function walk(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          out += node.nodeValue;
+          return;
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        if (node.tagName === "BR") {
+          out += "\n";
+          return;
+        }
+        const block = /^(DIV|P|LI|H[1-6])$/.test(node.tagName);
+        const mark = out.length;
+        for (let i = 0; i < node.childNodes.length; i++) walk(node.childNodes[i]);
+        if (block) {
+          if (out.length === mark) out += "\n";
+          else if (!out.endsWith("\n")) out += "\n";
+        }
+      }
+      for (let i = 0; i < root.childNodes.length; i++) walk(root.childNodes[i]);
+      return out;
+    }
+
+    /** Insert plain text at caret inside a contenteditable we own. */
+    function insertAtCaret(root, chunk) {
+      const text = plainFromEditable(root);
+      const { a, b } = getCaretOffsets(root);
+      return { text: text.slice(0, a) + chunk + text.slice(b), caret: a + chunk.length };
+    }
+
+    function locateOffset(root, target) {
+      const want = Math.max(0, target);
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let pos = 0;
+      let node;
+      let last = null;
+      while ((node = walker.nextNode())) {
+        last = node;
+        const len = node.nodeValue.length;
+        if (pos + len > want) {
+          return { node, offset: want - pos };
+        }
+        // Exact end-of-node: prefer next node at 0 if it exists; else stay at end.
+        if (pos + len === want) {
+          const next = walker.nextNode();
+          if (next) return { node: next, offset: 0 };
+          return { node, offset: len };
+        }
+        pos += len;
+      }
+      if (last) return { node: last, offset: last.nodeValue.length };
+      return { node: null, offset: 0 };
+    }
+
+    function getCaretOffsets(root) {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount || !root.contains(sel.anchorNode)) {
+        return { a: 0, b: 0 };
+      }
+      const r0 = sel.getRangeAt(0);
+      const pre = document.createRange();
+      pre.selectNodeContents(root);
+      pre.setEnd(r0.startContainer, r0.startOffset);
+      const a = pre.toString().length;
+      const preB = document.createRange();
+      preB.selectNodeContents(root);
+      preB.setEnd(r0.endContainer, r0.endOffset);
+      const b = preB.toString().length;
+      return { a, b };
+    }
+
+    function setCaretOffsets(root, a, b) {
+      const targetA = Math.max(0, a);
+      const targetB = Math.max(targetA, b == null ? a : b);
+      const start = locateOffset(root, targetA);
+      const end = locateOffset(root, targetB);
+      const range = document.createRange();
+      if (!start.node) {
+        range.selectNodeContents(root);
+        range.collapse(false);
+      } else {
+        range.setStart(start.node, Math.min(start.offset, start.node.nodeValue.length));
+        range.setEnd(end.node, Math.min(end.offset, end.node.nodeValue.length));
+      }
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    function buildFocusedHtml(text, a, b) {
+      // Caret-only focus. Real ranges belong to the browser (::selection).
+      const caret = a === b ? a : Math.min(a, b);
+      const parts = sentenceSpans(text);
+      const active = spanIndexAt(text, caret, parts);
+      return parts.map((p, i) => {
+        const cls = i === active ? " active" : "";
+        return `<span class="s${cls}">${markCmds(escHtml(p))}</span>`;
+      }).join("");
+    }
+
+    /** Rebuild focus spans only for a collapsed caret — never fight native selection. */
+    function refreshFocusAt(root, text) {
+      if (!state.focus || suppress) return false;
+      const { a, b } = getCaretOffsets(root);
+      if (a !== b) {
+        document.body.classList.add("selecting");
+        return false;
+      }
+      document.body.classList.remove("selecting");
+      suppress = true;
+      root.innerHTML = buildFocusedHtml(text, a, a);
+      setCaretOffsets(root, a, a);
+      suppress = false;
+      return true;
+    }
+
+    function sourceOwnsFocus() {
+      const ae = document.activeElement;
+      return ae === editor || (ae && editor.contains(ae));
+    }
+
+    function renderSource(restoreCaret) {
+      if (state.view === "pages" || state.view === "spreads") return;
+      const { a, b } = restoreCaret ? getCaretOffsets(editor) : { a: 0, b: 0 };
+      suppress = true;
+      // Dim only while the source caret is live; otherwise full-brightness mirror.
+      if (state.focus && sourceOwnsFocus()) {
+        editor.innerHTML = buildFocusedHtml(model, a, b);
+      } else {
+        editor.innerHTML = markCmds(escHtml(model));
+      }
+      if (restoreCaret && sourceOwnsFocus()) setCaretOffsets(editor, a, b);
+      suppress = false;
+    }
+
+    function pageBodyHtml(body, i, focusIdx, caret) {
+      if (!body) return "";
+      // Only the live page gets focus spans; others stay full-brightness proof.
+      if (state.focus && i === focusIdx && document.activeElement?.dataset?.page === String(i)) {
+        return buildFocusedHtml(body, caret?.a ?? 0, caret?.b ?? 0);
+      }
+      return markCmds(escHtml(body));
+    }
+
+    function pageCardHtml(body, i, side, focusIdx, caret) {
+      const sideCls = side ? ` ${side}` : "";
+      return `<article class="page${sideCls}" data-index="${i}">
+        <div class="body" contenteditable="true" role="textbox" aria-multiline="true" spellcheck="${state.spell ? "true" : "false"}" data-page="${i}">${pageBodyHtml(body, i, focusIdx, caret)}</div>
+        <div class="folio">${i + 1}</div>
+      </article>`;
+    }
+
+    function blankVersoHtml() {
+      return `<article class="page verso blank" aria-hidden="true">
+        <div class="body"></div>
+      </article>`;
+    }
+
+    /** Book spreads: page 1 alone on recto, then 2|3, 4|5, … */
+    function buildSpreadsHtml(parts, focusIdx, caret) {
+      const rows = [];
+      rows.push(
+        `<div class="spread" data-spread="0">${blankVersoHtml()}${pageCardHtml(parts[0] || "", 0, "recto", focusIdx, caret)}</div>`
+      );
+      for (let i = 1; i < parts.length; i += 2) {
+        const left = pageCardHtml(parts[i], i, "verso", focusIdx, caret);
+        const right = i + 1 < parts.length
+          ? pageCardHtml(parts[i + 1], i + 1, "recto", focusIdx, caret)
+          : `<article class="page recto blank" aria-hidden="true"><div class="body"></div></article>`;
+        rows.push(`<div class="spread" data-spread="${Math.ceil(i / 2)}">${left}${right}</div>`);
+      }
+      return rows.join("");
+    }
+
+    function wirePageBodies() {
+      pagesInner.querySelectorAll(".body[data-page]").forEach((el) => {
+        el.addEventListener("input", onPageInput);
+        el.addEventListener("keydown", onPageKeydown);
+        el.addEventListener("keyup", onPageCaret);
+        el.addEventListener("mousedown", () => document.body.classList.add("selecting"));
+        el.addEventListener("mouseup", onPageCaret);
+        el.addEventListener("focus", () => {
+          activePageIndex = Number(el.dataset.page) || 0;
+          // One focus: source goes full-bright; only this page dims.
+          if (state.view === "split") {
+            suppress = true;
+            editor.innerHTML = markCmds(escHtml(model));
+            suppress = false;
+          }
+          if (state.focus) {
+            const text = plainFromEditable(el);
+            const { a, b } = getCaretOffsets(el);
+            suppress = true;
+            el.innerHTML = buildFocusedHtml(text, a, b);
+            setCaretOffsets(el, a, b);
+            suppress = false;
+          }
+          // Clear stale .active on sibling pages
+          pagesInner.querySelectorAll(".body[data-page]").forEach((other) => {
+            if (other === el) return;
+            const idx = Number(other.dataset.page) || 0;
+            const parts = splitPages(model);
+            suppress = true;
+            other.innerHTML = markCmds(escHtml(parts[idx] || ""));
+            suppress = false;
+          });
+        });
+        el.addEventListener("paste", (e) => {
+          e.preventDefault();
+          const clip = normalizeText((e.clipboardData || window.clipboardData).getData("text"));
+          document.execCommand("insertText", false, clip);
+        });
+      });
+      const addBtn = document.getElementById("btnAddPage");
+      if (addBtn) {
+        addBtn.addEventListener("click", () => {
+          const partsNow = splitPages(model);
+          partsNow.push("");
+          setModel(joinPages(partsNow), "pages");
+          activePageIndex = partsNow.length - 1;
+          renderAll(true);
+          focusPageBody(activePageIndex, 0);
+        });
+      }
+    }
+
+    function renderPages(opts) {
+      if (state.view === "source") {
+        pagesInner.innerHTML = "";
+        return;
+      }
+      const keepFocus = opts && opts.keepFocus;
+      const focusPage = keepFocus ? document.activeElement : null;
+      const focusIdx = focusPage && focusPage.dataset && focusPage.dataset.page
+        ? Number(focusPage.dataset.page)
+        : activePageIndex;
+      const caret = (keepFocus && focusPage && pagesInner.contains(focusPage))
+        ? getCaretOffsets(focusPage)
+        : null;
+
+      const parts = splitPages(model);
+      if (!parts.length) parts.push("");
+
+      const pageHasFocus = !!(focusPage && focusPage.dataset && focusPage.dataset.page != null);
+      const liveIdx = pageHasFocus ? focusIdx : -1;
+
+      const cards = state.view === "spreads"
+        ? buildSpreadsHtml(parts, liveIdx, caret)
+        : parts.map((body, i) => pageCardHtml(body, i, "", liveIdx, caret)).join("");
+
+      pagesInner.innerHTML = cards + `<div class="page-tools">
+        <button type="button" id="btnAddPage">+ Page</button>
+      </div>`;
+
+      wirePageBodies();
+
+      if (keepFocus && caret) {
+        const el = pagesInner.querySelector(`.body[data-page="${focusIdx}"]`);
+        if (el) {
+          el.focus();
+          if (state.focus) {
+            suppress = true;
+            el.innerHTML = buildFocusedHtml(plainFromEditable(el) || parts[focusIdx] || "", caret.a, caret.b);
+            suppress = false;
+          }
+          setCaretOffsets(el, caret.a, caret.b);
+        }
+      }
+    }
+
+    function focusPageBody(index, offset) {
+      const el = pagesInner.querySelector(`.body[data-page="${index}"]`);
+      if (!el) return;
+      el.focus();
+      const text = plainFromEditable(el);
+      const off = offset == null ? text.length : offset;
+      if (state.focus) {
+        suppress = true;
+        el.innerHTML = buildFocusedHtml(text, off, off);
+        suppress = false;
+      }
+      setCaretOffsets(el, off, off);
+      const card = el.closest(".page") || el.closest(".spread") || el;
+      card.scrollIntoView({ block: "nearest", inline: "nearest" });
+      activePageIndex = index;
+    }
+
+    /** True when caret sits on the first or last visual line of a page body. */
+    function caretOnEdgeLine(el, edge) {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return false;
+      const range = sel.getRangeAt(0);
+      if (!range.collapsed || !el.contains(range.startContainer)) return false;
+      const text = plainFromEditable(el);
+      if (!text) return true;
+
+      let caret = range.getClientRects()[0];
+      if (!caret || (!caret.height && !caret.width)) caret = range.getBoundingClientRect();
+
+      const at = edge === "first" ? 0 : Math.max(0, text.length - 1);
+      const loc = locateOffset(el, at);
+      if (!loc.node) return true;
+      const probe = document.createRange();
+      const end = Math.min(loc.offset + 1, loc.node.nodeValue.length);
+      probe.setStart(loc.node, loc.offset);
+      probe.setEnd(loc.node, Math.max(end, loc.offset));
+      let line = probe.getClientRects()[0];
+      if (!line || (!line.height && !line.width)) line = probe.getBoundingClientRect();
+      if (!line || !caret) {
+        // Fallback: hard newlines only
+        if (edge === "first") return !text.slice(0, getCaretOffsets(el).a).includes("\n");
+        return !text.slice(getCaretOffsets(el).a).includes("\n");
+      }
+      return Math.abs(caret.top - line.top) < 8;
+    }
+
+    function tryPageArrow(e, el) {
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return false;
+      if (e.altKey || e.metaKey || e.ctrlKey || e.shiftKey) return false;
+      const { a, b } = getCaretOffsets(el);
+      if (a !== b) return false;
+      const idx = Number(el.dataset.page) || 0;
+      const n = splitPages(model).length;
+      if (e.key === "ArrowUp" && caretOnEdgeLine(el, "first")) {
+        if (idx <= 0) return false;
+        e.preventDefault();
+        focusPageBody(idx - 1, null); // end of previous page
+        return true;
+      }
+      if (e.key === "ArrowDown" && caretOnEdgeLine(el, "last")) {
+        if (idx >= n - 1) return false;
+        e.preventDefault();
+        focusPageBody(idx + 1, 0); // start of next page
+        return true;
+      }
+      return false;
+    }
+
+    function setModel(text, from) {
+      model = normalizeText(text);
+      localStorage.setItem(TEXT_KEY, model);
+      pagesDirtyFrom = from;
+    }
+
+    function renderAll(keepPageFocus) {
+      renderSource(true);
+      renderPages({ keepFocus: !!keepPageFocus });
+    }
+
+    function onPageInput(e) {
+      if (suppress) return;
+      const el = e.currentTarget;
+      const idx = Number(el.dataset.page) || 0;
+      activePageIndex = idx;
+      const parts = splitPages(model);
+      while (parts.length <= idx) parts.push("");
+      parts[idx] = plainFromEditable(el);
+      setModel(joinPages(parts), "pages");
+      // Sync source as full-brightness mirror; focus stays on this page only.
+      if (state.view === "split") {
+        const { a, b } = getCaretOffsets(el);
+        suppress = true;
+        if (state.focus) {
+          el.innerHTML = buildFocusedHtml(parts[idx], a, b);
+          setCaretOffsets(el, a, b);
+        }
+        editor.innerHTML = markCmds(escHtml(model));
+        suppress = false;
+      }
+    }
+
+    function onPageCaret(e) {
+      const el = e.currentTarget;
+      refreshFocusAt(el, plainFromEditable(el));
+    }
+
+    function onPageKeydown(e) {
+      if (tryExpandNpIn(e, e.currentTarget, true)) return;
+      if (tryPageArrow(e, e.currentTarget)) return;
+      if (e.ctrlKey && e.shiftKey && e.key === "Enter") {
+        e.preventDefault();
+        insertBreakAtPage(e.currentTarget);
+        return;
+      }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const el = e.currentTarget;
+        const next = insertAtCaret(el, "\n");
+        const idx = Number(el.dataset.page) || 0;
+        const parts = splitPages(model);
+        while (parts.length <= idx) parts.push("");
+        parts[idx] = next.text;
+        setModel(joinPages(parts), "pages");
+        suppress = true;
+        el.innerHTML = state.focus
+          ? buildFocusedHtml(next.text, next.caret, next.caret)
+          : escHtml(next.text);
+        setCaretOffsets(el, next.caret, next.caret);
+        suppress = false;
+        if (state.view === "split") renderSource(false);
+      }
+    }
+
+    function insertBreakAtPage(el) {
+      const idx = Number(el.dataset.page) || 0;
+      const { a } = getCaretOffsets(el);
+      const text = plainFromEditable(el);
+      const left = text.slice(0, a).replace(/\n+$/g, "");
+      const right = text.slice(a).replace(/^\n+/g, "");
+      const parts = splitPages(model);
+      while (parts.length <= idx) parts.push("");
+      parts.splice(idx, 1, left, right);
+      setModel(joinPages(parts), "pages");
+      activePageIndex = idx + 1;
+      renderAll(false);
+      focusPageBody(activePageIndex, 0);
+    }
+
+    function tryExpandNpIn(e, root, isPage) {
+      if (e.key !== " " && e.key !== "Enter") return false;
+      const text = plainFromEditable(root);
+      const { a, b } = getCaretOffsets(root);
+      if (a !== b) return false;
+      if (!/(^|\n)\/np$/.test(text.slice(0, a))) return false;
+      e.preventDefault();
+      const start = a - 3;
+      if (isPage) {
+        const left = text.slice(0, start).replace(/\n+$/g, "");
+        const right = text.slice(a).replace(/^\n+/g, "");
+        const idx = Number(root.dataset.page) || 0;
+        const parts = splitPages(model);
+        while (parts.length <= idx) parts.push("");
+        parts.splice(idx, 1, left, right);
+        setModel(joinPages(parts), "pages");
+        activePageIndex = idx + 1;
+        renderAll(false);
+        focusPageBody(activePageIndex, 0);
+      } else {
+        const insert = BREAK + "\n\n";
+        const next = text.slice(0, start) + insert + text.slice(a);
+        setModel(next, "source");
+        renderAll(false);
+        editor.focus();
+        setCaretOffsets(editor, start + insert.length, start + insert.length);
+        renderSource(true);
+      }
+      return true;
+    }
+
+    function insertBreakInSource() {
+      const text = plainFromEditable(editor);
+      const { a, b } = getCaretOffsets(editor);
+      const left = text.slice(0, a).replace(/\n+$/g, "");
+      const right = text.slice(b).replace(/^\n+/g, "");
+      const next = left + JOIN + right;
+      const caret = left.length + JOIN.length;
+      setModel(next, "source");
+      renderAll(false);
+      editor.focus();
+      setCaretOffsets(editor, caret, caret);
+      renderSource(true);
+    }
+
+    function onSourceInput() {
+      if (suppress) return;
+      setModel(plainFromEditable(editor), "source");
+      const { a, b } = getCaretOffsets(editor);
+      suppress = true;
+      if (state.focus) {
+        editor.innerHTML = buildFocusedHtml(model, a, b);
+        setCaretOffsets(editor, a, b);
+      }
+      suppress = false;
+      renderPages({ keepFocus: false });
+    }
+
+    editor.addEventListener("focus", () => {
+      refreshFocusAt(editor, model);
+      // Pages become proof-only (no competing focus)
+      if (state.view === "split") renderPages({ keepFocus: false });
+    });
+    editor.addEventListener("mousedown", () => {
+      // Selection drag starting — don't rewrite DOM mid-gesture
+      document.body.classList.add("selecting");
+    });
+    editor.addEventListener("input", onSourceInput);
+    editor.addEventListener("keydown", (e) => {
+      if (tryExpandNpIn(e, editor, false)) return;
+      if (e.ctrlKey && e.shiftKey && e.key === "Enter") {
+        e.preventDefault();
+        insertBreakInSource();
+        return;
+      }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const next = insertAtCaret(editor, "\n");
+        setModel(next.text, "source");
+        suppress = true;
+        editor.innerHTML = state.focus
+          ? buildFocusedHtml(model, next.caret, next.caret)
+          : markCmds(escHtml(model));
+        setCaretOffsets(editor, next.caret, next.caret);
+        suppress = false;
+        document.body.classList.remove("selecting");
+        renderPages({ keepFocus: false });
+        return;
+      }
+      if (e.shiftKey && e.key.startsWith("Arrow")) {
+        // Shift+arrow grows native selection — don't rebuild
+        document.body.classList.add("selecting");
+        return;
+      }
+      if (e.key.startsWith("Arrow") || e.key === "Home" || e.key === "End") {
+        requestAnimationFrame(() => refreshFocusAt(editor, model));
+      }
+    });
+    editor.addEventListener("keyup", () => {
+      refreshFocusAt(editor, model);
+    });
+    editor.addEventListener("mouseup", () => {
+      refreshFocusAt(editor, model);
+    });
+    document.addEventListener("selectionchange", () => {
+      if (!state.focus || suppress) return;
+      const ae = document.activeElement;
+      if (ae !== editor && !(ae && ae.dataset && ae.dataset.page != null)) return;
+      const { a, b } = getCaretOffsets(ae);
+      document.body.classList.toggle("selecting", a !== b);
+    });
+    editor.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const clip = normalizeText((e.clipboardData || window.clipboardData).getData("text"));
+      const cur = plainFromEditable(editor);
+      const { a, b } = getCaretOffsets(editor);
+      const next = cur.slice(0, a) + clip + cur.slice(b);
+      setModel(next, "source");
+      renderAll(false);
+      editor.focus();
+      setCaretOffsets(editor, a + clip.length, a + clip.length);
+      renderSource(true);
+    });
+
+    function mmToRem(mm) {
+      // Screen proof scale (~1mm → 0.08rem at typical zoom)
+      return Math.max(0, mm * 0.08);
+    }
+
+    function applyPageGeometry() {
+      const spec = PAGE_SIZES[state.pageSize] || PAGE_SIZES.trade;
+      let w = spec.w;
+      let h = spec.h;
+      if (state.orient === "landscape") { const t = w; w = h; h = t; }
+      const ratio = w / h;
+      const screenW = state.view === "spreads" ? 22 : 28;
+      const root = document.documentElement.style;
+      root.setProperty("--page-ratio", String(ratio));
+      root.setProperty("--page-screen-w", screenW + "rem");
+      root.setProperty("--m-top", mmToRem(state.marginTop) + "rem");
+      root.setProperty("--m-right", mmToRem(state.marginRight) + "rem");
+      root.setProperty("--m-bottom", mmToRem(state.marginBottom) + "rem");
+      root.setProperty("--m-left", mmToRem(state.marginLeft) + "rem");
+    }
+
+    function syncDual(rangeEl, numEl, value) {
+      if (rangeEl) rangeEl.value = String(value);
+      if (numEl) numEl.value = String(value);
+    }
+
+    function setPrefsTab(tab) {
+      state.prefsTab = tab;
+      document.querySelectorAll(".prefs-tabs button").forEach((b) => {
+        b.classList.toggle("on", b.dataset.tab === tab);
+      });
+      document.querySelectorAll(".prefs-panel").forEach((p) => {
+        p.classList.toggle("on", p.id === "tab-" + tab);
+      });
+      savePrefs(state);
+    }
+
+    function applyPrefs() {
+      document.documentElement.classList.remove("theme-dark", "theme-light", "theme-system", "no-texture");
+      if (state.theme === "dark") document.documentElement.classList.add("theme-dark");
+      else if (state.theme === "light") document.documentElement.classList.add("theme-light");
+      else document.documentElement.classList.add("theme-system");
+
+      document.documentElement.classList.toggle("no-texture", !state.texture);
+      document.body.classList.toggle("focus-on", state.focus);
+      document.body.classList.toggle("syntax-on", !!state.syntax);
+      document.body.classList.remove("view-source", "view-split", "view-pages", "view-spreads");
+      document.body.classList.add("view-" + state.view);
+
+      btnFocus.classList.toggle("on", state.focus);
+      btnViewSource.classList.toggle("on", state.view === "source");
+      btnViewSplit.classList.toggle("on", state.view === "split");
+      btnViewPages.classList.toggle("on", state.view === "pages");
+      btnViewSpreads.classList.toggle("on", state.view === "spreads");
+      btnPrefs.classList.toggle("on", document.body.classList.contains("prefs-open"));
+      btnExport.classList.toggle("on", document.body.classList.contains("export-open"));
+
+      editor.spellcheck = !!state.spell;
+      const root = document.documentElement.style;
+      root.setProperty("--size", state.size + "rem");
+      root.setProperty("--leading", String(state.leading));
+      root.setProperty("--tracking", state.tracking + "em");
+      root.setProperty("--indent", state.indent + "rem");
+      root.setProperty("--measure", state.measure + "rem");
+      root.setProperty("--face", FACES[state.face] || FACES.atkinson);
+      applyPageGeometry();
+
+      prefTheme.value = state.theme;
+      prefFace.value = FACES[state.face] ? state.face : "atkinson";
+      prefTexture.checked = state.texture;
+      prefFocus.checked = state.focus;
+      prefSyntax.checked = !!state.syntax;
+      prefSpell.checked = state.spell;
+      syncDual(prefSize, prefSizeNum, state.size);
+      syncDual(prefLeading, prefLeadingNum, state.leading);
+      syncDual(prefTracking, prefTrackingNum, state.tracking);
+      syncDual(prefIndent, prefIndentNum, state.indent);
+      syncDual(prefMeasure, prefMeasureNum, state.measure);
+      prefPageSize.value = PAGE_SIZES[state.pageSize] ? state.pageSize : "trade";
+      prefOrient.value = state.orient === "landscape" ? "landscape" : "portrait";
+      prefMT.value = String(state.marginTop);
+      prefMR.value = String(state.marginRight);
+      prefMB.value = String(state.marginBottom);
+      prefML.value = String(state.marginLeft);
+      setPrefsTab(state.prefsTab || "type");
+
+      savePrefs(state);
+      renderAll(state.view !== "source");
+    }
+
+    function folioMarkdown() {
+      return normalizeText(model);
+    }
+
+    function downloadText(filename, text, mime) {
+      const blob = new Blob([text], { type: mime || "text/plain;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    }
+
+    function exportHtmlSnapshot() {
+      const parts = splitPages(model).filter((b) => b && b.trim());
+      const pages = parts.map((body, i) =>
+        `<section class="page"><div class="body">${escHtml(body)}</div><div class="folio">${i + 1}</div></section>`
+      ).join("\n");
+      const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>Focus export</title>
+<style>
+html,body{margin:0;padding:0;background:#fff;color:#111;
+font-family:${FACES[state.face] || FACES.atkinson};}
+.page{background:#fff;color:#111;width:100%;margin:0;padding:18mm 16mm;box-sizing:border-box;
+break-after:page;position:relative;}
+.body{white-space:pre-wrap;line-height:1.5;font-size:11pt;letter-spacing:normal;text-indent:0;color:#111;}
+.folio{position:absolute;bottom:10mm;right:14mm;font:9pt system-ui;color:#444;}
+.body:empty,.body:empty::before{display:none!important;content:none!important;}
+@media print{body{padding:0}.page{border:0}}
+</style></head><body>${pages}</body></html>`;
+      downloadText("focus-export.html", html, "text/html;charset=utf-8");
+    }
+
+    function preparePrintProof() {
+      const prev = {
+        view: state.view,
+        focus: state.focus,
+        syntax: state.syntax,
+      };
+      state.focus = false;
+      state.syntax = false;
+      document.body.classList.remove("selecting", "focus-on", "syntax-on");
+      document.body.classList.add("printing");
+      if (state.view === "source" || state.view === "split") {
+        state.view = "pages";
+      }
+      applyPrefs();
+      // Strip empty pages / placeholders from the live proof
+      pagesInner.querySelectorAll(".page").forEach((page) => {
+        const body = page.querySelector(".body");
+        if (!body || page.classList.contains("blank")) return;
+        if (!plainFromEditable(body).trim()) page.style.display = "none";
+      });
+      return prev;
+    }
+
+    function restoreAfterPrint(prev) {
+      document.body.classList.remove("printing");
+      state.focus = prev.focus;
+      state.syntax = prev.syntax;
+      state.view = prev.view;
+      applyPrefs();
+    }
+
+    function runExport(kind) {
+      document.body.classList.remove("export-open");
+      btnExport.classList.remove("on");
+      const md = folioMarkdown();
+      if (kind === "md") {
+        downloadText("manuscript.md", md, "text/markdown;charset=utf-8");
+        return;
+      }
+      if (kind === "html") {
+        exportHtmlSnapshot();
+        return;
+      }
+      if (kind === "pdf") {
+        const prev = preparePrintProof();
+        const done = () => {
+          restoreAfterPrint(prev);
+          window.removeEventListener("afterprint", done);
+        };
+        window.addEventListener("afterprint", done);
+        setTimeout(() => window.print(), 60);
+        return;
+      }
+      if (kind === "docx") {
+        downloadText("manuscript.md", md, "text/markdown;charset=utf-8");
+        alert("Downloaded manuscript.md.\n\nFor Docx with real page breaks, run:\n  bash prototype/focus-writer/export.sh --format docx\n\n(Pandoc + markbreak.lua)");
+        return;
+      }
+    }
+
+    function setView(view) {
+      state.view = view;
+      applyPrefs();
+      if (view === "pages" || view === "spreads") focusPageBody(activePageIndex, null);
+      else editor.focus();
+    }
+
+    function setFocusMode(on) {
+      state.focus = on;
+      applyPrefs();
+    }
+
+    function togglePrefs() {
+      document.body.classList.remove("export-open");
+      btnExport.classList.remove("on");
+      document.body.classList.toggle("prefs-open");
+      btnPrefs.classList.toggle("on", document.body.classList.contains("prefs-open"));
+    }
+
+    function toggleExport() {
+      document.body.classList.remove("prefs-open");
+      btnPrefs.classList.remove("on");
+      document.body.classList.toggle("export-open");
+      btnExport.classList.toggle("on", document.body.classList.contains("export-open"));
+    }
+
+    function toggleChrome() {
+      document.body.classList.toggle("chrome-hidden");
+      document.body.classList.remove("prefs-open", "export-open");
+      btnPrefs.classList.remove("on");
+      btnExport.classList.remove("on");
+    }
+
+    function bindDual(rangeEl, numEl, key, parse) {
+      const apply = (raw) => {
+        state[key] = parse(raw);
+        applyPrefs();
+      };
+      rangeEl.addEventListener("input", () => apply(rangeEl.value));
+      numEl.addEventListener("change", () => apply(numEl.value));
+    }
+
+    btnViewSource.addEventListener("click", () => setView("source"));
+    btnViewSplit.addEventListener("click", () => setView("split"));
+    btnViewPages.addEventListener("click", () => setView("pages"));
+    btnViewSpreads.addEventListener("click", () => setView("spreads"));
+    btnFocus.addEventListener("click", () => setFocusMode(!state.focus));
+    btnBreak.addEventListener("click", () => {
+      const onPages = state.view === "pages" || state.view === "spreads" ||
+        (state.view === "split" && pagesInner.contains(document.activeElement));
+      if (onPages) {
+        const el = pagesInner.querySelector(`.body[data-page="${activePageIndex}"]`) || pagesInner.querySelector(".body[data-page]");
+        if (el) insertBreakAtPage(el);
+      } else {
+        insertBreakInSource();
+      }
+    });
+    btnPrefs.addEventListener("click", togglePrefs);
+    btnExport.addEventListener("click", toggleExport);
+    btnChrome.addEventListener("click", toggleChrome);
+
+    document.querySelectorAll(".prefs-tabs button").forEach((b) => {
+      b.addEventListener("click", () => setPrefsTab(b.dataset.tab));
+    });
+    document.querySelectorAll("[data-export]").forEach((b) => {
+      b.addEventListener("click", () => {
+        if (b.disabled) return;
+        runExport(b.dataset.export);
+      });
+    });
+
+    prefTheme.addEventListener("change", () => { state.theme = prefTheme.value; applyPrefs(); });
+    prefFace.addEventListener("change", () => { state.face = prefFace.value; applyPrefs(); });
+    prefTexture.addEventListener("change", () => { state.texture = prefTexture.checked; applyPrefs(); });
+    prefFocus.addEventListener("change", () => setFocusMode(prefFocus.checked));
+    prefSyntax.addEventListener("change", () => { state.syntax = prefSyntax.checked; applyPrefs(); });
+    prefSpell.addEventListener("change", () => { state.spell = prefSpell.checked; applyPrefs(); });
+    bindDual(prefSize, prefSizeNum, "size", (v) => Math.min(2.6, Math.max(0.8, Number(v) || 1.25)));
+    bindDual(prefLeading, prefLeadingNum, "leading", (v) => Math.min(2.4, Math.max(1.15, Number(v) || 1.65)));
+    bindDual(prefTracking, prefTrackingNum, "tracking", (v) => Math.min(0.08, Math.max(-0.04, Number(v) || 0)));
+    bindDual(prefIndent, prefIndentNum, "indent", (v) => Math.min(4, Math.max(0, Number(v) || 0)));
+    bindDual(prefMeasure, prefMeasureNum, "measure", (v) => Math.min(48, Math.max(20, Number(v) || 36)));
+    prefPageSize.addEventListener("change", () => { state.pageSize = prefPageSize.value; applyPrefs(); });
+    prefOrient.addEventListener("change", () => { state.orient = prefOrient.value; applyPrefs(); });
+    prefMT.addEventListener("change", () => { state.marginTop = Number(prefMT.value) || 0; applyPrefs(); });
+    prefMR.addEventListener("change", () => { state.marginRight = Number(prefMR.value) || 0; applyPrefs(); });
+    prefMB.addEventListener("change", () => { state.marginBottom = Number(prefMB.value) || 0; applyPrefs(); });
+    prefML.addEventListener("change", () => { state.marginLeft = Number(prefML.value) || 0; applyPrefs(); });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        document.body.classList.remove("chrome-hidden", "prefs-open", "export-open");
+        btnPrefs.classList.remove("on");
+        btnExport.classList.remove("on");
+        return;
+      }
+      if (e.ctrlKey && e.shiftKey && (e.key === "F" || e.key === "f")) {
+        e.preventDefault();
+        setFocusMode(!state.focus);
+      }
+      if (e.ctrlKey && e.key === ",") {
+        e.preventDefault();
+        togglePrefs();
+      }
+      if (e.ctrlKey && e.key === "\\") {
+        e.preventDefault();
+        toggleChrome();
+      }
+      if (e.ctrlKey && e.key === "1") { e.preventDefault(); setView("source"); }
+      if (e.ctrlKey && e.key === "2") { e.preventDefault(); setView("split"); }
+      if (e.ctrlKey && e.key === "3") { e.preventDefault(); setView("pages"); }
+      if (e.ctrlKey && e.key === "4") { e.preventDefault(); setView("spreads"); }
+    });
+
+    document.addEventListener("mousedown", (e) => {
+      if (document.body.classList.contains("prefs-open")) {
+        if (!prefsEl.contains(e.target) && !btnPrefs.contains(e.target)) {
+          document.body.classList.remove("prefs-open");
+          btnPrefs.classList.remove("on");
+        }
+      }
+      if (document.body.classList.contains("export-open")) {
+        if (!exportMenu.contains(e.target) && !btnExport.contains(e.target)) {
+          document.body.classList.remove("export-open");
+          btnExport.classList.remove("on");
+        }
+      }
+    });
+
+    // Boot
+    const saved = localStorage.getItem(TEXT_KEY);
+    model = saved != null ? migrateAuthorBreaks(saved) : SAMPLE;
+    applyPrefs();
+    if (state.view === "pages") focusPageBody(0, 0);
+    else {
+      editor.focus();
+      if (!saved) {
+        const i = model.indexOf("\n\n");
+        if (i > 0) {
+          setCaretOffsets(editor, i, i);
+          renderSource(true);
+        }
+      }
+    }
+
+    // ---------- quality gate (?test=1) ----------
+    async function runQualityTests() {
+      document.body.classList.add("testing");
+      const lines = [];
+      let failed = 0;
+      const pass = (n, d) => lines.push("PASS  " + n + (d ? " — " + d : ""));
+      const fail = (n, d) => { failed += 1; lines.push("FAIL  " + n + " — " + d); };
+
+      localStorage.removeItem(TEXT_KEY);
+      const fixture = `Alpha one. Beta two.\n\n${BREAK}\n\nGamma after. Delta.`;
+      setModel(fixture, "source");
+      state.focus = true;
+      state.view = "split";
+      applyPrefs();
+
+      // pages editable + round trip
+      state.view = "pages";
+      applyPrefs();
+      const p0 = pagesInner.querySelector('.body[data-page="0"]');
+      const p1 = pagesInner.querySelector('.body[data-page="1"]');
+      if (!p0 || !p1) fail("page editors", "missing");
+      else {
+        p1.focus();
+        setModel(joinPages(["Alpha one. Beta two.", "Gamma edited."]), "pages");
+        applyPrefs();
+        if (model.includes("Gamma edited.") && model.includes(BREAK)) pass("pages write → model");
+        else fail("pages write → model", model);
+      }
+
+      // pages-only view hides source
+      if (state.view === "pages" && getComputedStyle(document.querySelector(".pane.write")).display === "none") {
+        pass("pages-only hides source");
+      } else fail("pages-only hides source", getComputedStyle(document.querySelector(".pane.write")).display);
+
+      // spreads: facing pairs, page 1 on recto
+      setModel(fixture, "source");
+      state.view = "spreads";
+      applyPrefs();
+      const spreads = pagesInner.querySelectorAll(".spread");
+      const openingRecto = pagesInner.querySelector('.spread[data-spread="0"] .page.recto .body');
+      const openingVersoBlank = pagesInner.querySelector('.spread[data-spread="0"] .page.verso.blank');
+      if (spreads.length >= 1 && openingVersoBlank && openingRecto && openingRecto.dataset.page === "0") {
+        pass("spreads open on recto", spreads.length + " spreads");
+      } else {
+        fail("spreads open on recto", `spreads=${spreads.length}`);
+      }
+
+      // ArrowDown from end of page 0 → page 1
+      state.view = "pages";
+      applyPrefs();
+      {
+        const firstPage = pagesInner.querySelector('.body[data-page="0"]');
+        firstPage.focus();
+        const end = plainFromEditable(firstPage).length;
+        setCaretOffsets(firstPage, end, end);
+        const down = new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true, cancelable: true });
+        const moved = tryPageArrow(down, firstPage);
+        if (moved && activePageIndex === 1) pass("arrow through pages");
+        else fail("arrow through pages", `moved=${moved} idx=${activePageIndex}`);
+      }
+
+      // break insert in pages
+      setModel("Only page.", "pages");
+      state.view = "pages";
+      applyPrefs();
+      activePageIndex = 0;
+      const only = pagesInner.querySelector(".body");
+      only.focus();
+      setCaretOffsets(only, "Only page.".length, "Only page.".length);
+      insertBreakAtPage(only);
+      if (splitPages(model).length === 2) pass("paged break", String(splitPages(model).length));
+      else fail("paged break", model);
+
+      // caret on glyph in source (DOM offsets, not innerText)
+      state.view = "source";
+      setModel(fixture, "source");
+      applyPrefs();
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const at = serializeEditable(editor).indexOf("Gamma");
+      editor.focus();
+      setCaretOffsets(editor, at, at);
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const sel = window.getSelection();
+      let caretRect = null;
+      if (sel && sel.rangeCount) {
+        const cr = sel.getRangeAt(0);
+        caretRect = cr.getClientRects()[0] || cr.getBoundingClientRect();
+      }
+      const loc = locateOffset(editor, at);
+      let glyphRect = null;
+      if (loc.node && loc.offset < loc.node.nodeValue.length) {
+        const rr = document.createRange();
+        rr.setStart(loc.node, loc.offset);
+        rr.setEnd(loc.node, loc.offset + 1);
+        glyphRect = rr.getClientRects()[0] || rr.getBoundingClientRect();
+      }
+      if (caretRect && glyphRect && (caretRect.height || glyphRect.height)) {
+        const dx = Math.abs(caretRect.left - glyphRect.left);
+        const dy = Math.abs(caretRect.top - glyphRect.top);
+        if (dx <= 4 && dy <= 4) pass("caret on glyph", `dx=${dx.toFixed(1)} dy=${dy.toFixed(1)}`);
+        else fail("caret on glyph", `dx=${dx.toFixed(1)} dy=${dy.toFixed(1)}`);
+      } else {
+        fail("caret on glyph", `at=${at} caret=${!!caretRect} glyph=${!!glyphRect} nodeLen=${loc.node && loc.node.nodeValue.length}`);
+      }
+
+      // caret at start of paragraph lights that paragraph (not the \\n gap)
+      {
+        const para = "First sentence.\n\nSecond paragraph here.";
+        const parts = sentenceSpans(para);
+        const startSecond = para.indexOf("Second");
+        const endSecond = para.length;
+        const atStart = spanIndexAt(para, startSecond, parts);
+        const atEnd = spanIndexAt(para, endSecond, parts);
+        if (parts[atStart].startsWith("Second") && parts[atEnd].startsWith("Second")) {
+          pass("para start=end focus", parts[atStart].slice(0, 16));
+        } else {
+          fail("para start=end focus", `start="${parts[atStart]}" end="${parts[atEnd]}"`);
+        }
+      }
+
+      // --- is not a page break
+      if (splitPages("A\n\n---\n\nB").length === 1) pass("scene --- not page");
+      else fail("scene --- not page", String(splitPages("A\n\n---\n\nB").length));
+
+      // no PAGE BREAK labels
+      state.view = "split";
+      setModel(fixture, "source");
+      applyPrefs();
+      if (!pagesInner.textContent.includes("PAGE BREAK") && !pagesInner.querySelector(".break-label")) {
+        pass("no break labels");
+      } else fail("no break labels", "found label");
+
+      // Restore demo manuscript so ?test=1 does not leave fixture in the editor
+      setModel(SAMPLE, "source");
+      state.view = "split";
+      state.focus = true;
+      applyPrefs();
+
+      const summary = (failed === 0 ? "ALL PASS" : failed + " FAILED") + "\n" + lines.join("\n");
+      testBanner.textContent = summary;
+      testBanner.className = failed === 0 ? "pass" : "fail";
+      document.title = (failed === 0 ? "PASS" : "FAIL") + " — Focus tests";
+      console.log(summary);
+      return failed === 0;
+    }
+
+    window.__focusTest = runQualityTests;
+    if (new URLSearchParams(location.search).has("test")) {
+      requestAnimationFrame(() => runQualityTests());
+    }
+  </script>
+</body>
+</html>

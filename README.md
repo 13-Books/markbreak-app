@@ -41,11 +41,11 @@ That writes `site/edit.html`.
 
 ## Dialect export (Docx)
 
-Profile is pinned via submodule `dialect/markbreak` (**0.2.0**). Init once, then export with Pandoc installed:
+Profile is pinned via submodule `dialect/markbreak` (**0.4.0**). Init once, then export with Pandoc installed:
 
-```powershell
+```bash
 git submodule update --init --recursive
-powershell -File dialect/export.ps1 -InputFile path\to\manuscript.md -Format docx
+bash dialect/export.sh --input path/to/manuscript.md --format docx
 ```
 
 See [dialect/README.md](dialect/README.md).

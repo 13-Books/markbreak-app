@@ -2,14 +2,14 @@
 
 ## Current — bookmd → MarkBreak chrome migration
 
-Decommission local `bookmd` by porting the focus-writer prototype into this app. Dialect law lives in submodule `dialect/markbreak` (pinned profile **0.2.0**). Tracking stays in this file (private repo). Optional epic stub: [#1](https://github.com/13-Books/markbreak-app/issues/1).
+Decommission local `bookmd` by porting the focus-writer prototype into this app. Dialect law lives in submodule `dialect/markbreak` (pinned profile **0.4.0**). Tracking stays in this file (private repo). Optional epic stub: [#1](https://github.com/13-Books/markbreak-app/issues/1).
 
-**Golden reference (after archive):** `docs/prototype/focus-writer/` — port from there. Source today: sibling `bookmd` repo `prototype/focus-writer` (until archived).
+**Golden reference (after archive):** `docs/prototype/focus-writer/` — port from there. Source today: `prototype/focus-writer` in this repo.
 
 **Defaults (locked)**
 
 - Pages/Spreads are in scope (not export-only).
-- Print-proof PDF is the product PDF; Pandoc PDF is secondary via `dialect/export.ps1`.
+- Print-proof PDF is the product PDF; Pandoc PDF is secondary via `dialect/export.sh`.
 - Trade 6×9 and mass-market are first-class page sizes.
 - Desktop (`packages/desktop`) first; online stays thin until Pages/Spreads AC is met.
 - Do not enable Issues on public `13-Books/marktext` for this work.
@@ -17,13 +17,13 @@ Decommission local `bookmd` by porting the focus-writer prototype into this app.
 ### Checklist
 
 - [ ] **Archive focus-writer** — Copy prototype + fonts/licenses to `docs/prototype/focus-writer/`; README says golden UX, not shipped chrome; skip or mark `OUTREACH-draft.md` non-product; pointer from `MARKBREAK.md`.
-- [ ] **Insert flow break UX** — `/np` + Space/Enter, Break control, Ctrl+Shift+Enter insert `//---` (or `\newpage` per specification); visible in source; desktop only; no second dialect.
-- [ ] **Folio Markdown export** — Export/save rewrites `//---` / `//—` / `//break` → `\newpage`; matches prototype `folioMarkdown()`; suitable for `dialect/export.ps1`.
+- [ ] **Insert flow break UX** — `/np` + Space/Enter, Break control, Ctrl+Shift+Enter insert `//break`; visible in source; desktop only; no second dialect.
+- [ ] **Folio Markdown export** — Save keeps `//break` and `//break page` for `dialect/export.sh`. The filter owns those lines.
 - [ ] **Page size prefs** — A5, A4, Letter, Trade 6×9, mass-market; orientation; margins mm; persist; available to Pages/Spreads (not export-dialog-only).
 - [ ] **Pages + Spreads views** — Source / Split / Pages / Spreads; editable page cards; two-way sync; spreads verso/recto (page 1 opens right); desktop first.
 - [ ] **Type prefs → page proof** — Face, size, leading, tracking, indent, measure apply to page cards.
 - [ ] **Print-proof PDF** — Export PDF uses Pages proof + print/printToPDF with geometry; not only generic MarkText PDF.
-- [ ] **Pandoc Docx/PDF in UI** — App invokes or clearly wires `dialect/export.ps1` so Docx keeps real page breaks.
+- [ ] **Pandoc Docx/PDF in UI** — App invokes or clearly wires `dialect/export.sh` so Docx keeps real page breaks.
 - [ ] **Guides** — `site/guides/04-export.html` (and related) match print-proof PDF vs Docx story.
 - [ ] **Decommission bookmd** — No unique specification/tools only in bookmd; README/HOLE no longer treat bookmd as home; archive or delete the local `bookmd` checkout after checklist above is done.
 

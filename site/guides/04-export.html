@@ -38,7 +38,7 @@
     <p>
       On the open profile repo, the check fails when Word has no real page break:
     </p>
-    <pre><code>powershell -File tools/verify.ps1</code></pre>
+    <pre><code>bash tools/verify.sh</code></pre>
     <p>
       Prefer fixtures over folklore. When a bug class repeats, extend the gates.
       See <a href="https://markbreak.com">markbreak.com</a> and
@@ -47,9 +47,11 @@
 
     <h2>Where layout lives</h2>
     <p>
-      Relay, Word, and InDesign are fulfillments.
-      Fix the dialect here; fix compose there.
-      The writer’s job is to emit a clean MarkBreak file.
+      The writer writes Docx and PDF from the manuscript.
+      <code>meta.md</code> holds the publication record.
+      <code>layout</code> points at the RigWorks page for trim and margins.
+      Flow breaks stay hard breaks.
+      Relay, Word, and InDesign still compose after that file exists.
     </p>
 
     <div class="pager">
