@@ -14,19 +14,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
-  <script type="module" crossorigin src="./assets/edit-CObQC3p3.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/edit-C2zY5HN5.css">
+  <script type="module" crossorigin src="./assets/edit-app.js?v=1794696654"></script>
+  <link rel="stylesheet" crossorigin href="./assets/edit-app.css?v=1794696654">
 </head>
 <body>
   <header class="title-bar">
     <button type="button" class="menu-button" id="btnMenu" aria-label="Menu" aria-haspopup="menu" aria-expanded="false" aria-controls="appMenu">&#9776;</button>
     <div class="title" id="filename">Untitled</div>
     <div class="title-actions">
-      <span class="status" id="status"></span>
       <span class="words" id="words"></span>
     </div>
     <nav id="appMenu" class="app-menu" hidden role="menu" aria-label="Menu"></nav>
   </header>
+  <div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
   <div class="workspace">
     <aside class="outline" id="outline">
       <button type="button" class="outline-toggle" id="btnOutline" aria-expanded="true" aria-controls="outline-body" aria-label="Hide contents">
@@ -90,6 +90,6 @@
         </fieldset>
       </div>
     </form>
-  </dialog>
-</body>
+  </dialog>
+  </body>
 </html>
