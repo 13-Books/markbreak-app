@@ -6,7 +6,8 @@ import { isChildOfDirectory } from 'common/filesystem/paths'
 import BaseWindow, { WindowLifecycle, WindowType } from './base'
 import type Accessor from '../app/accessor'
 import { zoomIn, zoomOut } from './utils'
-import { TITLE_BAR_HEIGHT, editorWinOptions, isLinux, isOsx } from '../config'
+import { TITLE_BAR_HEIGHT, editorWinOptions, isOsx } from '../config'
+import { getAppIconPath } from '../staticPath'
 import { showEditorContextMenu } from '../contextMenu/editor'
 import { switchLanguage } from '../spellchecker'
 import type { TabOptions } from '@shared/types/files'
@@ -67,7 +68,9 @@ class EditorWindow extends BaseWindow {
       options,
       { show: false }
     )
-    if (isLinux) winOptions.icon = path.join(process.cwd(), 'static', 'logo-96px.png')
+    // Unpackaged runs (dev / electron-vite preview) use Electron's own binary
+    // icon unless we set this — Windows taskbar and the window chrome need it.
+    winOptions.icon = getAppIconPath()
     const { titleBarStyle, theme, spellcheckerEnabled, spellcheckerLanguage, sourceCodeModeEnabled } = preferences.getAll()
 
     if (!isOsx) {
