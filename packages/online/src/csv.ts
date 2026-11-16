@@ -1,4 +1,4 @@
-function parseDelimited (text: string, delim: string): string[][] {
+function parseDelimited(text: string, delim: string): string[][] {
   const rows: string[][] = []
   let row: string[] = []
   let field = ''
@@ -59,7 +59,7 @@ function parseDelimited (text: string, delim: string): string[][] {
   return rows.filter((r) => r.some((cell) => cell.length > 0))
 }
 
-function escapeHtml (s: string): string {
+function escapeHtml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -67,7 +67,7 @@ function escapeHtml (s: string): string {
     .replace(/"/g, '&quot;')
 }
 
-export function renderCsvHtml (text: string, delim: string, label: string): string {
+export function renderCsvHtml(text: string, delim: string, label: string): string {
   const rows = parseDelimited(text, delim)
   if (!rows.length) {
     return '<p class="mode-tag">' + label + '</p><p><em>Empty</em></p>'

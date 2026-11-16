@@ -129,7 +129,7 @@ const CSS: Record<string, string> = {
   ulysses: ulysses + '\n' + ulyssesPrism
 }
 
-function labelOf (name: string): string {
+function labelOf(name: string): string {
   return name.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 }
 
@@ -155,14 +155,14 @@ export const themes: ThemeChoice[] = [
 
 export const themeNames: readonly string[] = themes.map((theme) => theme.name)
 
-export function applyTheme (name: string): void {
+export function applyTheme(name: string): void {
   const style = sheet('theme-style')
   const css = CSS[name]
   style.textContent = css ? `@media not print {\n${css}\n}` : ''
   document.documentElement.classList.toggle('dark', DARK.has(name))
 }
 
-export function applyEditorWidth (value: string): void {
+export function applyEditorWidth(value: string): void {
   const style = sheet('editor-width')
   const width = /^[0-9]+(?:ch|px|%)$/.test(value) ? value : ''
   style.textContent = width
@@ -170,7 +170,7 @@ export function applyEditorWidth (value: string): void {
     : ''
 }
 
-function sheet (id: string): HTMLStyleElement {
+function sheet(id: string): HTMLStyleElement {
   const existing = document.getElementById(id)
   if (existing instanceof HTMLStyleElement) return existing
   const created = document.createElement('style')

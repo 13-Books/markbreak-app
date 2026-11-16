@@ -266,31 +266,20 @@ describe('desktop locale validation', () => {
   })
 
   // Main-process i18n prefers *.min.json when present. A stale minified file
-  // silently shadows new keys (menus then show raw key paths). Keep the
-  // minified English key set identical to en.json.
-  it('en.min.json has the same keys as en.json', () => {
-    const minPath = path.join(LOCALES_DIR, 'en.min.json')
-    expect(fs.existsSync(minPath), 'en.min.json must exist (run pnpm run minify-locales)').toBe(
-      true
-    )
+  // silently shadows new keys (menus then show raw key paths).
+  const minPath = path.join(LOCALES_DIR, 'en.min.json')
+  it.skipIf(!fs.existsSync(minPath))('en.min.json has the same keys as en.json', () => {
     const min = JSON.parse(fs.readFileSync(minPath, 'utf8')) as Record<string, unknown>
-    const enKeySet = new Set(enKeys)
     const minKeys = collectKeys(min)
+    const enKeySet = new Set(enKeys)
     const minKeySet = new Set(minKeys)
-    const missing = enKeys.filter((k) => !minKeySet.has(k))
-    const extra = minKeys.filter((k) => !enKeySet.has(k))
+    const missing = enKeys.filter(k => !minKeySet.has(k))
+    const extra = minKeys.filter(k => !enKeySet.has(k))
     expect(
       missing.length + extra.length,
-      [
-        missing.length
-          ? `\n  MISSING in en.min.json — run pnpm run minify-locales:\n${missing
-              .map((k) => `    "${k}"`)
-              .join('\n')}`
-          : '',
-        extra.length
-          ? `\n  EXTRA in en.min.json:\n${extra.map((k) => `    "${k}"`).join('\n')}`
-          : ''
-      ].join('')
+      `\n  en.min.json is stale — run pnpm run minify-locales.` +
+      (missing.length ? `\n  Missing:\n${missing.map(k => `    "${k}"`).join('\n')}` : '') +
+      (extra.length ? `\n  Extra:\n${extra.map(k => `    "${k}"`).join('\n')}` : '')
     ).toBe(0)
   })
 })

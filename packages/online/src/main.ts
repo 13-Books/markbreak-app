@@ -76,7 +76,7 @@ applyEditorWidth(prefs.editorLineWidth)
 
 let toastTimer = 0
 
-function setStatus (msg: string, err = false): void {
+function setStatus(msg: string, err = false): void {
   window.clearTimeout(toastTimer)
   if (!msg) {
     toastEl.hidden = true
@@ -95,7 +95,7 @@ function setStatus (msg: string, err = false): void {
   }, err ? 8000 : 3200)
 }
 
-function fileName (): string {
+function fileName(): string {
   const raw = (loadedUrl || hintPath || '').split(/[?#]/)[0]
   if (!raw) return 'Untitled'
   const base = raw.split('/').filter(Boolean).pop()
@@ -107,17 +107,17 @@ function fileName (): string {
   }
 }
 
-function showWords (text: string): void {
+function showWords(text: string): void {
   const count = text.trim() ? text.trim().split(/\s+/).length : 0
   wordsEl.textContent = count === 1 ? '1 word' : count + ' words'
 }
 
-function extOf (path: string): string {
+function extOf(path: string): string {
   const match = path.toLowerCase().match(/\.([a-z0-9]+)(?:\?|#|$)/)
   return match ? match[1] : ''
 }
 
-function resolveMode (): 'markdown' | 'csv' | 'tsv' {
+function resolveMode(): 'markdown' | 'csv' | 'tsv' {
   if (forcedMode) return forcedMode
   const ext = extOf(hintPath || loadedUrl)
   if (ext === 'csv') return 'csv'
@@ -127,19 +127,19 @@ function resolveMode (): 'markdown' | 'csv' | 'tsv' {
   return 'markdown'
 }
 
-function tableMode (): boolean {
+function tableMode(): boolean {
   const mode = resolveMode()
   return mode === 'csv' || mode === 'tsv'
 }
 
-function escapeHtml (s: string): string {
+function escapeHtml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
 }
 
-function renderOutline (): void {
+function renderOutline(): void {
   if (tableMode()) {
     tocItems = []
     tocEl.innerHTML = '<p class="toc-empty">No headings</p>'
@@ -156,7 +156,7 @@ function renderOutline (): void {
   }).join('')
 }
 
-function imagePathPicker (): Promise<string> {
+function imagePathPicker(): Promise<string> {
   return new Promise((resolve) => {
     const input = document.createElement('input')
     input.type = 'file'
@@ -194,7 +194,7 @@ Muya.use(EmojiSelector)
 Muya.use(ImagePathPicker)
 Muya.use(ImageEditTool, {
   imagePathPicker,
-  imageAction: async (state: { src: string }) => state.src
+  imageAction: async(state: { src: string }) => state.src
 })
 Muya.use(ImageResizeBar)
 Muya.use(ImageToolBar)
@@ -237,7 +237,7 @@ muya.locale(en)
 muya.init()
 muya.setFocusMode(prefs.focus)
 
-function showTable (): void {
+function showTable(): void {
   const mode = resolveMode()
   const label = mode === 'tsv' ? 'TSV' : 'CSV'
   const delim = mode === 'tsv' ? '\t' : ','
@@ -246,27 +246,27 @@ function showTable (): void {
   renderOutline()
 }
 
-function showMarkdown (text: string): void {
+function showMarkdown(text: string): void {
   document.body.classList.remove('is-table')
   // Marked/Muya block lexing is LF-only; never hand it leftover CRs.
   muya.setContent(normalizeNewlines(text))
   renderOutline()
 }
 
-function normalizeNewlines (text: string): string {
+function normalizeNewlines(text: string): string {
   return text.replace(/\r\n?/g, '\n')
 }
 
-function detectLineEnding (text: string): 'lf' | 'crlf' {
+function detectLineEnding(text: string): 'lf' | 'crlf' {
   return /\r\n/.test(text) ? 'crlf' : 'lf'
 }
 
-function encodeForSave (text: string): string {
+function encodeForSave(text: string): string {
   const lf = normalizeNewlines(text)
   return lineEnding === 'crlf' ? lf.replace(/\n/g, '\r\n') : lf
 }
 
-function applyDocument (text: string): void {
+function applyDocument(text: string): void {
   lineEnding = detectLineEnding(text)
   documentText = normalizeNewlines(text)
   filenameEl.textContent = fileName()
@@ -281,11 +281,11 @@ function applyDocument (text: string): void {
   })
 }
 
-function remember (): void {
+function remember(): void {
   savePrefs(prefs)
 }
 
-function syncToc (): void {
+function syncToc(): void {
   const open = prefs.showToc
   document.documentElement.classList.toggle('hide-toc', !open)
   btnOutline.setAttribute('aria-expanded', open ? 'true' : 'false')
@@ -294,7 +294,7 @@ function syncToc (): void {
   if (open) outline.classList.remove('is-suppressed')
 }
 
-function pushWritingOptions (rerender: boolean): void {
+function pushWritingOptions(rerender: boolean): void {
   muya.setOptions({
     fontSize: prefs.fontSize,
     lineHeight: prefs.lineHeight,
@@ -406,7 +406,7 @@ outline.addEventListener('pointerleave', () => {
   outline.classList.remove('is-suppressed')
 })
 
-function setSource (on: boolean): void {
+function setSource(on: boolean): void {
   if (on === document.body.classList.contains('is-source')) return
   if (on) {
     source.value = tableMode() ? documentText : muya.getMarkdown()
@@ -420,19 +420,19 @@ function setSource (on: boolean): void {
   if (on) source.focus()
 }
 
-function setFocus (on: boolean): void {
+function setFocus(on: boolean): void {
   prefs.focus = on
   muya.setFocusMode(on)
   remember()
 }
 
-function setTypewriter (on: boolean): void {
+function setTypewriter(on: boolean): void {
   prefs.typewriter = on
   document.body.classList.toggle('is-typewriter', on)
   remember()
 }
 
-function leaveSource (): void {
+function leaveSource(): void {
   if (!document.body.classList.contains('is-source')) return
   setSource(false)
 }
@@ -453,7 +453,7 @@ tocEl.addEventListener('click', (ev) => {
   target.scrollIntoView({ block: 'start' })
 })
 
-async function loadUrl (u: string): Promise<void> {
+async function loadUrl(u: string): Promise<void> {
   if (!u) return
   loadedUrl = u
   hintPath = u
@@ -502,11 +502,11 @@ fileInput.addEventListener('change', () => {
   reader.readAsText(file)
 })
 
-function currentText (): string {
+function currentText(): string {
   return document.body.classList.contains('is-source') ? source.value : documentText
 }
 
-async function copyShareLink (): Promise<void> {
+async function copyShareLink(): Promise<void> {
   const next = new URL(location.href)
   const mode = resolveMode()
   if (mode !== 'markdown') next.searchParams.set('lang', mode)
@@ -531,7 +531,7 @@ async function copyShareLink (): Promise<void> {
   }
 }
 
-async function saveFile (): Promise<void> {
+async function saveFile(): Promise<void> {
   const name = fileName()
   const filename = name === 'Untitled' ? 'Untitled.md' : name
   const body = encodeForSave(currentText())
@@ -566,7 +566,7 @@ async function saveFile (): Promise<void> {
   setStatus('Download started — ' + filename)
 }
 
-function newDocument (): void {
+function newDocument(): void {
   loadedUrl = ''
   hintPath = ''
   forcedMode = ''
@@ -578,7 +578,7 @@ function newDocument (): void {
   setStatus('')
 }
 
-function openRecent (index: number): void {
+function openRecent(index: number): void {
   const doc = loadRecent()[index]
   if (!doc) return
   if (doc.url) {
@@ -592,7 +592,7 @@ function openRecent (index: number): void {
   setStatus('Opened ' + doc.name)
 }
 
-async function editCommand (command: 'undo' | 'redo' | 'cut' | 'copy' | 'paste' | 'selectAll'): Promise<void> {
+async function editCommand(command: 'undo' | 'redo' | 'cut' | 'copy' | 'paste' | 'selectAll'): Promise<void> {
   if (document.body.classList.contains('is-source')) {
     source.focus()
     if (command === 'selectAll') source.select()
@@ -610,14 +610,14 @@ async function editCommand (command: 'undo' | 'redo' | 'cut' | 'copy' | 'paste' 
   }
 }
 
-function insertSource (text: string): void {
+function insertSource(text: string): void {
   const start = source.selectionStart
   const end = source.selectionEnd
   source.setRangeText(text, start, end, 'end')
   source.dispatchEvent(new Event('input'))
 }
 
-async function readClipboard (): Promise<string> {
+async function readClipboard(): Promise<string> {
   try {
     return await navigator.clipboard.readText()
   } catch {
@@ -625,7 +625,7 @@ async function readClipboard (): Promise<string> {
   }
 }
 
-function menuEntries (): MenuEntry[] {
+function menuEntries(): MenuEntry[] {
   const recent = loadRecent()
   const recentItems: MenuEntry[] = recent.length
     ? recent.map((doc, index) => ({ label: doc.name, action: 'recent:' + index }))
@@ -727,12 +727,12 @@ function menuEntries (): MenuEntry[] {
   ]
 }
 
-function closeMenu (): void {
+function closeMenu(): void {
   appMenu.hidden = true
   btnMenu.setAttribute('aria-expanded', 'false')
 }
 
-function openMenu (): void {
+function openMenu(): void {
   renderMenu(appMenu, menuEntries(), (action) => {
     closeMenu()
     void runAction(action)
@@ -742,7 +742,7 @@ function openMenu (): void {
   placeSubmenus()
 }
 
-function placeSubmenus (): void {
+function placeSubmenus(): void {
   const margin = 8
   appMenu.querySelectorAll<HTMLElement>('.submenu').forEach((panel) => {
     if (getComputedStyle(panel).display === 'none') return
@@ -763,7 +763,7 @@ function placeSubmenus (): void {
   })
 }
 
-async function runAction (action: string): Promise<void> {
+async function runAction(action: string): Promise<void> {
   if (action.startsWith('recent:')) {
     openRecent(Number(action.slice('recent:'.length)))
     return
@@ -883,7 +883,7 @@ document.addEventListener('keydown', (event) => {
   }
 })
 
-void (async function boot () {
+void (async function boot() {
   const lang = params.get('lang') || params.get('language')
   if (lang === 'csv' || lang === 'tsv' || lang === 'markdown') forcedMode = lang
   renderOutline()

@@ -7,7 +7,7 @@ export interface MenuEntry {
   children?: MenuEntry[]
 }
 
-export function renderMenu (
+export function renderMenu(
   root: HTMLElement,
   entries: MenuEntry[],
   onAction: (action: string) => void
@@ -22,12 +22,12 @@ export function renderMenu (
   }
 }
 
-function renderEntries (entries: MenuEntry[]): HTMLElement[] {
+function renderEntries(entries: MenuEntry[]): HTMLElement[] {
   const reserveCheck = entries.some((entry) => entry.checked !== undefined)
   return entries.map((entry) => renderEntry(entry, reserveCheck))
 }
 
-function renderEntry (entry: MenuEntry, reserveCheck: boolean): HTMLElement {
+function renderEntry(entry: MenuEntry, reserveCheck: boolean): HTMLElement {
   if (entry.label === '—' || entry.action === 'sep') {
     const rule = document.createElement('div')
     rule.className = 'menu-sep'
@@ -72,14 +72,14 @@ function renderEntry (entry: MenuEntry, reserveCheck: boolean): HTMLElement {
   return button
 }
 
-function labelSpan (text: string): HTMLSpanElement {
+function labelSpan(text: string): HTMLSpanElement {
   const span = document.createElement('span')
   span.className = 'label'
   span.textContent = text
   return span
 }
 
-function caret (): HTMLSpanElement {
+function caret(): HTMLSpanElement {
   const span = document.createElement('span')
   span.className = 'caret'
   span.textContent = '›'

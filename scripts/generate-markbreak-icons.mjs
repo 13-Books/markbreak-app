@@ -15,7 +15,6 @@ function pngsToIco (pngBuffers) {
   let offset = headerSize
   const entries = []
   for (const png of pngBuffers) {
-    const size = sharp(png).metadata ? null : null
     entries.push({ png, offset, size: png.length })
     offset += png.length
   }

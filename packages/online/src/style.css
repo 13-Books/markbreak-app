@@ -116,7 +116,9 @@ body {
 
 .title {
   height: 100%;
-  padding: 0 180px 0 48px;
+  /* Symmetric so the name centres on the window, not between the menu button
+     and the word count. */
+  padding: 0 180px;
   font-size: 14px;
   line-height: var(--title-bar-height);
   text-align: center;

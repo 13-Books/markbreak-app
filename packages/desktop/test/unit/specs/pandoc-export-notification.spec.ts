@@ -3,13 +3,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type * as PandocUtils from 'main_renderer/utils/pandoc'
 
 // `menu/actions/file.ts` registers on `ipcMain` at load, so the handler is driven here.
-const { handlers, showSaveDialog, fromWebContents, toFile, listLinkedMedia, sent } = vi.hoisted(
+const { handlers, showSaveDialog, fromWebContents, toFile, listLinkedMedia, writeWithProfile, sent } = vi.hoisted(
   () => ({
     handlers: new Map<string, (...args: unknown[]) => unknown>(),
     showSaveDialog: vi.fn(),
     fromWebContents: vi.fn(),
     toFile: vi.fn(),
     listLinkedMedia: vi.fn(),
+    writeWithProfile: vi.fn(),
     sent: [] as Array<{ channel: string, payload: Record<string, unknown> }>
   })
 )
@@ -46,6 +47,7 @@ vi.mock('main_renderer/utils/pandoc', async(importOriginal) => {
   return {
     default: { toFile },
     PANDOC_EXPORT_FORMATS: [
+      { id: 'odt', label: 'OpenDocument', target: 'odt', extension: '.odt' },
       { id: 'docx', label: 'Word', target: 'docx', extension: '.docx' },
       { id: 'epub', label: 'EPUB', target: 'epub3', extension: '.epub' },
       { id: 'rst', label: 'RST', target: 'rst', extension: '.rst' }
@@ -70,6 +72,14 @@ vi.mock('main_renderer/utils/pandoc', async(importOriginal) => {
   }
 })
 
+// Word, PDF, HTML and ICML go through the MarkBreak dialect profile, not the
+// generic writer these notifications describe; OpenDocument stands in for it.
+vi.mock('main_renderer/utils/markbreakExport', () => ({
+  writeWithProfile,
+  siblingRig: () => null,
+  readBookPage: () => null
+}))
+
 await import('main_renderer/menu/actions/file')
 
 const FAKE_WIN = {
@@ -83,7 +93,7 @@ const FAKE_WIN = {
 }
 
 const EXPORT_PAYLOAD = {
-  target: 'docx',
+  target: 'odt',
   markdown: '# Notes',
   title: 'Notes',
   pathname: '/docs/notes.md',
@@ -97,7 +107,7 @@ const EXPORT_PAYLOAD = {
 }
 
 const exportWith = async(
-  target = 'docx',
+  target = 'odt',
   payload: Partial<typeof EXPORT_PAYLOAD> = {}
 ): Promise<void> => {
   const handler = handlers.get('mt::response-pandoc-export')
@@ -130,8 +140,10 @@ describe('mt::response-pandoc-export notifications', () => {
     toFile.mockReset()
     listLinkedMedia.mockReset()
     listLinkedMedia.mockResolvedValue([])
+    writeWithProfile.mockReset()
+    writeWithProfile.mockResolvedValue(undefined)
 
-    showSaveDialog.mockResolvedValue({ filePath: '/out/notes.docx', canceled: false })
+    showSaveDialog.mockResolvedValue({ filePath: '/out/notes.odt', canceled: false })
     fromWebContents.mockReturnValue(FAKE_WIN)
     toFile.mockResolvedValue({ warnings: '' })
   })
@@ -183,7 +195,7 @@ describe('mt::response-pandoc-export notifications', () => {
     await exportWith()
 
     const failure = notification()
-    expect(failure.title).toBe('editor.export.failed#Word')
+    expect(failure.title).toBe('editor.export.failed#OpenDocument')
     expect(failure.type).toBe('error')
     expect(failure.message).toContain('&lt;script&gt;')
     expect(failure.message).not.toContain('<script>')
@@ -201,7 +213,7 @@ describe('mt::response-pandoc-export notifications', () => {
     expect(sent.find((s) => s.channel === 'mt::export-success')?.payload.linksMedia).toBe(true)
 
     sent.length = 0
-    await exportWith('docx')
+    await exportWith('odt')
     expect(sent.find((s) => s.channel === 'mt::export-success')?.payload.linksMedia).toBe(false)
   })
 
@@ -215,7 +227,7 @@ describe('mt::response-pandoc-export notifications', () => {
     expect(optionsOfLastExport()).toMatchObject({ mirrorMedia: false })
 
     listLinkedMedia.mockResolvedValue(['pics/a.png'])
-    await exportWith('docx')
+    await exportWith('odt')
     expect(optionsOfLastExport()).toMatchObject({ mirrorMedia: false })
   })
 
@@ -240,13 +252,20 @@ describe('mt::response-pandoc-export notifications', () => {
 
     // GFM math stays on the `gfm` reader.
     toFile.mockClear()
-    await exportWith('docx', { texMathGfm: true })
+    await exportWith('odt', { texMathGfm: true })
     expect(optionsOfLastExport().reader).toBe('gfm-footnotes+tex_math_gfm')
 
     // Only `markdown` nests a fancy-list outline.
     toFile.mockClear()
-    await exportWith('docx', { fancyLists: true })
+    await exportWith('odt', { fancyLists: true })
     expect(optionsOfLastExport().reader).toBe('markdown')
+  })
+
+  it('hands Word to the MarkBreak profile instead of the generic writer', async() => {
+    await exportWith('docx')
+    expect(writeWithProfile).toHaveBeenCalledWith('# Notes', 'docx', '/out/notes.odt', null, '/docs/notes.md')
+    expect(toFile).not.toHaveBeenCalled()
+    expect(channelsSent()).toEqual(['mt::export-success'])
   })
 
   // EPUB takes `title` for its title page; `lang` must be the app's, not the spawn locale.
@@ -255,7 +274,7 @@ describe('mt::response-pandoc-export notifications', () => {
     expect(metadataOfLastExport()).toMatchObject({ title: 'Notes', lang: 'en' })
 
     toFile.mockClear()
-    await exportWith('docx')
+    await exportWith('odt')
     expect(metadataOfLastExport()).not.toHaveProperty('title')
     expect(metadataOfLastExport().lang).toBe('en')
   })

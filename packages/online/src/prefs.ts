@@ -38,7 +38,7 @@ const DEFAULTS: OnlinePrefs = {
 
 const WIDTH = /^(?:[0-9]+(?:ch|px|%))?$/
 
-export function loadPrefs (knownThemes: readonly string[]): OnlinePrefs {
+export function loadPrefs(knownThemes: readonly string[]): OnlinePrefs {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return { ...DEFAULTS }
@@ -71,15 +71,15 @@ export function loadPrefs (knownThemes: readonly string[]): OnlinePrefs {
   }
 }
 
-export function savePrefs (prefs: OnlinePrefs): void {
+export function savePrefs(prefs: OnlinePrefs): void {
   localStorage.setItem(KEY, JSON.stringify(prefs))
 }
 
-function flag (value: unknown, fallback: boolean): boolean {
+function flag(value: unknown, fallback: boolean): boolean {
   return typeof value === 'boolean' ? value : fallback
 }
 
-function numberIn (value: unknown, min: number, max: number, fallback: number): number {
+function numberIn(value: unknown, min: number, max: number, fallback: number): number {
   const n = typeof value === 'number' ? value : Number(value)
   if (!Number.isFinite(n)) return fallback
   return Math.min(max, Math.max(min, n))

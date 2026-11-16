@@ -8,7 +8,7 @@ const KEY = 'markbreak.online.recent'
 const LIMIT = 8
 const TEXT_LIMIT = 120_000
 
-export function loadRecent (): RecentDoc[] {
+export function loadRecent(): RecentDoc[] {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return []
@@ -20,7 +20,7 @@ export function loadRecent (): RecentDoc[] {
   }
 }
 
-export function rememberRecent (doc: RecentDoc): void {
+export function rememberRecent(doc: RecentDoc): void {
   const name = doc.name.trim()
   if (!name || name === 'Untitled') return
   const next: RecentDoc = { name }
@@ -32,11 +32,11 @@ export function rememberRecent (doc: RecentDoc): void {
   localStorage.setItem(KEY, JSON.stringify(list.slice(0, LIMIT)))
 }
 
-export function clearRecent (): void {
+export function clearRecent(): void {
   localStorage.removeItem(KEY)
 }
 
-function isDoc (value: unknown): value is RecentDoc {
+function isDoc(value: unknown): value is RecentDoc {
   if (!value || typeof value !== 'object') return false
   const doc = value as RecentDoc
   return typeof doc.name === 'string' && (typeof doc.url === 'string' || typeof doc.text === 'string')

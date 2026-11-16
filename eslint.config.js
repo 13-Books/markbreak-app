@@ -25,6 +25,9 @@ export default [
       // ts/no-explicit-any), so we keep them isolated rather than try to
       // merge two flat configs.
       'packages/muya/**',
+      // Minified bundles from `pnpm --filter markbreak-online build`; linting
+      // them exhausts the CI runner's heap.
+      'site/assets/**',
       'packages/desktop/src/renderer/src/assets/symbolIcon/index.js',
       '**/*.min.json',
       // Playwright writes these next to its config (packages/desktop/), not at

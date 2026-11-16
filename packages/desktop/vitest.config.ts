@@ -28,7 +28,10 @@ export default defineConfig({
       common: resolve(__dirname, 'src/common'),
       '@shared': resolve(__dirname, 'src/shared'),
       main_renderer: resolve(__dirname, 'src/main'),
-      '@muyajs/core': resolve(__dirname, '../muya/src/index.ts')
+      // Mirrors @muyajs/core's exports map (`.` → src/index.ts, `./*` → src/*)
+      // for checkouts where the workspace link cannot be created (no junction
+      // support on the drive).
+      '@muyajs/core': resolve(__dirname, '../muya/src')
     },
     extensions: ['.mjs', '.ts', '.js', '.json']
   }

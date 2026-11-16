@@ -130,7 +130,7 @@ const stageLinkedAssets = async(
   const sourceDir = path.dirname(sourcePath)
   const match = FRONT_MATTER_RE.exec(markdown)
   if (!match) return markdown
-  let yaml = match[1]
+  const yaml = match[1]
   let changed = false
   for (const key of ['meta', 'layout'] as const) {
     const keyRe = new RegExp(`^${key}:\\s*["']?([^"'\\n]+)["']?\\s*$`, 'm')
