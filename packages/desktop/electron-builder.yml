@@ -41,6 +41,18 @@ extraResources:
     filter:
       - '**/*'
       - '!locales/**/!(*.min).json'
+  # Profile filter + CLI bridge for packaged Docx/HTML/PDF export.
+  - from: ../../dialect
+    to: dialect
+    filter:
+      - 'export.sh'
+      - 'README.md'
+      - 'CONFORMANCE.md'
+      - 'markbreak/VERSION'
+      - 'markbreak/specification.md'
+      - 'markbreak/tools/**'
+      - 'markbreak/fixtures/**'
+      - '!**/.git/**'
 npmRebuild: false
 electronLanguages: # Keep Chromium/AppKit locales for the UI languages MarkText supports
   # Values must cover both spellings: "xx-YY" .pak files on Windows/Linux and

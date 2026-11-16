@@ -82,6 +82,8 @@
       "taskList": "Task List",
       "looseListItem": "Loose List Item",
       "horizontalRule": "Horizontal Rule",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break",
       "frontMatter": "Front Matter"
     },
     "window": {
@@ -297,6 +299,13 @@
       "destinationOpen": "A document is already open at the destination path. Close it before trying again."
     }
   },
+  "pagesView": {
+    "editor": "Editor",
+    "source": "Source",
+    "pages": "Pages",
+    "spreads": "Spreads",
+    "hint": "Another view of this manuscript. Folio pages follow //break."
+  },
   "titleBar": {
     "applicationMenu": "Application Menu",
     "minimize": "Minimize",
@@ -385,6 +394,8 @@
         "legal": "US Legal (8.5\" x 13\")",
         "letter": "US Letter (8.5\" x 11\")",
         "tabloid": "Tabloid (17\" x 11\")",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)",
         "custom": "Custom"
       },
       "headerFooterTypes": {
@@ -853,6 +864,8 @@
       "looseListItem": "Loose List Item",
       "paragraph": "Paragraph",
       "horizontalLine": "Horizontal Line",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break",
       "frontMatter": "Front Matter",
       "resetParagraph": "Reset Paragraph",
       "mathBlock": "Math Block",

@@ -47,6 +47,19 @@ export interface PreferencesState {
   trimUnnecessaryCodeBlockEmptyLines: boolean
   wrapCodeBlocks: boolean
   editorLineWidth: string
+  documentViewMode: 'editor' | 'source' | 'pages' | 'spreads'
+  bookPageSize: string
+  bookPageLandscape: boolean
+  bookMarginTopMm: number
+  bookMarginRightMm: number
+  bookMarginBottomMm: number
+  bookMarginLeftMm: number
+  bookTypeFace: string
+  bookTypeSizePt: number
+  bookTypeLeading: number
+  bookTypeTracking: number
+  bookTypeIndentEm: number
+  bookTypeMeasureCh: number
 
   autoPairBracket: boolean
   autoPairMarkdownSyntax: boolean
@@ -172,6 +185,19 @@ export const usePreferencesStore = defineStore('preferences', {
     trimUnnecessaryCodeBlockEmptyLines: true,
     wrapCodeBlocks: false,
     editorLineWidth: '',
+    documentViewMode: 'editor',
+    bookPageSize: 'Trade',
+    bookPageLandscape: false,
+    bookMarginTopMm: 20,
+    bookMarginRightMm: 18,
+    bookMarginBottomMm: 22,
+    bookMarginLeftMm: 22,
+    bookTypeFace: 'Georgia, "Source Serif 4", serif',
+    bookTypeSizePt: 11,
+    bookTypeLeading: 1.4,
+    bookTypeTracking: 0,
+    bookTypeIndentEm: 0,
+    bookTypeMeasureCh: 65,
 
     autoPairBracket: true,
     autoPairMarkdownSyntax: true,

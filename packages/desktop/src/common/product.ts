@@ -12,7 +12,7 @@ export const PRODUCT = {
   cliName: 'markbreak',
   devUserDataDir: 'markbreak-dev',
   portableUserDataDir: 'markbreak-user-data',
-  githubRepoUrl: 'https://github.com/markbreak/markbreak-app',
+  githubRepoUrl: 'https://github.com/13-Books/markbreak-app',
   siteUrl: 'https://markbreak.app',
   dialectUrl: 'https://markbreak.com',
   guidesUrl: 'https://markbreak.app/guides/',

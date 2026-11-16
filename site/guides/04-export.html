@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Step 4 — Export &amp; verify · MarkBreak</title>
-  <meta name="description" content="Export MarkBreak manuscripts through Pandoc and verify hard page breaks in Docx." />
+  <meta name="description" content="Export MarkBreak manuscripts as Docx, HTML, print-proof PDF, and verify hard breaks." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -26,32 +26,36 @@
     <h1>Export &amp; verify</h1>
     <p class="lede">The profile is the contract. The gate proves the break survived.</p>
 
-    <h2>Export</h2>
-    <p>
-      MarkBreak is a profile of Pandoc Markdown.
-      Send the manuscript through Pandoc to Docx (or your press path).
-      Roles should surface as Pandoc Divs with <code>role=…</code>.
-      Hard breaks must remain hard breaks — not soft suggestions.
-    </p>
+    <h2>What the writer exports</h2>
+    <ul>
+      <li><strong>Docx</strong> — MarkBreak profile through Pandoc + <code>markbreak.lua</code>. Roles become Divs; <code>//break</code> / <code>//break page</code> stay hard breaks.</li>
+      <li><strong>HTML</strong> — Same filter; breaks emit <code>break-before</code> CSS. Standalone HTML for review, not the print SoT.</li>
+      <li><strong>Print-proof PDF</strong> — The Pages view at book trim (File → Export as PDF). This is the product PDF.</li>
+      <li><strong>Pandoc PDF</strong> — Secondary path via Convert with Pandoc; labelled as such in the app.</li>
+      <li><strong>IDML</strong> — Spike-gated; ships only after the InDesign/validator exit criteria in <code>docs/IDML-SPIKE.md</code>.</li>
+    </ul>
+
+    <h2>CLI</h2>
+    <pre><code>bash dialect/export.sh --input manuscript.md --format docx
+bash dialect/export.sh --input manuscript.md --format html
+bash dialect/export.sh --input manuscript.md --format pdf --rig book.rig.json</code></pre>
 
     <h2>Verify</h2>
     <p>
-      On the open profile repo, the check fails when Word has no real page break:
+      On the open profile (pinned submodule), the check fails when Word has no real page break:
     </p>
-    <pre><code>bash tools/verify.sh</code></pre>
+    <pre><code>bash dialect/markbreak/tools/verify.sh</code></pre>
     <p>
-      Prefer fixtures over folklore. When a bug class repeats, extend the gates.
-      See <a href="https://markbreak.com">markbreak.com</a> and
-      <a href="https://markbreak.com/specification.md">Specification</a>.
+      Prefer fixtures over folklore. See <a href="https://markbreak.com">markbreak.com</a> and
+      <a href="https://markbreak.com/specification.md">Specification</a> (0.5.1).
     </p>
 
     <h2>Where layout lives</h2>
     <p>
-      The writer writes Docx and PDF from the manuscript.
       <code>meta.md</code> holds the publication record.
       <code>layout</code> points at the RigWorks page for trim and margins.
-      Flow breaks stay hard breaks.
-      Relay, Word, and InDesign still compose after that file exists.
+      The Pages view is another view of the manuscript at that trim — not a second dialect.
+      Flow breaks stay hard breaks into Docx and the print-proof PDF.
     </p>
 
     <div class="pager">

@@ -115,6 +115,82 @@
     "pattern": "^(?:$|[0-9]+(?:ch|px|%)$)",
     "default": ""
   },
+  "documentViewMode": {
+    "description": "Editor--Document view: editor, source, pages, or spreads.",
+    "enum": ["editor", "source", "pages", "spreads"],
+    "default": "editor"
+  },
+  "bookPageSize": {
+    "description": "Editor--Book trim preset for the page view (A5, A4, Letter, Trade, MassMarket, …).",
+    "type": "string",
+    "default": "Trade"
+  },
+  "bookPageLandscape": {
+    "description": "Editor--Landscape orientation for the page view.",
+    "type": "boolean",
+    "default": false
+  },
+  "bookMarginTopMm": {
+    "description": "Editor--Page view top margin in millimetres.",
+    "type": "number",
+    "minimum": 0,
+    "default": 20
+  },
+  "bookMarginRightMm": {
+    "description": "Editor--Page view right margin in millimetres.",
+    "type": "number",
+    "minimum": 0,
+    "default": 18
+  },
+  "bookMarginBottomMm": {
+    "description": "Editor--Page view bottom margin in millimetres.",
+    "type": "number",
+    "minimum": 0,
+    "default": 22
+  },
+  "bookMarginLeftMm": {
+    "description": "Editor--Page view left margin in millimetres.",
+    "type": "number",
+    "minimum": 0,
+    "default": 22
+  },
+  "bookTypeFace": {
+    "description": "Editor--Typeface for the page view.",
+    "type": "string",
+    "default": "Georgia, \"Source Serif 4\", serif"
+  },
+  "bookTypeSizePt": {
+    "description": "Editor--Type size in points for the page view.",
+    "type": "number",
+    "minimum": 6,
+    "maximum": 36,
+    "default": 11
+  },
+  "bookTypeLeading": {
+    "description": "Editor--Line height multiplier for the page view.",
+    "type": "number",
+    "minimum": 1,
+    "maximum": 3,
+    "default": 1.4
+  },
+  "bookTypeTracking": {
+    "description": "Editor--Letter spacing in em for the page view.",
+    "type": "number",
+    "default": 0
+  },
+  "bookTypeIndentEm": {
+    "description": "Editor--First-line indent in em for the page view.",
+    "type": "number",
+    "minimum": 0,
+    "default": 0
+  },
+  "bookTypeMeasureCh": {
+    "description": "Editor--Measure in characters for the page view.",
+    "type": "number",
+    "minimum": 20,
+    "maximum": 100,
+    "default": 65
+  },
   "codeFontSize": {
     "description": "Editor--Font size in code Block, the range is 12 ~ 18",
     "type": "number",

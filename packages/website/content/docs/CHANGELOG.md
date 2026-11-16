@@ -1,3 +1,23 @@
+## 0.1.0
+
+MarkBreak first product release on the MarkText editor base.
+
+### Features
+
+- MarkBreak product identity and packaging (`com.markbreak.app`).
+- Dialect profile pin **0.5.1** with `//break` / `//break page` / odd / even and YAML `role:` / `meta` / `layout`.
+- Insert flow break (menu, Ctrl/Cmd+Shift+Enter, `/np` expansion) in WYSIWYG and source.
+- Pages and Spreads views (another view of the manuscript at book trim: A5, A4, Letter, Trade 6×9, mass-market).
+- Profile Docx and HTML export through packaged `dialect/export.sh` + `markbreak.lua`.
+- Print-proof PDF from the page geometry; Pandoc PDF labelled secondary.
+- Guides and download links for `13-Books/markbreak-app` releases.
+
+### Notes
+
+- macOS builds are unsigned (quarantine workaround in release notes).
+- IDML remains spike-gated (`docs/IDML-SPIKE.md`).
+- Pandoc (and Git Bash on Windows) required for profile Docx/HTML/Pandoc-PDF.
+
 ## 0.23.0
 
 ### Features

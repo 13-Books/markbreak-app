@@ -36,6 +36,7 @@ import pandoc, {
   shouldMirrorMedia
 } from '../../utils/pandoc'
 import { readBookPage, siblingRig, writeWithProfile } from '../../utils/markbreakExport'
+import { getBookPageSize } from 'common/bookPageSizes'
 import { t, getCurrentLanguage } from '../../i18n'
 import type { PandocExportPayload, TabOptions } from '@shared/types/files'
 
@@ -87,9 +88,20 @@ const getPdfPageOptions = (options?: PageOptions): Record<string, unknown> => {
       pageSize: { height: pageSizeHeight * 1000, width: pageSizeWidth * 1000 },
       landscape: !!isLandscape
     }
-  } else {
-    return { pageSize, landscape: !!isLandscape }
   }
+  // Book trims Electron does not name — Trade 6×9 and mass-market.
+  if (pageSize === 'Trade' || pageSize === 'MassMarket') {
+    const size = getBookPageSize(pageSize)
+    if (size) {
+      const width = isLandscape ? size.heightMm : size.widthMm
+      const height = isLandscape ? size.widthMm : size.heightMm
+      return {
+        pageSize: { width: width * 1000, height: height * 1000 },
+        landscape: false
+      }
+    }
+  }
+  return { pageSize, landscape: !!isLandscape }
 }
 
 interface ExportPayload {
@@ -231,13 +243,13 @@ const handlePandocExport = async(e: IpcMainEvent, payload: PandocExportPayload):
     if (canceled || !chosen || win.isDestroyed()) return
     filePath = chosen
     await assertExportDestination(pathname, filePath)
-    const profileFormat = format.target === 'docx' || format.target === 'pdf'
-      ? format.target as 'docx' | 'pdf'
+    const profileFormat = format.target === 'docx' || format.target === 'pdf' || format.target === 'html'
+      ? format.target as 'docx' | 'pdf' | 'html'
       : null
     let warnings = ''
     let linksMedia = false
     if (profileFormat) {
-      await writeWithProfile(markdown, profileFormat, filePath, siblingRig(pathname))
+      await writeWithProfile(markdown, profileFormat, filePath, siblingRig(pathname), pathname)
     } else {
       // The reader is built once the export is certain: naming `tex_math_gfm` needs pandoc
       // to have answered `--list-extensions`, and a cancelled dialog should not pay for it.

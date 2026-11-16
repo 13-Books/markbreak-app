@@ -60,6 +60,8 @@ const keybindings: Map<string, string> = new Map([
   ['paragraph.loose-list-item', 'Command+Option+L'],
   ['paragraph.paragraph', 'Command+0'],
   ['paragraph.horizontal-line', 'Command+Option+-'],
+  ['paragraph.flow-break', 'Command+Shift+Enter'],
+  ['paragraph.flow-break-page', 'Command+Alt+Enter'],
   ['paragraph.front-matter', 'Command+Option+Y'],
 
   ['format.strong', 'Command+B'],

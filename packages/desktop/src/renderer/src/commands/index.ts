@@ -357,6 +357,18 @@ const commands: CommandDescriptor[] = [
     }
   },
   {
+    id: 'paragraph.flow-break',
+    execute: async() => {
+      focusEditorAndExecute(() => bus.emit('insert-flow-break', 'column'))
+    }
+  },
+  {
+    id: 'paragraph.flow-break-page',
+    execute: async() => {
+      focusEditorAndExecute(() => bus.emit('insert-flow-break', 'page'))
+    }
+  },
+  {
     id: 'paragraph.front-matter',
     execute: async() => {
       focusEditorAndExecute(() => bus.emit('paragraph', 'front-matter'))

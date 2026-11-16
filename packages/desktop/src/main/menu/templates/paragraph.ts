@@ -222,6 +222,22 @@ export default function(
         }
       },
       {
+        id: 'flowBreakMenuItem',
+        label: t('menu.paragraph.flowBreak'),
+        accelerator: keybindings.getAccelerator('paragraph.flow-break') ?? undefined,
+        click(_menuItem, focusedWindow) {
+          actions.flowBreak(focusedWindow as BrowserWindow | undefined)
+        }
+      },
+      {
+        id: 'flowBreakPageMenuItem',
+        label: t('menu.paragraph.flowBreakPage'),
+        accelerator: keybindings.getAccelerator('paragraph.flow-break-page') ?? undefined,
+        click(_menuItem, focusedWindow) {
+          actions.flowBreakPage(focusedWindow as BrowserWindow | undefined)
+        }
+      },
+      {
         id: 'frontMatterMenuItem',
         label: t('menu.paragraph.frontMatter'),
         type: 'checkbox',

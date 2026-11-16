@@ -8,7 +8,7 @@ fi
 set -euo pipefail
 
 usage() {
-  echo "Usage: dialect/export.sh --input manuscript.md [--format docx|pdf] [--out file] [--rig book.rig.json]" >&2
+  echo "Usage: dialect/export.sh --input manuscript.md [--format docx|pdf|html] [--out file] [--rig book.rig.json]" >&2
 }
 
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -62,9 +62,9 @@ if [[ -z "$input" || ! -f "$input" ]]; then
   exit 1
 fi
 case "$format" in
-  docx | pdf) ;;
+  docx | pdf | html) ;;
   *)
-    echo "Format must be docx or pdf." >&2
+    echo "Format must be docx, pdf, or html." >&2
     exit 1
     ;;
 esac
@@ -512,27 +512,27 @@ const main = () => {
       if (book.isbn) subject.push(`ISBN ${book.isbn}`)
       if (subject.length) args.push('--metadata', `subject=${subject.join('. ')}`)
     }
-    if (book?.page) {
+    if (book?.page && format === 'pdf') {
       const page = book.page
-      if (format === 'pdf') {
-        let geo = `paperwidth=${page.widthMm}mm,paperheight=${page.heightMm}mm,top=${page.top}mm,bottom=${page.bottom}mm`
-        if (page.facing) {
-          let inner = page.left
-          let outer = page.right
-          if (page.binding === 'right') {
-            inner = page.right
-            outer = page.left
-          }
-          geo += `,twoside,inner=${inner}mm,outer=${outer}mm`
-        } else {
-          geo += `,right=${page.right}mm,left=${page.left}mm`
+      let geo = `paperwidth=${page.widthMm}mm,paperheight=${page.heightMm}mm,top=${page.top}mm,bottom=${page.bottom}mm`
+      if (page.facing) {
+        let inner = page.left
+        let outer = page.right
+        if (page.binding === 'right') {
+          inner = page.right
+          outer = page.left
         }
-        args.push('-V', `geometry=${geo}`)
+        geo += `,twoside,inner=${inner}mm,outer=${outer}mm`
       } else {
-        const ref = referenceDoc(page)
-        refDir = ref.dir
-        args.push(`--reference-doc=${ref.patched}`)
+        geo += `,right=${page.right}mm,left=${page.left}mm`
       }
+      args.push('-V', `geometry=${geo}`)
+    } else if (book?.page && format === 'docx') {
+      const ref = referenceDoc(book.page)
+      refDir = ref.dir
+      args.push(`--reference-doc=${ref.patched}`)
+    } else if (format === 'html') {
+      args.push('--standalone', '--embed-resources')
     }
     const proc = spawnSync(pandoc, args, { windowsHide: true, stdio: 'inherit' })
     if (proc.error) throw proc.error

@@ -46,6 +46,20 @@ export interface UserPreferences extends RecoveryPreferences {
   lineHeight: number
   wrapCodeBlocks: boolean
   editorLineWidth: string
+  /** Another view of the manuscript: editor | source | pages | spreads */
+  documentViewMode: 'editor' | 'source' | 'pages' | 'spreads'
+  bookPageSize: string
+  bookPageLandscape: boolean
+  bookMarginTopMm: number
+  bookMarginRightMm: number
+  bookMarginBottomMm: number
+  bookMarginLeftMm: number
+  bookTypeFace: string
+  bookTypeSizePt: number
+  bookTypeLeading: number
+  bookTypeTracking: number
+  bookTypeIndentEm: number
+  bookTypeMeasureCh: number
   codeFontSize: number
   codeFontFamily: string
   codeBlockLineNumbers: boolean

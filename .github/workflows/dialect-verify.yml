@@ -1,0 +1,34 @@
+name: Dialect Verify
+
+on:
+  pull_request:
+    paths:
+      - 'dialect/**'
+      - 'packages/desktop/src/main/utils/markbreakExport.ts'
+      - 'packages/desktop/src/common/markbreakBreaks.ts'
+      - '.github/workflows/dialect-verify.yml'
+  push:
+    branches: [develop]
+    paths:
+      - 'dialect/**'
+      - 'packages/desktop/src/main/utils/markbreakExport.ts'
+      - 'packages/desktop/src/common/markbreakBreaks.ts'
+      - '.github/workflows/dialect-verify.yml'
+
+concurrency:
+  group: dialect-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Install Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      - name: Run MarkBreak profile gate
+        run: bash dialect/markbreak/tools/verify.sh

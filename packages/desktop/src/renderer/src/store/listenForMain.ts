@@ -58,6 +58,9 @@ export const useListenForMainStore = defineStore('listenForMain', () => {
     window.electron.ipcRenderer.on('mt::editor-paragraph-action', (_e, { type }) => {
       bus.emit('paragraph', type)
     })
+    window.electron.ipcRenderer.on('mt::editor-insert-flow-break', (_e, { kind }) => {
+      bus.emit('insert-flow-break', kind)
+    })
     window.electron.ipcRenderer.on('mt::editor-format-action', (_e, { type }) => {
       bus.emit('format', type)
     })

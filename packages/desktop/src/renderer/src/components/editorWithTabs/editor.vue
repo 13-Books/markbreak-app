@@ -142,6 +142,12 @@ import {
 import { findActiveHeadingSlug, type HeadingPosition } from '@/util/findActiveHeading'
 import { addCommonStyle, setEditorWidth } from '@/util/theme'
 import { isDarkThemeId, resolveMermaidTheme } from 'common/theme'
+import {
+  expandNpToken,
+  FLOW_BREAK_LINES,
+  type FlowBreakKind,
+  migrateAuthorBreaks
+} from 'common/markbreakBreaks'
 import { usePreferencesStore } from '@/store/preferences'
 import {
   registerDocumentView,
@@ -236,6 +242,7 @@ const typewriter = computed(() => typewriterPreference.value && !currentFile.val
 const focus = computed(() => focusPreference.value && !currentFile.value?.readOnly)
 let loadingContent = false
 let releaseViewState: (() => void) | undefined
+let npKeydownTarget: HTMLElement | null = null
 let renderedDocumentId: string | null = null
 let renderedMarkdown = ''
 const readingSelectionChanged = () => {
@@ -1419,6 +1426,39 @@ const handleEditParagraph = (type: unknown) => {
   }
 }
 
+const handleInsertFlowBreak = (kind: unknown) => {
+  const breakKind = (kind === 'page' || kind === 'odd' || kind === 'even' ? kind : 'column') as FlowBreakKind
+  const line = FLOW_BREAK_LINES[breakKind]
+  if (sourceCode.value) {
+    bus.emit('source-insert-flow-break', breakKind)
+    return
+  }
+  if (!editor.value) return
+  // Own paragraph so the filter sees an isolated break line (spec §5).
+  editor.value.insertParagraph('after', line, true)
+  editor.value.insertParagraph('after', '', true)
+}
+
+const tryExpandNpOnKeydown = (event: KeyboardEvent) => {
+  if (sourceCode.value || !editor.value) return
+  if (event.key !== ' ' && event.key !== 'Enter') return
+  if (event.ctrlKey || event.metaKey || event.altKey) return
+  // Host-side /np → //break; Muya keeps the active content leaf on the editor.
+  const muyaEditor = (editor.value as { editor?: { activeContentBlock?: { text?: string, textContent?: string } | null } }).editor
+  const block = muyaEditor?.activeContentBlock
+  const text = block?.text
+  if (typeof text !== 'string') return
+  const expansion = expandNpToken(text, event.key === 'Enter' ? '\n' : ' ')
+  if (!expansion) return
+  event.preventDefault()
+  event.stopPropagation()
+  const replaced = editor.value.replaceCurrentWordInlineUnsafe('/np', FLOW_BREAK_LINES.column)
+  if (!replaced) {
+    editor.value.insertParagraph('after', FLOW_BREAK_LINES.column, true)
+  }
+  editor.value.insertParagraph('after', '', true)
+}
+
 const handleParagraph = (type: unknown) => {
   if (sourceCode.value) {
     return
@@ -1464,9 +1504,10 @@ const setMarkdownToEditor = (payload: unknown) => {
     captureHeadingFolds()
     // `setContent` resets the document and clears the undo history; only set a
     // cursor afterwards (a freshly-opened file has no history to restore).
-    editor.value.setContent(newMarkdown ?? '')
+    const markdown = migrateAuthorBreaks(newMarkdown ?? '')
+    editor.value.setContent(markdown)
     renderedDocumentId = id ?? currentFile.value?.id ?? null
-    renderedMarkdown = newMarkdown ?? ''
+    renderedMarkdown = markdown
     // Seed baseline ID 0 from engine serialization so undoing the first edit marks the tab clean.
     if (id) {
       resetSyntheticHistory(id, editor.value.getMarkdown())
@@ -1871,10 +1912,12 @@ onMounted(() => {
   }
 
   const container = getScrollContainer()!
+  npKeydownTarget = container
   renderedDocumentId = currentFile.value?.id ?? null
   renderedMarkdown = currentFile.value?.markdown ?? ''
   releaseViewState = registerRenderedViewState({ documentId: () => renderedDocumentId, markdown: () => renderedMarkdown, view: { engine: muya, container, refreshToc: () => editorStore.UPDATE_TOC(muya.getTOC()) } })
   muya.on('selection-change', documentViewChanged)
+  container.addEventListener('keydown', tryExpandNpOnKeydown, true)
 
   bus.on('language-changed', handleLanguageChanged)
 
@@ -1895,6 +1938,7 @@ onMounted(() => {
   bus.on('export', handleExport)
   bus.on('print-service-clearup', handlePrintServiceClearup)
   bus.on('paragraph', handleEditParagraph)
+  bus.on('insert-flow-break', handleInsertFlowBreak)
   bus.on('format', handleInlineFormat)
   bus.on('searchValue', handleSearch)
   bus.on('search-visibility', handleSearchVisibility)
@@ -2059,6 +2103,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
   releaseViewState?.()
   registerDocumentView(null)
+  if (npKeydownTarget) {
+    npKeydownTarget.removeEventListener('keydown', tryExpandNpOnKeydown, true)
+    npKeydownTarget = null
+  }
   document.removeEventListener('selectionchange', readingSelectionChanged)
   bus.off('file-loaded', setMarkdownToEditor)
   bus.off('invalidate-image-cache', handleInvalidateImageCache)
@@ -2068,6 +2116,7 @@ onBeforeUnmount(() => {
   bus.off('export', handleExport)
   bus.off('print-service-clearup', handlePrintServiceClearup)
   bus.off('paragraph', handleEditParagraph)
+  bus.off('insert-flow-break', handleInsertFlowBreak)
   bus.off('format', handleInlineFormat)
   bus.off('searchValue', handleSearch)
   bus.off('search-visibility', handleSearchVisibility)

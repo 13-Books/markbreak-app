@@ -16,8 +16,9 @@ export interface PandocExportFormat {
 }
 
 export const PANDOC_EXPORT_FORMATS: readonly PandocExportFormat[] = Object.freeze([
-  { id: 'docx', label: 'Word (.docx)', target: 'docx', extension: '.docx' },
-  { id: 'pdf', label: 'PDF (.pdf)', target: 'pdf', extension: '.pdf' },
+  { id: 'docx', label: 'Word (.docx) — MarkBreak profile', target: 'docx', extension: '.docx' },
+  { id: 'html', label: 'HTML (.html) — MarkBreak profile', target: 'html', extension: '.html' },
+  { id: 'pdf', label: 'Pandoc PDF (.pdf) — secondary', target: 'pdf', extension: '.pdf' },
   { id: 'odt', label: 'OpenDocument (.odt)', target: 'odt', extension: '.odt' },
   { id: 'rtf', label: 'RTF (.rtf)', target: 'rtf', extension: '.rtf' },
   { id: 'epub', label: 'EPUB (.epub)', target: 'epub3', extension: '.epub' },

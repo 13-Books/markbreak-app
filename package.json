@@ -1,6 +1,6 @@
 {
   "name": "markbreak-app",
-  "version": "0.1.0-dev",
+  "version": "0.1.0",
   "description": "MarkBreak writer for print manuscripts",
   "private": true,
   "homepage": "https://markbreak.app",

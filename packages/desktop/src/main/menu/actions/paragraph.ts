@@ -85,6 +85,18 @@ export const horizontalLine = (win: Win): void => {
   transformEditorElement(win, 'hr')
 }
 
+export const flowBreak = (win: Win): void => {
+  if (win && win.webContents) {
+    win.webContents.send('mt::editor-insert-flow-break', { kind: 'column' })
+  }
+}
+
+export const flowBreakPage = (win: Win): void => {
+  if (win && win.webContents) {
+    win.webContents.send('mt::editor-insert-flow-break', { kind: 'page' })
+  }
+}
+
 export const htmlBlock = (win: Win): void => {
   transformEditorElement(win, 'html')
 }
@@ -138,6 +150,8 @@ export const loadParagraphCommands = (commandManager: CommandManager): void => {
   commandManager.add(COMMANDS.PARAGRAPH_HEADING_5, heading5)
   commandManager.add(COMMANDS.PARAGRAPH_HEADING_6, heading6)
   commandManager.add(COMMANDS.PARAGRAPH_HORIZONTAL_LINE, horizontalLine)
+  commandManager.add(COMMANDS.PARAGRAPH_FLOW_BREAK, flowBreak)
+  commandManager.add(COMMANDS.PARAGRAPH_FLOW_BREAK_PAGE, flowBreakPage)
   commandManager.add(COMMANDS.PARAGRAPH_HTML_BLOCK, htmlBlock)
   commandManager.add(COMMANDS.PARAGRAPH_LOOSE_LIST_ITEM, looseListItem)
   commandManager.add(COMMANDS.PARAGRAPH_MATH_FORMULA, mathFormula)

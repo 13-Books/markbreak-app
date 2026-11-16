@@ -228,6 +228,7 @@ export interface IpcMainEventChannels extends StateIpcMainEvents {
   'mt::editor-format-action': [payload: { type: string }]
   'mt::editor-move-file': []
   'mt::editor-paragraph-action': [payload: { type: string }]
+  'mt::editor-insert-flow-break': [payload: { kind: 'column' | 'page' | 'odd' | 'even' }]
   'mt::editor-rename-file': []
   'mt::execute-command-by-id': [commandId: string]
   'mt::export-success': [payload: { type: string; filePath: string; linksMedia?: boolean }]

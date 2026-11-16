@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 import { existsSync, readFileSync } from 'fs'
-import { mkdtemp, rm, writeFile } from 'fs/promises'
+import { copyFile, mkdir, mkdtemp, rm, writeFile } from 'fs/promises'
 import { tmpdir } from 'os'
 import path from 'path'
 import { app } from 'electron'
@@ -13,6 +13,8 @@ export interface BookPageMm {
   bottom: number
   left: number
 }
+
+export type ProfileExportFormat = 'docx' | 'pdf' | 'html'
 
 const toMm = (value: number, unit: string): number => {
   if (unit === 'in') return value * 25.4
@@ -59,27 +61,43 @@ export const siblingRig = (pathname?: string): string | undefined => {
   return existsSync(rig) ? rig : undefined
 }
 
-export const findExportScript = (): string | null => {
-  const seeds = [process.cwd()]
+/** Dialect root: packaged resources, then walk from cwd / app path (dev). */
+export const findDialectRoot = (): string | null => {
+  const candidates: string[] = []
   try {
-    seeds.push(app.getAppPath())
+    candidates.push(path.join(process.resourcesPath, 'dialect'))
+  } catch {
+    // Before ready / non-packaged.
+  }
+  try {
+    candidates.push(path.join(app.getAppPath(), 'dialect'))
+    candidates.push(path.join(app.getAppPath(), '..', '..', 'dialect'))
   } catch {
     // The helper is also called before the app is ready.
   }
-  const seen = new Set<string>()
-  for (const seed of seeds) {
-    let dir = seed
-    for (let i = 0; i < 8; i++) {
-      if (!dir || seen.has(dir)) break
-      seen.add(dir)
-      const candidate = path.join(dir, 'dialect', 'export.sh')
-      if (existsSync(candidate)) return candidate
-      const parent = path.dirname(dir)
-      if (parent === dir) break
-      dir = parent
-    }
+  let dir = process.cwd()
+  for (let i = 0; i < 8; i++) {
+    candidates.push(path.join(dir, 'dialect'))
+    const parent = path.dirname(dir)
+    if (parent === dir) break
+    dir = parent
+  }
+  for (const candidate of candidates) {
+    if (existsSync(path.join(candidate, 'export.sh'))) return candidate
   }
   return null
+}
+
+export const findExportScript = (): string | null => {
+  const root = findDialectRoot()
+  return root ? path.join(root, 'export.sh') : null
+}
+
+export const findMarkbreakFilter = (): string | null => {
+  const root = findDialectRoot()
+  if (!root) return null
+  const filter = path.join(root, 'markbreak', 'tools', 'markbreak.lua')
+  return existsSync(filter) ? filter : null
 }
 
 /**
@@ -100,25 +118,62 @@ const windowsBash = (): string | null => {
   return null
 }
 
-/** Docx or PDF through dialect/export.sh, which owns the filter and the page. */
+const FRONT_MATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---/
+
+/** Copy manuscript-relative meta/layout into the temp export folder when named in YAML. */
+const stageLinkedAssets = async(
+  markdown: string,
+  sourcePath: string | undefined,
+  stagingDir: string
+): Promise<string> => {
+  if (!sourcePath) return markdown
+  const sourceDir = path.dirname(sourcePath)
+  const match = FRONT_MATTER_RE.exec(markdown)
+  if (!match) return markdown
+  let yaml = match[1]
+  let changed = false
+  for (const key of ['meta', 'layout'] as const) {
+    const keyRe = new RegExp(`^${key}:\\s*["']?([^"'\\n]+)["']?\\s*$`, 'm')
+    const hit = keyRe.exec(yaml)
+    if (!hit) continue
+    const rel = hit[1].trim()
+    if (!rel || rel.includes('..') || path.isAbsolute(rel)) continue
+    const from = path.join(sourceDir, rel)
+    if (!existsSync(from)) continue
+    const dest = path.join(stagingDir, rel)
+    await mkdir(path.dirname(dest), { recursive: true })
+    await copyFile(from, dest)
+    changed = true
+  }
+  void changed
+  return markdown
+}
+
+/** Docx, HTML, or PDF through dialect/export.sh, which owns the filter and the page. */
 export const writeWithProfile = async(
   markdown: string,
-  format: 'docx' | 'pdf',
+  format: ProfileExportFormat,
   outFile: string,
-  rigFile?: string
+  rigFile?: string,
+  sourcePath?: string
 ): Promise<void> => {
   const script = findExportScript()
-  if (!script) throw new Error('dialect/export.sh not found')
+  if (!script) throw new Error('dialect/export.sh not found (is the dialect bundled?)')
+  if (!findMarkbreakFilter()) {
+    throw new Error('dialect/markbreak/tools/markbreak.lua not found (init the submodule or package dialect).')
+  }
   const bash = process.platform === 'win32' ? windowsBash() : 'bash'
-  if (!bash) throw new Error('Git Bash was not found. Docx and PDF export runs dialect/export.sh.')
+  if (!bash) throw new Error('Git Bash was not found. Profile export runs dialect/export.sh.')
   const dir = await mkdtemp(path.join(tmpdir(), 'mb-export-'))
   const manuscript = path.join(dir, 'manuscript.md')
-  await writeFile(manuscript, markdown.replace(/\r\n?/g, '\n'), 'utf8')
+  const normalized = markdown.replace(/\r\n?/g, '\n')
+  const staged = await stageLinkedAssets(normalized, sourcePath, dir)
+  await writeFile(manuscript, staged, 'utf8')
   const args = [script, '--input', manuscript, '--format', format, '--out', outFile]
   if (rigFile) args.push('--rig', rigFile)
   try {
     await new Promise<void>((resolve, reject) => {
-      const proc = spawn(bash, args, { windowsHide: true })
+      const proc = spawn(bash, args, { windowsHide: true, cwd: dir })
       let output = ''
       proc.stdout.on('data', (chunk: Buffer | string) => { output += chunk.toString() })
       proc.stderr.on('data', (chunk: Buffer | string) => { output += chunk.toString() })

@@ -7,6 +7,12 @@ on:
     # Skip the desktop lint+typecheck on muya-only PRs.
     paths-ignore:
       - 'packages/muya/**'
+  push:
+    branches: [develop]
+    paths-ignore:
+      - 'packages/muya/**'
+      - 'site/**'
+      - 'docs/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

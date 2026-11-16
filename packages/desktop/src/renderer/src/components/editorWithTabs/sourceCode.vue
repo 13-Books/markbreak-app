@@ -30,6 +30,7 @@ import { adjustCursor, isWindows } from '../../util'
 import { getSourceExtraKeys } from '../../codeMirror/keybindings'
 import bus from '../../bus'
 import { oneDarkThemes, railscastsThemes } from '@/config'
+import { FLOW_BREAK_LINES, flowBreakInsertSnippet, type FlowBreakKind } from 'common/markbreakBreaks'
 
 interface MuyaIndexCursorLike {
   anchor: CodeMirror.Position
@@ -409,6 +410,14 @@ const handleScrollToHeader = (slug: unknown) => {
   scrollSourceEditorToLine(editor.value, line, sourceCodeContainer.value)
 }
 
+const handleSourceInsertFlowBreak = (kind: unknown) => {
+  if (!editor.value) return
+  const breakKind = (kind === 'page' || kind === 'odd' || kind === 'even' ? kind : 'column') as FlowBreakKind
+  editor.value.replaceSelection(flowBreakInsertSnippet(breakKind), 'around')
+  // Ensure the canonical line is visible in the buffer even if the caret was mid-line.
+  void FLOW_BREAK_LINES[breakKind]
+}
+
 onMounted(() => {
   if (!currentTab.value) return
   const { id } = currentTab.value
@@ -444,6 +453,7 @@ onMounted(() => {
   bus.on('redo', handleRedo)
   bus.on('image-action', handleImageAction)
   bus.on('scroll-to-header', handleScrollToHeader)
+  bus.on('source-insert-flow-break', handleSourceInsertFlowBreak)
 
   // CodeMirror's line tree relies on object identity and must not be proxied by Vue.
   const codeMirrorInstance = markRaw(codeMirror(container, codeMirrorConfig))
@@ -513,6 +523,7 @@ onBeforeUnmount(() => {
   editorStore.SET_SELECTION_WORD_COUNT(null)
   lastSelectionKey = ''
   bus.off('scroll-to-header', handleScrollToHeader)
+  bus.off('source-insert-flow-break', handleSourceInsertFlowBreak)
 
   if (editor.value) {
     const { cursor, markdown: newMarkdown } = getMarkdownAndCursor(editor.value)

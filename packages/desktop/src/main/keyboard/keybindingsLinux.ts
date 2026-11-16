@@ -64,6 +64,8 @@ const keybindings: Map<string, string> = new Map([
   ['paragraph.loose-list-item', 'Ctrl+Shift+L'],
   ['paragraph.paragraph', 'Ctrl+Shift+0'],
   ['paragraph.horizontal-line', 'Ctrl+_'], // Ctrl+Shift+-
+  ['paragraph.flow-break', 'Ctrl+Shift+Enter'],
+  ['paragraph.flow-break-page', 'Ctrl+Alt+Enter'],
   ['paragraph.front-matter', 'Ctrl+Shift+Y'],
 
   ['format.strong', 'Ctrl+B'],

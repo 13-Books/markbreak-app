@@ -1,7 +1,7 @@
 {
   "name": "markbreak",
   "productName": "MarkBreak",
-  "version": "0.1.0-dev",
+  "version": "0.1.0",
   "description": "MarkBreak — print manuscript writer",
   "main": "./out/main/index.js",
   "author": {
@@ -29,7 +29,7 @@
   "homepage": "https://markbreak.app",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/markbreak/markbreak-app.git"
+    "url": "git+https://github.com/13-Books/markbreak-app.git"
   },
   "scripts": {
     "minify-locales": "tsx ../../scripts/minify-locales.ts",

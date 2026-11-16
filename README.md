@@ -41,7 +41,7 @@ That writes `site/edit.html`.
 
 ## Dialect export (Docx)
 
-Profile is pinned via submodule `dialect/markbreak` (**0.4.0**). Init once, then export with Pandoc installed:
+Profile is pinned via submodule `dialect/markbreak` (**0.5.1**). Init once, then export with Pandoc installed:
 
 ```bash
 git submodule update --init --recursive
