@@ -1,0 +1,40 @@
+name: Publish site
+
+# markbreak.app is the static `site/` directory, including the online editor
+# that `pnpm --filter markbreak-online build` writes into it.
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'site/**'
+      - '.github/workflows/site-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: site-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # serve.mjs is the local preview server, not part of the site.
+      - name: Stage site
+        run: rsync -a --exclude serve.mjs site/ _site/
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
