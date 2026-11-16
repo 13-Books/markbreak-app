@@ -33,6 +33,7 @@ vi.mock('main_renderer/windows/utils', () => ({
 }))
 vi.mock('main_renderer/contextMenu/editor', () => ({ showEditorContextMenu: vi.fn() }))
 vi.mock('main_renderer/spellchecker', () => ({ switchLanguage: vi.fn() }))
+vi.mock('main_renderer/staticPath', () => ({ getAppIconPath: () => 'icon.png' }))
 
 import { ipcMain } from 'electron'
 import EditorWindow from 'main_renderer/windows/editor'
