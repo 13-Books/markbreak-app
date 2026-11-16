@@ -15,9 +15,9 @@ describe('markbreak dialect packaging contract', () => {
     expect(existsSync(path.join(dialectRoot, 'markbreak', 'VERSION'))).toBe(true)
   })
 
-  it('pins profile 0.5.1', async() => {
+  it('pins profile 0.5.2', async() => {
     const { readFile } = await import('fs/promises')
     const version = (await readFile(path.join(dialectRoot, 'markbreak', 'VERSION'), 'utf8')).trim()
-    expect(version).toBe('0.5.1')
+    expect(version).toBe('0.5.2')
   })
 })

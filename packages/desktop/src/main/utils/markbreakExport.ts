@@ -14,7 +14,7 @@ export interface BookPageMm {
   left: number
 }
 
-export type ProfileExportFormat = 'docx' | 'pdf' | 'html'
+export type ProfileExportFormat = 'docx' | 'pdf' | 'html' | 'icml'
 
 const toMm = (value: number, unit: string): number => {
   if (unit === 'in') return value * 25.4

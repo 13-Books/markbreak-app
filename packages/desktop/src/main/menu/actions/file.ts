@@ -243,9 +243,10 @@ const handlePandocExport = async(e: IpcMainEvent, payload: PandocExportPayload):
     if (canceled || !chosen || win.isDestroyed()) return
     filePath = chosen
     await assertExportDestination(pathname, filePath)
-    const profileFormat = format.target === 'docx' || format.target === 'pdf' || format.target === 'html'
-      ? format.target as 'docx' | 'pdf' | 'html'
-      : null
+    const profileFormat =
+      format.target === 'docx' || format.target === 'pdf' || format.target === 'html' || format.target === 'icml'
+        ? format.target as 'docx' | 'pdf' | 'html' | 'icml'
+        : null
     let warnings = ''
     let linksMedia = false
     if (profileFormat) {

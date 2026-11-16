@@ -8,7 +8,7 @@ fi
 set -euo pipefail
 
 usage() {
-  echo "Usage: dialect/export.sh --input manuscript.md [--format docx|pdf|html] [--out file] [--rig book.rig.json]" >&2
+  echo "Usage: dialect/export.sh --input manuscript.md [--format docx|pdf|html|icml] [--out file] [--rig book.rig.json]" >&2
 }
 
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -62,9 +62,9 @@ if [[ -z "$input" || ! -f "$input" ]]; then
   exit 1
 fi
 case "$format" in
-  docx | pdf | html) ;;
+  docx | pdf | html | icml) ;;
   *)
-    echo "Format must be docx, pdf, or html." >&2
+    echo "Format must be docx, pdf, html, or icml." >&2
     exit 1
     ;;
 esac
@@ -534,6 +534,7 @@ const main = () => {
     } else if (format === 'html') {
       args.push('--standalone', '--embed-resources')
     }
+    // icml: fragment for InDesign Place; roles/breaks come from the filter.
     const proc = spawnSync(pandoc, args, { windowsHide: true, stdio: 'inherit' })
     if (proc.error) throw proc.error
     if (proc.status !== 0) {

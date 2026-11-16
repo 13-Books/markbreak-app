@@ -30,14 +30,15 @@
     <ul>
       <li><strong>Docx</strong> — MarkBreak profile through Pandoc + <code>markbreak.lua</code>. Roles become Divs; <code>//break</code> / <code>//break page</code> stay hard breaks.</li>
       <li><strong>HTML</strong> — Same filter; breaks emit <code>break-before</code> CSS. Standalone HTML for review, not the print SoT.</li>
+      <li><strong>ICML</strong> — InDesign/InCopy markup for Place into a template. Roles become <code>ParagraphStyle/{role}</code>; breaks are hard <code>Br</code> types. Packaged IDML is later.</li>
       <li><strong>Print-proof PDF</strong> — The Pages view at book trim (File → Export as PDF). This is the product PDF.</li>
       <li><strong>Pandoc PDF</strong> — Secondary path via Convert with Pandoc; labelled as such in the app.</li>
-      <li><strong>IDML</strong> — Spike-gated; ships only after the InDesign/validator exit criteria in <code>docs/IDML-SPIKE.md</code>.</li>
     </ul>
 
     <h2>CLI</h2>
     <pre><code>bash dialect/export.sh --input manuscript.md --format docx
 bash dialect/export.sh --input manuscript.md --format html
+bash dialect/export.sh --input manuscript.md --format icml
 bash dialect/export.sh --input manuscript.md --format pdf --rig book.rig.json</code></pre>
 
     <h2>Verify</h2>
