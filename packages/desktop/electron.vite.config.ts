@@ -60,6 +60,10 @@ export default defineConfig({
         '@': resolve(__dirname, 'src/renderer/src'),
         common: resolve(__dirname, 'src/common'),
         '@shared': resolve(__dirname, 'src/shared'),
+        // Bundler must hit Muya source. tsconfig maps `@muyajs/core` to emitted
+        // `.d.ts` for vue-tsc only; without this alias Vite/Rolldown follows that
+        // types path when the workspace link is missing or ignored.
+        '@muyajs/core': resolve(__dirname, '../muya/src/index.ts'),
         // Shared `common/*` helpers import the bare `path` specifier; route it to
         // a platform-correct module so the renderer never builds mixed-separator
         // paths (#5683).

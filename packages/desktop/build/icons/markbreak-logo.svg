@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#2A2B36"/>
+  <g fill="#F2EFE8">
+    <!-- M -->
+    <path d="
+      M 148 340
+      L 148 140
+      L 190 140
+      L 256 292
+      L 322 140
+      L 364 140
+      L 364 340
+      L 322 340
+      L 322 230
+      L 280 324
+      L 232 324
+      L 190 230
+      L 190 340
+      Z
+    "/>
+    <!-- Keyboard return under the mark -->
+    <path d="
+      M 364 368
+      L 230 368
+      L 230 348
+      L 208 348
+      L 176 384
+      L 208 420
+      L 230 420
+      L 230 400
+      L 364 400
+      Z
+    "/>
+  </g>
+</svg>

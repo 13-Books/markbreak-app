@@ -27,7 +27,8 @@ export default defineConfig({
       '@': resolve(__dirname, 'src/renderer/src'),
       common: resolve(__dirname, 'src/common'),
       '@shared': resolve(__dirname, 'src/shared'),
-      main_renderer: resolve(__dirname, 'src/main')
+      main_renderer: resolve(__dirname, 'src/main'),
+      '@muyajs/core': resolve(__dirname, '../muya/src/index.ts')
     },
     extensions: ['.mjs', '.ts', '.js', '.json']
   }

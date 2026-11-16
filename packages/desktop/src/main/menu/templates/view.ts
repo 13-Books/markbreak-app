@@ -35,6 +35,26 @@ export default function(keybindings: Keybindings): MenuItemConstructorOptions {
       }
     },
     {
+      id: 'pagesViewMenuItem',
+      label: t('menu.view.pagesMode'),
+      accelerator: keybindings.getAccelerator('view.pages-mode') ?? undefined,
+      type: 'checkbox',
+      checked: false,
+      click(_item, focusedWindow) {
+        actions.togglePagesView(focusedWindow as BrowserWindow | undefined)
+      }
+    },
+    {
+      id: 'spreadsViewMenuItem',
+      label: t('menu.view.spreadsMode'),
+      accelerator: keybindings.getAccelerator('view.spreads-mode') ?? undefined,
+      type: 'checkbox',
+      checked: false,
+      click(_item, focusedWindow) {
+        actions.toggleSpreadsView(focusedWindow as BrowserWindow | undefined)
+      }
+    },
+    {
       id: 'typewriterModeMenuItem',
       label: t('menu.view.typewriterMode'),
       accelerator: keybindings.getAccelerator('view.typewriter-mode') ?? undefined,

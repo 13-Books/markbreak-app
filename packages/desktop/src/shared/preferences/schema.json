@@ -123,7 +123,7 @@
   "bookPageSize": {
     "description": "Editor--Book trim preset for the page view (A5, A4, Letter, Trade, MassMarket, …).",
     "type": "string",
-    "default": "Trade"
+    "default": "BFormat"
   },
   "bookPageLandscape": {
     "description": "Editor--Landscape orientation for the page view.",
@@ -134,25 +134,25 @@
     "description": "Editor--Page view top margin in millimetres.",
     "type": "number",
     "minimum": 0,
-    "default": 20
+    "default": 10
   },
   "bookMarginRightMm": {
     "description": "Editor--Page view right margin in millimetres.",
     "type": "number",
     "minimum": 0,
-    "default": 18
+    "default": 12.5
   },
   "bookMarginBottomMm": {
     "description": "Editor--Page view bottom margin in millimetres.",
     "type": "number",
     "minimum": 0,
-    "default": 22
+    "default": 15
   },
   "bookMarginLeftMm": {
     "description": "Editor--Page view left margin in millimetres.",
     "type": "number",
     "minimum": 0,
-    "default": 22
+    "default": 12.5
   },
   "bookTypeFace": {
     "description": "Editor--Typeface for the page view.",

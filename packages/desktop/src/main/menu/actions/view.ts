@@ -46,6 +46,24 @@ export const toggleSourceCodeMode = (win: Win): void => {
   toggleTypeMode(win, 'sourceCode')
 }
 
+export const togglePagesView = (win: Win): void => {
+  if (win && win.webContents) {
+    win.webContents.send('mt::toggle-document-view-mode', 'pages')
+  }
+}
+
+export const toggleSpreadsView = (win: Win): void => {
+  if (win && win.webContents) {
+    win.webContents.send('mt::toggle-document-view-mode', 'spreads')
+  }
+}
+
+export const cycleDocumentViewMode = (win: Win): void => {
+  if (win && win.webContents) {
+    win.webContents.send('mt::cycle-document-view-mode')
+  }
+}
+
 export const toggleSidebar = (win: Win): void => {
   toggleLayout(win, 'showSideBar')
 }
@@ -77,6 +95,9 @@ export const loadViewCommands = (commandManager: CommandManager): void => {
   commandManager.add(COMMANDS.VIEW_FOCUS_MODE, toggleFocusMode)
   commandManager.add(COMMANDS.VIEW_FORCE_RELOAD_IMAGES, reloadImageCache)
   commandManager.add(COMMANDS.VIEW_SOURCE_CODE_MODE, toggleSourceCodeMode)
+  commandManager.add(COMMANDS.VIEW_PAGES, togglePagesView)
+  commandManager.add(COMMANDS.VIEW_SPREADS, toggleSpreadsView)
+  commandManager.add(COMMANDS.VIEW_CYCLE_VIEW_MODE, cycleDocumentViewMode)
   commandManager.add(COMMANDS.VIEW_TOGGLE_SIDEBAR, toggleSidebar)
   commandManager.add(COMMANDS.VIEW_TOGGLE_TABBAR, toggleTabBar)
   commandManager.add(COMMANDS.VIEW_TOGGLE_TOC, showTableOfContents)
@@ -123,6 +144,15 @@ export const viewLayoutChanged = (
         disableMenuByName(focusModeMenuItemId, !value)
         disableMenuByName(typewriterModeMenuItemId, !value)
         break
+      case 'documentViewMode': {
+        const mode = String(value)
+        changeMenuByName('sourceCodeModeMenuItem', mode === 'source')
+        changeMenuByName('pagesViewMenuItem', mode === 'pages')
+        changeMenuByName('spreadsViewMenuItem', mode === 'spreads')
+        disableMenuByName(focusModeMenuItemId, mode === 'source')
+        disableMenuByName(typewriterModeMenuItemId, mode === 'source')
+        break
+      }
       case 'typewriter':
         changeMenuByName(typewriterModeMenuItemId, value)
         break

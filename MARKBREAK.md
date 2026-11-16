@@ -11,8 +11,6 @@ Private writer for [markbreak.app](https://markbreak.app). Emits the open [MarkB
 | Site stub | `site/` → markbreak.app |
 | Online editor | `packages/online` builds `site/edit.html` (`pnpm --filter markbreak-online dev`). Markdown via `@muyajs/core`; CSV/TSV; `?url=` / `?text=` / `?lang=csv` / file picker / Open specification |
 | Editor base | MIT upstream — see [UPSTREAM.md](UPSTREAM.md) (do not cite in marketing) |
-| Delivery | [TODO.md](TODO.md) — v0.1.0 print product. Later: git history, then comments. |
-
 ## Dialect pin
 
 ```powershell

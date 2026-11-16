@@ -126,6 +126,9 @@
       "toggleTabbar": "Toggle Tabbar",
       "commandPalette": "Command Palette",
       "sourceCodeMode": "Source Code Mode",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode",
       "typewriterMode": "Typewriter Mode",
       "focusMode": "Focus Mode",
       "toggleTableOfContents": "Show Table of Contents",
@@ -299,13 +302,6 @@
       "destinationOpen": "A document is already open at the destination path. Close it before trying again."
     }
   },
-  "pagesView": {
-    "editor": "Editor",
-    "source": "Source",
-    "pages": "Pages",
-    "spreads": "Spreads",
-    "hint": "Another view of this manuscript. Folio pages follow //break."
-  },
   "titleBar": {
     "applicationMenu": "Application Menu",
     "minimize": "Minimize",
@@ -394,6 +390,7 @@
         "legal": "US Legal (8.5\" x 13\")",
         "letter": "US Letter (8.5\" x 11\")",
         "tabloid": "Tabloid (17\" x 11\")",
+        "bFormat": "B-format (128mm × 198mm)",
         "trade": "Trade 6×9 (152mm × 229mm)",
         "massMarket": "Mass market (108mm × 175mm)",
         "custom": "Custom"
@@ -897,6 +894,9 @@
     "view": {
       "commandPalette": "Command Palette",
       "sourceCodeMode": "Source Code Mode",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode",
       "typewriterMode": "Typewriter Mode",
       "focusMode": "Focus Mode",
       "toggleSourceCodeMode": "Toggle Source Code Mode",

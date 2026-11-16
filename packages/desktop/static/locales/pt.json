@@ -82,7 +82,9 @@
       "taskList": "Lista de Tarefas",
       "looseListItem": "Item de Lista Solta",
       "horizontalRule": "Linha Horizontal",
-      "frontMatter": "Front Matter"
+      "frontMatter": "Front Matter",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "window": {
       "title": "Janela",
@@ -129,7 +131,10 @@
       "toggleTableOfContents": "Mostrar sumário",
       "reloadImages": "Recarregar Imagens",
       "showDeveloperTools": "Mostrar Ferramentas de Desenvolvedor",
-      "reloadWindow": "Recarregar Janela"
+      "reloadWindow": "Recarregar Janela",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "format": {
       "format": "Formato",
@@ -385,7 +390,10 @@
         "legal": "Legal",
         "letter": "Letter",
         "tabloid": "Tabloid",
-        "custom": "Personalizado"
+        "custom": "Personalizado",
+        "bFormat": "B-format (128mm × 198mm)",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)"
       },
       "headerFooterTypes": {
         "none": "Nenhum",
@@ -856,7 +864,9 @@
       "frontMatter": "Front Matter",
       "resetParagraph": "Resetar Parágrafo",
       "mathBlock": "Bloco matemático",
-      "horizontalRule": "Linha horizontal"
+      "horizontalRule": "Linha horizontal",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "format": {
       "strong": "Negrito",
@@ -899,7 +909,10 @@
       "reloadImages": "Recarregar Imagens",
       "textDirection": "Direção do Texto",
       "actualSize": "Tamanho real",
-      "devToggleDeveloperTools": "Alternar ferramentas de desenvolvedor"
+      "devToggleDeveloperTools": "Alternar ferramentas de desenvolvedor",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "tabs": {
       "cycleForward": "Ciclar para Frente",

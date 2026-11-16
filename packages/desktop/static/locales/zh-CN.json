@@ -82,7 +82,9 @@
       "taskList": "任务列表",
       "looseListItem": "宽松列表项",
       "horizontalRule": "水平分割线",
-      "frontMatter": "前置元数据"
+      "frontMatter": "前置元数据",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "window": {
       "title": "窗口",
@@ -129,7 +131,10 @@
       "toggleTableOfContents": "显示目录",
       "reloadImages": "重新加载图片",
       "showDeveloperTools": "显示开发者工具",
-      "reloadWindow": "重新加载窗口"
+      "reloadWindow": "重新加载窗口",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "format": {
       "format": "格式",
@@ -385,7 +390,10 @@
         "legal": "美国法律纸 (8.5\" x 13\")",
         "letter": "美国信纸 (8.5\" x 11\")",
         "tabloid": "小报纸 (17\" x 11\")",
-        "custom": "自定义"
+        "custom": "自定义",
+        "bFormat": "B-format (128mm × 198mm)",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)"
       },
       "headerFooterTypes": {
         "none": "无",
@@ -856,7 +864,9 @@
       "horizontalRule": "水平分割线",
       "horizontalLine": "水平分割线",
       "frontMatter": "前置元数据",
-      "resetParagraph": "重置段落"
+      "resetParagraph": "重置段落",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "format": {
       "strong": "粗体",
@@ -899,7 +909,10 @@
       "devToggleDeveloperTools": "切换开发者工具",
       "devReload": "开发者重载",
       "reloadImages": "重新加载图片",
-      "textDirection": "文本方向"
+      "textDirection": "文本方向",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "tabs": {
       "cycleForward": "向前循环",

@@ -15,6 +15,8 @@ export const BOOK_PAGE_SIZES: readonly BookPageSize[] = [
   { id: 'Legal', electronName: 'Legal', widthMm: 216, heightMm: 356 },
   { id: 'Tabloid', electronName: 'Tabloid', widthMm: 279, heightMm: 432 },
   { id: 'A3', electronName: 'A3', widthMm: 297, heightMm: 420 },
+  /** B-format paperback (UK trade) 128×198 mm */
+  { id: 'BFormat', widthMm: 128, heightMm: 198 },
   /** Trade paperback 6×9 in */
   { id: 'Trade', widthMm: 152.4, heightMm: 228.6 },
   /** Mass-market paperback ~4.25×6.87 in */

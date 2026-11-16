@@ -82,7 +82,9 @@
       "taskList": "任務清單",
       "looseListItem": "鬆散清單項目",
       "horizontalRule": "水平線",
-      "frontMatter": "前置資料"
+      "frontMatter": "前置資料",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "window": {
       "title": "視窗",
@@ -108,7 +110,7 @@
       "checkUpdates": "檢查更新"
     },
     "marktext": {
-      "title": "關於",
+      "title": "關於 {appName}",
       "about": "關於 {appName}",
       "checkUpdates": "檢查更新…",
       "preferences": "偏好設定",
@@ -129,7 +131,10 @@
       "toggleTableOfContents": "顯示目錄",
       "reloadImages": "重新載入圖片",
       "showDeveloperTools": "顯示開發者工具",
-      "reloadWindow": "重新載入視窗"
+      "reloadWindow": "重新載入視窗",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "format": {
       "format": "格式",
@@ -385,7 +390,10 @@
         "legal": "美國 Legal (8.5\" x 13\")",
         "letter": "美國 Letter (8.5\" x 11\")",
         "tabloid": "美國 Tabloid (11\" x 17\")",
-        "custom": "自訂"
+        "custom": "自訂",
+        "bFormat": "B-format (128mm × 198mm)",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)"
       },
       "headerFooterTypes": {
         "none": "無",
@@ -856,7 +864,9 @@
       "frontMatter": "前置資料",
       "resetParagraph": "重設段落",
       "mathBlock": "數學區塊",
-      "horizontalRule": "水平線"
+      "horizontalRule": "水平線",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "format": {
       "strong": "粗體",
@@ -899,7 +909,10 @@
       "reloadImages": "重新載入圖片",
       "textDirection": "文字方向",
       "actualSize": "實際大小",
-      "devToggleDeveloperTools": "切換開發者工具"
+      "devToggleDeveloperTools": "切換開發者工具",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "tabs": {
       "cycleForward": "向前循環",

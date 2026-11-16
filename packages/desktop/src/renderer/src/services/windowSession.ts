@@ -296,7 +296,8 @@ class WindowSession {
     this._preferences.DISPATCH_EDITOR_VIEW_STATE({
       sourceCode: this._preferences.sourceCode,
       focus: this._preferences.focus,
-      typewriter: this._preferences.typewriter
+      typewriter: this._preferences.typewriter,
+      documentViewMode: this._preferences.documentViewMode
     })
     this._initializing = false
     this._pendingRestore = active ? { id: active.id, capture: null } : null

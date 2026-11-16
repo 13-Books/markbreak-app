@@ -82,7 +82,9 @@
       "taskList": "Elenco attività",
       "looseListItem": "Elemento sciolto in un elenco",
       "horizontalRule": "Linea orizzontale",
-      "frontMatter": "Front Matter"
+      "frontMatter": "Front Matter",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "window": {
       "title": "Finestra",
@@ -116,7 +118,7 @@
       "hide": "Nascondi {appName}",
       "hideOthers": "Nascondi altri",
       "showAll": "Mostra tutti",
-      "quit": "Esci"
+      "quit": "Esci da {appName}"
     },
     "view": {
       "view": "Visualizza",
@@ -129,7 +131,10 @@
       "toggleTableOfContents": "Mostra/nascondi Sommario",
       "reloadImages": "Ricarica immagini",
       "showDeveloperTools": "Mostra strumenti di sviluppo",
-      "reloadWindow": "Ricarica finestra"
+      "reloadWindow": "Ricarica finestra",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "format": {
       "format": "Formato",
@@ -385,7 +390,10 @@
         "legal": "Legale US (8.5\" x 13\")",
         "letter": "Lettera US (8.5\" x 11\")",
         "tabloid": "Tabloid (17\" x 11\")",
-        "custom": "Personalizzata"
+        "custom": "Personalizzata",
+        "bFormat": "B-format (128mm × 198mm)",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)"
       },
       "headerFooterTypes": {
         "none": "Nessuno",
@@ -856,7 +864,9 @@
       "frontMatter": "Front Matter",
       "resetParagraph": "Azzera paragrafo",
       "mathBlock": "Blocco di matematica",
-      "horizontalRule": "Righello orizzontale"
+      "horizontalRule": "Righello orizzontale",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "format": {
       "strong": "Grassetto",
@@ -899,7 +909,10 @@
       "reloadImages": "Ricarica immagini",
       "textDirection": "Direzione testo",
       "actualSize": "Dimensioni correnti",
-      "devToggleDeveloperTools": "Attiva/disattiva strumenti di sviluppo"
+      "devToggleDeveloperTools": "Attiva/disattiva strumenti di sviluppo",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "tabs": {
       "cycleForward": "Passa alla scheda successiva",

@@ -4,36 +4,6 @@
     :style="{ 'max-width': `calc(100vw - ${effectiveSideBarWidth}px)`, '--editor-min-width': `${MIN_EDITOR_WIDTH}px` }"
   >
     <tabs v-show="showTabBar" />
-    <div class="view-mode-bar">
-      <button
-        type="button"
-        :class="{ active: viewMode === 'editor' }"
-        @click="setViewMode('editor')"
-      >
-        {{ t('pagesView.editor') }}
-      </button>
-      <button
-        type="button"
-        :class="{ active: viewMode === 'source' || sourceCode }"
-        @click="setViewMode('source')"
-      >
-        {{ t('pagesView.source') }}
-      </button>
-      <button
-        type="button"
-        :class="{ active: viewMode === 'pages' }"
-        @click="setViewMode('pages')"
-      >
-        {{ t('pagesView.pages') }}
-      </button>
-      <button
-        type="button"
-        :class="{ active: viewMode === 'spreads' }"
-        @click="setViewMode('spreads')"
-      >
-        {{ t('pagesView.spreads') }}
-      </button>
-    </div>
     <div class="container">
       <document-outline />
       <div class="document-body">
@@ -61,8 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 import { useLayoutStore } from '@/store/layout'
 import { usePreferencesStore } from '@/store/preferences'
 import { MIN_EDITOR_WIDTH } from '@/util/editorLayout'
@@ -85,30 +54,12 @@ defineProps<{
   platform: string
 }>()
 
-const { t } = useI18n()
 const { effectiveSideBarWidth } = storeToRefs(useLayoutStore())
 const preferencesStore = usePreferencesStore()
-const { documentViewMode, sourceCode: sourceCodePref } = storeToRefs(preferencesStore)
+const { documentViewMode } = storeToRefs(preferencesStore)
 
 const viewMode = computed(() => documentViewMode.value)
 const showPages = computed(() => viewMode.value === 'pages' || viewMode.value === 'spreads')
-
-const setViewMode = (mode: 'editor' | 'source' | 'pages' | 'spreads') => {
-  preferencesStore.SET_SINGLE_PREFERENCE({ type: 'documentViewMode', value: mode })
-  if (mode === 'source' && !sourceCodePref.value) {
-    preferencesStore.SET_SINGLE_PREFERENCE({ type: 'sourceCode', value: true })
-  } else if (mode === 'editor' && sourceCodePref.value) {
-    preferencesStore.SET_SINGLE_PREFERENCE({ type: 'sourceCode', value: false })
-  }
-}
-
-watch(sourceCodePref, (isSource) => {
-  if (isSource && viewMode.value === 'editor') {
-    preferencesStore.SET_SINGLE_PREFERENCE({ type: 'documentViewMode', value: 'source' })
-  } else if (!isSource && viewMode.value === 'source') {
-    preferencesStore.SET_SINGLE_PREFERENCE({ type: 'documentViewMode', value: 'editor' })
-  }
-})
 </script>
 
 <style scoped>
@@ -131,25 +82,6 @@ watch(sourceCodePref, (isSource) => {
     overflow-x: auto;
     overflow-y: hidden;
   }
-}
-.view-mode-bar {
-  display: flex;
-  gap: 0.35rem;
-  padding: 0.35rem 0.75rem;
-  border-bottom: 1px solid var(--editorAreaBorderColor, rgba(0, 0, 0, 0.08));
-  flex-shrink: 0;
-}
-.view-mode-bar button {
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--editorColor);
-  padding: 0.2rem 0.65rem;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-.view-mode-bar button.active {
-  border-color: var(--themeColor, #3d75dd);
-  color: var(--themeColor, #3d75dd);
 }
 .document-body {
   flex: 1;

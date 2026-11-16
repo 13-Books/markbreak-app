@@ -186,12 +186,12 @@ export const usePreferencesStore = defineStore('preferences', {
     wrapCodeBlocks: false,
     editorLineWidth: '',
     documentViewMode: 'editor',
-    bookPageSize: 'Trade',
+    bookPageSize: 'BFormat',
     bookPageLandscape: false,
-    bookMarginTopMm: 20,
-    bookMarginRightMm: 18,
-    bookMarginBottomMm: 22,
-    bookMarginLeftMm: 22,
+    bookMarginTopMm: 10,
+    bookMarginRightMm: 12.5,
+    bookMarginBottomMm: 15,
+    bookMarginLeftMm: 12.5,
     bookTypeFace: 'Georgia, "Source Serif 4", serif',
     bookTypeSizePt: 11,
     bookTypeLeading: 1.4,
@@ -343,14 +343,65 @@ export const usePreferencesStore = defineStore('preferences', {
       window.electron.ipcRenderer.send('mt::ask-for-modify-image-folder-path', value)
     },
 
+    SET_DOCUMENT_VIEW_MODE(mode: 'editor' | 'source' | 'pages' | 'spreads'): void {
+      if (mode === 'pages' || mode === 'spreads') {
+        // Same guard as source mode / save: flush rAF-batched Muya edits into
+        // the tab before Pages snapshots `currentFile.markdown`.
+        useEditorStore().flushActiveEditor()
+      }
+      const sourceCode = mode === 'source'
+      this.SET_SINGLE_PREFERENCE({ type: 'documentViewMode', value: mode })
+      if (this.sourceCode !== sourceCode) {
+        this.SET_SINGLE_PREFERENCE({ type: 'sourceCode', value: sourceCode })
+      }
+      this.DISPATCH_EDITOR_VIEW_STATE({
+        documentViewMode: mode,
+        sourceCode
+      })
+    },
+
+    TOGGLE_DOCUMENT_VIEW_MODE(mode: 'pages' | 'spreads'): void {
+      this.SET_DOCUMENT_VIEW_MODE(this.documentViewMode === mode ? 'editor' : mode)
+    },
+
+    CYCLE_DOCUMENT_VIEW_MODE(): void {
+      const order = ['editor', 'source', 'pages', 'spreads'] as const
+      const index = order.indexOf(this.documentViewMode)
+      let next = order[(index < 0 ? 0 : index + 1) % order.length]
+      const editor = useEditorStore()
+      // Source is unavailable in Reading Mode — same guard as the Source menu item.
+      if (
+        next === 'source' &&
+        (editor.currentFile?.readOnly || editor.currentFile?.modeChanging)
+      ) {
+        next = 'pages'
+      }
+      this.SET_DOCUMENT_VIEW_MODE(next)
+    },
+
     LISTEN_FOR_VIEW(): void {
       window.electron.ipcRenderer.on('mt::show-command-palette', () => {
         bus.emit('show-command-palette')
       })
       window.electron.ipcRenderer.on('mt::toggle-view-mode-entry', (_event, entryName) => {
+        if (entryName === 'sourceCode') {
+          const editor = useEditorStore()
+          if (editor.currentFile?.readOnly || editor.currentFile?.modeChanging) return
+          this.SET_DOCUMENT_VIEW_MODE(this.documentViewMode === 'source' ? 'editor' : 'source')
+          return
+        }
         this.TOGGLE_VIEW_MODE(entryName)
         const target = this as unknown as Record<string, unknown>
         this.DISPATCH_EDITOR_VIEW_STATE({ [entryName]: target[entryName] })
+      })
+      window.electron.ipcRenderer.on(
+        'mt::toggle-document-view-mode',
+        (_event, mode: 'pages' | 'spreads') => {
+          this.TOGGLE_DOCUMENT_VIEW_MODE(mode)
+        }
+      )
+      window.electron.ipcRenderer.on('mt::cycle-document-view-mode', () => {
+        this.CYCLE_DOCUMENT_VIEW_MODE()
       })
     },
 
@@ -358,9 +409,21 @@ export const usePreferencesStore = defineStore('preferences', {
     LISTEN_TOGGLE_VIEW(): void {
       bus.on('view:toggle-view-entry', (entryName) => {
         const name = entryName as string
+        if (name === 'sourceCode') {
+          const editor = useEditorStore()
+          if (editor.currentFile?.readOnly || editor.currentFile?.modeChanging) return
+          this.SET_DOCUMENT_VIEW_MODE(this.documentViewMode === 'source' ? 'editor' : 'source')
+          return
+        }
         this.TOGGLE_VIEW_MODE(name)
         const target = this as unknown as Record<string, unknown>
         this.DISPATCH_EDITOR_VIEW_STATE({ [name]: target[name] })
+      })
+      bus.on('view:toggle-document-view', (mode) => {
+        this.TOGGLE_DOCUMENT_VIEW_MODE(mode as 'pages' | 'spreads')
+      })
+      bus.on('view:cycle-document-view', () => {
+        this.CYCLE_DOCUMENT_VIEW_MODE()
       })
     },
 

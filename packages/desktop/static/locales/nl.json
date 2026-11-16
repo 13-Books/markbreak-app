@@ -82,7 +82,9 @@
       "taskList": "Takenlijst",
       "looseListItem": "Los lijstitem",
       "horizontalRule": "Horizontale lijn",
-      "frontMatter": "Front Matter"
+      "frontMatter": "Front Matter",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "window": {
       "title": "Venster",
@@ -129,7 +131,10 @@
       "toggleTableOfContents": "Inhoudsopgave tonen",
       "reloadImages": "Afbeeldingen herladen",
       "showDeveloperTools": "Ontwikkelaarshulpmiddelen tonen",
-      "reloadWindow": "Venster herladen"
+      "reloadWindow": "Venster herladen",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "format": {
       "format": "Opmaak",
@@ -385,7 +390,10 @@
         "legal": "US Legal (8,5\" x 13\")",
         "letter": "US Letter (8,5\" x 11\")",
         "tabloid": "Tabloid (17\" x 11\")",
-        "custom": "Aangepast"
+        "custom": "Aangepast",
+        "bFormat": "B-format (128mm × 198mm)",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)"
       },
       "headerFooterTypes": {
         "none": "Geen",
@@ -856,7 +864,9 @@
       "frontMatter": "Front Matter",
       "resetParagraph": "Alinea herstellen",
       "mathBlock": "Wiskundeblok",
-      "horizontalRule": "Horizontale lijn"
+      "horizontalRule": "Horizontale lijn",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "format": {
       "strong": "Vet",
@@ -899,7 +909,10 @@
       "reloadImages": "Afbeeldingen herladen",
       "textDirection": "Tekstrichting",
       "actualSize": "Werkelijke grootte",
-      "devToggleDeveloperTools": "Ontwikkelaarshulpmiddelen in-/uitschakelen"
+      "devToggleDeveloperTools": "Ontwikkelaarshulpmiddelen in-/uitschakelen",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "tabs": {
       "cycleForward": "Volgende tabblad",

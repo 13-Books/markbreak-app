@@ -26,13 +26,19 @@
     <h1>Export &amp; verify</h1>
     <p class="lede">The profile is the contract. The gate proves the break survived.</p>
 
-    <h2>What the writer exports</h2>
+    <p class="lede" style="margin-top:0">
+      Export is <strong>desktop only</strong>. The online editor drafts and saves Markdown;
+      it does not run the profile exporters.
+    </p>
+
+    <h2>What the desktop writer exports</h2>
     <ul>
       <li><strong>Docx</strong> — MarkBreak profile through Pandoc + <code>markbreak.lua</code>. Roles become Divs; <code>//break</code> / <code>//break page</code> stay hard breaks.</li>
       <li><strong>HTML</strong> — Same filter; breaks emit <code>break-before</code> CSS. Standalone HTML for review, not the print SoT.</li>
       <li><strong>ICML</strong> — InDesign/InCopy markup for Place into a template. Roles become <code>ParagraphStyle/{role}</code>; breaks are hard <code>Br</code> types. Packaged IDML is later.</li>
       <li><strong>Print-proof PDF</strong> — The Pages view at book trim (File → Export as PDF). This is the product PDF.</li>
       <li><strong>Pandoc PDF</strong> — Secondary path via Convert with Pandoc; labelled as such in the app.</li>
+      <li><strong>Rig</strong> — Trim and margins come from a RigWorks layout (<code>layout:</code> or sibling <code>.rig.json</code>) into Docx and PDF. Exporting the manuscript itself as a RigWorks package is the next writer step for <a href="https://www.rig.works/">rig.works</a> interchange.</li>
     </ul>
 
     <h2>CLI</h2>
@@ -61,7 +67,7 @@ bash dialect/export.sh --input manuscript.md --format pdf --rig book.rig.json</c
 
     <div class="pager">
       <a href="03-pagebreak.html">Back</a>
-      <a class="next" href="../edit.html">Open the writer</a>
+      <a class="next" href="../#download">Download desktop</a>
     </div>
   </main>
 

@@ -261,6 +261,8 @@ export interface IpcMainEventChannels extends StateIpcMainEvents {
   'mt::tabs-cycle-right': []
   'mt::toggle-view-layout-entry': [entry: string]
   'mt::toggle-view-mode-entry': [entry: string]
+  'mt::toggle-document-view-mode': [mode: 'pages' | 'spreads']
+  'mt::cycle-document-view-mode': []
   'mt::update-file': [payload: { type: 'add' | 'change' | 'unlink'; change: FileChangeDetail }]
   'mt::update-object-tree': [payload: ProjectTreeEvent]
   'mt::user-preference': [partial: unknown]

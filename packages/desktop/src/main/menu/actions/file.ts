@@ -89,8 +89,8 @@ const getPdfPageOptions = (options?: PageOptions): Record<string, unknown> => {
       landscape: !!isLandscape
     }
   }
-  // Book trims Electron does not name — Trade 6×9 and mass-market.
-  if (pageSize === 'Trade' || pageSize === 'MassMarket') {
+  // Book trims Electron does not name — B-format, Trade 6×9, mass-market.
+  if (pageSize === 'BFormat' || pageSize === 'Trade' || pageSize === 'MassMarket') {
     const size = getBookPageSize(pageSize)
     if (size) {
       const width = isLandscape ? size.heightMm : size.widthMm
@@ -149,7 +149,6 @@ const handleResponseForExport = async(e: IpcMainEvent, payload: ExportPayload): 
             height: bookPage.heightMm * 1000
           }
           options.margins = {
-            marginType: 'custom',
             top: bookPage.top / 25.4,
             bottom: bookPage.bottom / 25.4,
             left: bookPage.left / 25.4,

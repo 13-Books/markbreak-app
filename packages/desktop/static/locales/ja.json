@@ -82,7 +82,9 @@
       "taskList": "タスクリスト",
       "looseListItem": "ルーズリスト項目",
       "horizontalRule": "水平線",
-      "frontMatter": "フロントマター"
+      "frontMatter": "フロントマター",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "window": {
       "title": "ウィンドウ",
@@ -129,7 +131,10 @@
       "toggleTableOfContents": "目次を表示",
       "reloadImages": "画像の再読み込み",
       "showDeveloperTools": "開発者ツールの表示",
-      "reloadWindow": "ウィンドウの再読み込み"
+      "reloadWindow": "ウィンドウの再読み込み",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "format": {
       "format": "フォーマット",
@@ -385,7 +390,10 @@
         "legal": "リーガル",
         "letter": "レター",
         "tabloid": "タブロイド",
-        "custom": "カスタム"
+        "custom": "カスタム",
+        "bFormat": "B-format (128mm × 198mm)",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)"
       },
       "headerFooterTypes": {
         "none": "なし",
@@ -856,7 +864,9 @@
       "frontMatter": "フロントマター",
       "resetParagraph": "段落をリセット",
       "mathBlock": "数式ブロック",
-      "horizontalRule": "水平線"
+      "horizontalRule": "水平線",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "format": {
       "strong": "太字",
@@ -899,7 +909,10 @@
       "reloadImages": "画像を再読み込み",
       "textDirection": "テキスト方向",
       "actualSize": "実際のサイズ",
-      "devToggleDeveloperTools": "開発者ツールの切り替え"
+      "devToggleDeveloperTools": "開発者ツールの切り替え",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "tabs": {
       "cycleForward": "前方に循環",

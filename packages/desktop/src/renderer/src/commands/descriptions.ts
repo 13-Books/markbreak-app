@@ -128,6 +128,9 @@ const COMMAND_KEY_MAP: Record<string, string> = {
 
   'view.toggle-source-code-mode': 'commands.view.toggleSourceCodeMode',
   'view.source-code-mode': 'commands.view.sourceCodeMode',
+  'view.pages-mode': 'commands.view.pagesMode',
+  'view.spreads-mode': 'commands.view.spreadsMode',
+  'view.cycle-view-mode': 'commands.view.cycleViewMode',
   'view.toggle-typewriter-mode': 'commands.view.toggleTypewriterMode',
   'view.typewriter-mode': 'commands.view.typewriterMode',
   'view.toggle-focus-mode': 'commands.view.toggleFocusMode',

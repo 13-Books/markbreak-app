@@ -82,7 +82,9 @@
       "taskList": "Aufgabenliste",
       "looseListItem": "Lockeres Listenelement",
       "horizontalRule": "Horizontale Linie",
-      "frontMatter": "Front Matter"
+      "frontMatter": "Front Matter",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "window": {
       "title": "Fenster",
@@ -129,7 +131,10 @@
       "toggleTableOfContents": "Inhaltsverzeichnis anzeigen",
       "reloadImages": "Bilder neu laden",
       "showDeveloperTools": "Entwicklertools anzeigen",
-      "reloadWindow": "Fenster neu laden"
+      "reloadWindow": "Fenster neu laden",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "format": {
       "format": "Format",
@@ -385,7 +390,10 @@
         "legal": "Legal",
         "letter": "Letter",
         "tabloid": "Tabloid",
-        "custom": "Benutzerdefiniert"
+        "custom": "Benutzerdefiniert",
+        "bFormat": "B-format (128mm × 198mm)",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)"
       },
       "headerFooterTypes": {
         "none": "Keine",
@@ -856,7 +864,9 @@
       "frontMatter": "Front Matter",
       "resetParagraph": "Absatz zurücksetzen",
       "mathBlock": "Mathe-Block",
-      "horizontalRule": "Horizontale Linie"
+      "horizontalRule": "Horizontale Linie",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "format": {
       "strong": "Fett",
@@ -899,7 +909,10 @@
       "reloadImages": "Bilder neu laden",
       "textDirection": "Textrichtung",
       "actualSize": "Tatsächliche Größe",
-      "devToggleDeveloperTools": "Entwicklertools umschalten"
+      "devToggleDeveloperTools": "Entwicklertools umschalten",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "tabs": {
       "cycleForward": "Vorwärts wechseln",

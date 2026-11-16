@@ -3,7 +3,8 @@ import { BOOK_PAGE_SIZES, getBookPageSize, pageAspectRatio } from 'common/bookPa
 import { buildSpreadPairs } from 'common/markbreakBreaks'
 
 describe('bookPageSizes', () => {
-  it('includes trade and mass-market trims', () => {
+  it('includes B-format, trade and mass-market trims', () => {
+    expect(getBookPageSize('BFormat')).toEqual({ id: 'BFormat', widthMm: 128, heightMm: 198 })
     expect(getBookPageSize('Trade')?.widthMm).toBeCloseTo(152.4)
     expect(getBookPageSize('MassMarket')?.heightMm).toBeCloseTo(174.5)
     expect(BOOK_PAGE_SIZES.some((s) => s.id === 'A5')).toBe(true)

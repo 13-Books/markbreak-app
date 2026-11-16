@@ -589,6 +589,24 @@ const commands: CommandDescriptor[] = [
     }
   },
   {
+    id: 'view.pages-mode',
+    execute: async() => {
+      bus.emit('view:toggle-document-view', 'pages')
+    }
+  },
+  {
+    id: 'view.spreads-mode',
+    execute: async() => {
+      bus.emit('view:toggle-document-view', 'spreads')
+    }
+  },
+  {
+    id: 'view.cycle-view-mode',
+    execute: async() => {
+      bus.emit('view:cycle-document-view')
+    }
+  },
+  {
     id: 'view.typewriter-mode',
     execute: async() => {
       focusEditorAndExecute(() => bus.emit('view:toggle-view-entry', 'typewriter'))

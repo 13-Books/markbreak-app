@@ -82,7 +82,9 @@
       "taskList": "작업 목록",
       "looseListItem": "느슨한 목록 항목",
       "horizontalRule": "수평선",
-      "frontMatter": "프론트 매터"
+      "frontMatter": "프론트 매터",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "window": {
       "title": "창",
@@ -129,7 +131,10 @@
       "toggleTableOfContents": "목차 표시",
       "reloadImages": "이미지 새로고침",
       "showDeveloperTools": "개발자 도구 보기",
-      "reloadWindow": "창 새로고침"
+      "reloadWindow": "창 새로고침",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "format": {
       "format": "서식",
@@ -385,7 +390,10 @@
         "legal": "Legal",
         "letter": "Letter",
         "tabloid": "Tabloid",
-        "custom": "사용자 정의"
+        "custom": "사용자 정의",
+        "bFormat": "B-format (128mm × 198mm)",
+        "trade": "Trade 6×9 (152mm × 229mm)",
+        "massMarket": "Mass market (108mm × 175mm)"
       },
       "headerFooterTypes": {
         "none": "없음",
@@ -856,7 +864,9 @@
       "frontMatter": "프론트 매터",
       "resetParagraph": "단락 재설정",
       "mathBlock": "수식 블록",
-      "horizontalRule": "수평선"
+      "horizontalRule": "수평선",
+      "flowBreak": "Flow Break",
+      "flowBreakPage": "Page Break"
     },
     "format": {
       "strong": "굵게",
@@ -899,7 +909,10 @@
       "reloadImages": "이미지 새로고침",
       "textDirection": "텍스트 방향",
       "actualSize": "실제 크기",
-      "devToggleDeveloperTools": "개발자 도구 전환"
+      "devToggleDeveloperTools": "개발자 도구 전환",
+      "pagesMode": "Pages Mode",
+      "spreadsMode": "Spreads Mode",
+      "cycleViewMode": "Cycle View Mode"
     },
     "tabs": {
       "cycleForward": "앞으로 순환",
