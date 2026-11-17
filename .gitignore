@@ -17,6 +17,7 @@ test-results/
 playwright-report/
 .playwright-mcp/
 *.min.json
+__pycache__/
 .claude/settings.local.json
 .claude/
 .codex/

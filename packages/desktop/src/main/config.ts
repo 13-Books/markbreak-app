@@ -51,6 +51,7 @@ export const preferencesWinOptions: Readonly<BrowserWindowConstructorOptions> = 
   useContentSize: true,
   show: true,
   frame: false,
+  titleBarStyle: 'hiddenInset',
   thickFrame: !isOsx,
   zoomFactor: 1.0
 } as BrowserWindowConstructorOptions)

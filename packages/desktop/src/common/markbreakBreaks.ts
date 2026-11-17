@@ -1,5 +1,5 @@
 /**
- * Flow-break helpers aligned with dialect/markbreak tools/markbreak.lua (0.5.1).
+ * Flow-break helpers aligned with dialect/markbreak tools/markbreak.lua (0.5.2).
  * Folio pages for the page view are delimited by these markers — not by thematic breaks.
  */
 

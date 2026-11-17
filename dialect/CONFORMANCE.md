@@ -1,4 +1,4 @@
-# MarkBreak 0.5.1 conformance matrix (v0.1.0)
+# MarkBreak 0.5.2 conformance matrix (v0.1.0)
 
 Pinned profile: `dialect/markbreak` **0.5.2**. Normative text: `dialect/markbreak/specification.md`.
 
