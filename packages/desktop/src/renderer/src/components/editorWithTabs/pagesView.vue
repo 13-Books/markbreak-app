@@ -38,6 +38,7 @@
                 class="page-body book-flow"
                 :class="editorClass"
                 :style="editorStyle"
+                :data-role="bookRole || undefined"
               >
                 <!-- eslint-disable-next-line vue/no-v-html -->
                 <div
@@ -72,6 +73,7 @@
                     class="page-body book-flow"
                     :class="editorClass"
                     :style="editorStyle"
+                    :data-role="bookRole || undefined"
                   >
                     <!-- eslint-disable-next-line vue/no-v-html -->
                     <div
@@ -119,7 +121,23 @@
       >
         100%
       </button>
+      <span
+        v-if="pageCountLabel"
+        class="page-count"
+        :class="{ warn: pageCountWarn }"
+      >{{ pageCountLabel }}</span>
+      <span
+        v-if="bookCssIssues.length"
+        class="page-count warn"
+        :title="bookCssIssues.map((i) => i.message).join('\n')"
+      >CSS {{ bookCssIssues.length }}</span>
     </div>
+    <component
+      :is="'style'"
+      v-if="bookCssText"
+    >
+      {{ bookCssText }}
+    </component>
   </div>
 </template>
 
@@ -136,10 +154,42 @@ import { collectSegments, layoutPages, type LaidOutPage } from '@/util/pageLayou
 import { isDarkThemeId, resolveMermaidTheme } from 'common/theme'
 import { buildSpreadPairs } from 'common/markbreakBreaks'
 import { getBookPageSize, pageAspectRatio } from 'common/bookPageSizes'
+import { parseBookFrontMatter } from 'common/bookFrontMatter'
+import { lintBookCss } from 'common/cssLint'
 
 const editorStore = useEditorStore()
 const preferencesStore = usePreferencesStore()
 const { currentFile, listToc } = storeToRefs(editorStore)
+const bookRole = computed(() => parseBookFrontMatter(currentFile.value?.markdown ?? '').role)
+const bookCssText = ref('')
+const bookCssIssues = ref<ReturnType<typeof lintBookCss>>([])
+
+const loadBookCss = async() => {
+  const pathname = currentFile.value?.pathname
+  if (!pathname) {
+    bookCssText.value = ''
+    bookCssIssues.value = []
+    return
+  }
+  const fm = parseBookFrontMatter(currentFile.value?.markdown ?? '')
+  const name = fm.stylesheet || 'book.css'
+  const cssPath = window.path.join(window.path.dirname(pathname), name)
+  if (!(await window.fileUtils.isFile(cssPath))) {
+    bookCssText.value = ''
+    bookCssIssues.value = []
+    return
+  }
+  const buf = await window.fileUtils.readFile(cssPath, 'utf8')
+  const text = typeof buf === 'string' ? buf : new TextDecoder('utf-8').decode(buf)
+  bookCssText.value = text
+  bookCssIssues.value = lintBookCss(text)
+}
+
+watch(
+  () => [currentFile.value?.pathname, currentFile.value?.markdown] as const,
+  () => { void loadBookCss() },
+  { immediate: true }
+)
 const {
   bookPageSize,
   bookPageLandscape,
@@ -238,6 +288,12 @@ const muyaOptions = computed((): Partial<IMuyaOptions> => ({
 
 const pages = ref<LaidOutPage[]>([])
 const spreads = computed(() => buildSpreadPairs(pages.value))
+const pageCountLabel = computed(() => {
+  const n = pages.value.length
+  if (!n) return ''
+  return `${n} page${n === 1 ? '' : 's'}`
+})
+const pageCountWarn = computed(() => pages.value.length > 0 && pages.value.length % 4 !== 0)
 const pageIndexOf = (page: LaidOutPage | null): number =>
   page ? pages.value.indexOf(page) : -1
 
@@ -629,5 +685,14 @@ const geometryStyle = computed(() => {
   min-width: 2.6rem;
   text-align: center;
   opacity: 0.85;
+}
+.page-count {
+  margin-left: 0.35rem;
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+.page-count.warn {
+  color: #a65;
+  opacity: 1;
 }
 </style>

@@ -54,6 +54,14 @@ export interface IpcInvokeChannels extends StateIpcInvokeChannels {
   'mt::clipboard::cancel-image-copy': { args: [ticket: number]; ret: void }
   'mt::clipboard::read-image-source': { args: [src: string]; ret: PlantumlFetchResult }
   'mt::cmd::exists': { args: [name: string]; ret: boolean }
+  'mt::relay-handoff': {
+    args: [payload: { markdown: string; pathname: string; open?: boolean }]
+    ret: { folder: string; docxPath: string; files: string[] }
+  }
+  'mt::relay-handoff-update': {
+    args: [payload: { markdown: string; pathname: string; folder: string }]
+    ret: { folder: string; docxPath: string; files: string[] }
+  }
   'mt::diagram::fetch-plantuml': {
     args: [server: string, encoded: string, format: 'svg' | 'png']
     ret: PlantumlFetchResult

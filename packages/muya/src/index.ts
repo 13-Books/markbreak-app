@@ -22,6 +22,7 @@ export type {
 export type { ITocItem } from './state/getTOC';
 export { MarkdownToHtml } from './state/markdownToHtml';
 export type { IExportHeading, IHtmlExport, IHtmlExportOptions } from './state/markdownToHtml';
+export { default as HtmlToMarkdown } from './state/htmlToMarkdown';
 export { renderToStaticHTML } from './state/renderToStaticHTML';
 export type { IRenderToStaticHTMLOptions } from './state/renderToStaticHTML';
 export type { TState } from './state/types';

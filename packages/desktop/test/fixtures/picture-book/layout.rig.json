@@ -1,0 +1,41 @@
+{
+  "rig": "1.6.0",
+  "document": {
+    "title": "Fox in the Snow",
+    "defaultUnit": "mm"
+  },
+  "entities": [
+    {
+      "id": "facing",
+      "components": {
+        "rig.layout.facing": { "enabled": true, "binding": "left" }
+      }
+    },
+    {
+      "id": "page",
+      "components": {
+        "rig.meta.named": { "name": "Trim", "stableId": "page" },
+        "rig.layout.page": {
+          "index": 0,
+          "width": 250,
+          "height": 250,
+          "unit": "mm",
+          "margins": [18, 16, 20, 16],
+          "bleed": 3
+        }
+      }
+    },
+    {
+      "id": "style-body",
+      "components": {
+        "rig.meta.named": { "name": "Body", "stableId": "style-body" },
+        "rig.story.paragraph_style": {},
+        "rig.layout.paragraph_style": {
+          "storyStyle": "style-body",
+          "fontSize": 18,
+          "leading": 24
+        }
+      }
+    }
+  ]
+}

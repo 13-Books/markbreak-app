@@ -35,6 +35,7 @@ import pandoc, {
   listLinkedMedia,
   shouldMirrorMedia
 } from '../../utils/pandoc'
+import { importDocx } from '../../utils/docxImport'
 import { readBookPage, siblingRig, writeWithProfile } from '../../utils/markbreakExport'
 import { getBookPageSize } from 'common/bookPageSizes'
 import { t, getCurrentLanguage } from '../../i18n'
@@ -333,10 +334,47 @@ const noticePandocNotFound = (win: BrowserWindow, titleKey = 'dialog.importWarni
 
 const openPandocFile = async(windowId: number, pathname: string): Promise<void> => {
   try {
+    if (/\.docx$/i.test(pathname)) {
+      const win = BrowserWindow.fromId(windowId)
+      const mdBeside = pathname.replace(/\.docx$/i, '.md')
+      let overwrite = false
+      if (isFile(mdBeside) && win && !win.isDestroyed()) {
+        const { response } = await dialog.showMessageBox(win, {
+          type: 'question',
+          buttons: [t('common.cancel'), 'Overwrite'],
+          defaultId: 0,
+          cancelId: 0,
+          message: 'Overwrite existing Markdown beside this Word file?',
+          detail: mdBeside
+        })
+        if (response !== 1) return
+        overwrite = true
+      }
+      const result = await importDocx(pathname, { overwrite: overwrite || !isFile(mdBeside) })
+      if (result.warnings.length > 0 && win && !win.isDestroyed()) {
+        win.webContents.send('mt::show-notification', {
+          title: t('dialog.importWarning'),
+          type: 'warning',
+          message: result.warnings.slice(0, 8).join('\n'),
+          time: 12000
+        })
+      }
+      ipcMain.emit('app-open-files-by-id', windowId, [result.markdownPath])
+      return
+    }
     const data = await pandoc(pathname, 'markdown')
     ipcMain.emit('app-open-markdown-by-id', windowId, data)
   } catch (err) {
     log.error('Error while converting file:', err)
+    const win = BrowserWindow.fromId(windowId)
+    if (win && !win.isDestroyed()) {
+      win.webContents.send('mt::show-notification', {
+        title: t('dialog.importWarning'),
+        type: 'error',
+        message: String(err),
+        time: 10000
+      })
+    }
   }
 }
 
@@ -361,6 +399,10 @@ ipcMain.on('mt::window::drop', async(e, fileList: string[]) => {
       continue
     }
 
+    if (/\.docx$/i.test(file)) {
+      openPandocFile(win.id, file)
+      break
+    }
     if (PANDOC_EXTENSIONS.some((ext: string) => file.endsWith(ext))) {
       const existsPandoc = await pandoc.exists()
       if (!existsPandoc) {
@@ -508,16 +550,14 @@ export const importFile = async(win: BrowserWindow | null): Promise<void> => {
   if (!win) {
     return
   }
-  const existsPandoc = await pandoc.exists()
-
-  if (!existsPandoc) {
-    noticePandocNotFound(win)
-    return
-  }
 
   const { filePaths } = await dialog.showOpenDialog(win, {
     properties: ['openFile'],
     filters: [
+      {
+        name: 'Word',
+        extensions: ['docx']
+      },
       {
         name: 'All Files',
         extensions: [...PANDOC_EXTENSIONS]
@@ -525,9 +565,19 @@ export const importFile = async(win: BrowserWindow | null): Promise<void> => {
     ]
   })
 
-  if (filePaths && filePaths[0]) {
-    openPandocFile(win.id, filePaths[0])
+  if (!filePaths?.[0]) return
+
+  const file = filePaths[0]
+  if (/\.docx$/i.test(file)) {
+    openPandocFile(win.id, file)
+    return
   }
+
+  if (!(await pandoc.exists())) {
+    noticePandocNotFound(win)
+    return
+  }
+  openPandocFile(win.id, file)
 }
 
 export const printDocument = (win: Win): void => {

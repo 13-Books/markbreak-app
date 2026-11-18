@@ -55,6 +55,13 @@ export default function(keybindings: Keybindings): MenuItemConstructorOptions {
       }
     },
     {
+      label: t('menu.view.cycleViewMode'),
+      accelerator: keybindings.getAccelerator('view.cycle-view-mode') ?? undefined,
+      click(_item, focusedWindow) {
+        actions.cycleDocumentViewMode(focusedWindow as BrowserWindow | undefined)
+      }
+    },
+    {
       id: 'typewriterModeMenuItem',
       label: t('menu.view.typewriterMode'),
       accelerator: keybindings.getAccelerator('view.typewriter-mode') ?? undefined,

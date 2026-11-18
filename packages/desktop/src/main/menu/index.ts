@@ -221,11 +221,7 @@ class AppMenu {
       const { menu: newMenu } = this._buildEditorMenu(recentUsedDocuments)
       if (!newMenu) return
 
-      updateMenuItem(oldMenu, newMenu, 'sourceCodeModeMenuItem')
-      updateMenuItem(oldMenu, newMenu, 'typewriterModeMenuItem')
-      updateMenuItem(oldMenu, newMenu, 'focusModeMenuItem')
-      updateMenuItem(oldMenu, newMenu, 'sideBarMenuItem')
-      updateMenuItem(oldMenu, newMenu, 'tabBarMenuItem')
+      carryCheckboxStates(oldMenu, newMenu)
 
       value.menu = newMenu
     })
@@ -245,11 +241,7 @@ class AppMenu {
         const { menu: rebuilt } = this._buildEditorMenu(recentUsedDocuments)
         if (!rebuilt) return
 
-        updateMenuItem(oldMenu, rebuilt, 'sourceCodeModeMenuItem')
-        updateMenuItem(oldMenu, rebuilt, 'typewriterModeMenuItem')
-        updateMenuItem(oldMenu, rebuilt, 'focusModeMenuItem')
-        updateMenuItem(oldMenu, rebuilt, 'sideBarMenuItem')
-        updateMenuItem(oldMenu, rebuilt, 'tabBarMenuItem')
+        carryCheckboxStates(oldMenu, rebuilt)
         newMenu = rebuilt
       } else if (type === MenuType.SETTINGS) {
         newMenu = this._buildSettingMenu().menu
@@ -503,6 +495,22 @@ const updateMenuItem = (oldMenus: Menu, newMenus: Menu, id: string): void => {
   const newItem = newMenus.getMenuItemById(id)
   if (oldItem && newItem) {
     newItem.checked = oldItem.checked
+  }
+}
+
+const CARRIED_CHECKBOX_IDS = [
+  'sourceCodeModeMenuItem',
+  'pagesViewMenuItem',
+  'spreadsViewMenuItem',
+  'typewriterModeMenuItem',
+  'focusModeMenuItem',
+  'sideBarMenuItem',
+  'tabBarMenuItem'
+]
+
+const carryCheckboxStates = (oldMenus: Menu, newMenus: Menu): void => {
+  for (const id of CARRIED_CHECKBOX_IDS) {
+    updateMenuItem(oldMenus, newMenus, id)
   }
 }
 

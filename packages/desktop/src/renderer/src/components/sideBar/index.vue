@@ -30,6 +30,7 @@
         v-else-if="rightColumn === 'search'"
         @back="returnToFiles"
       />
+      <book-matter v-if="rightColumn === 'files' && currentFile" />
     </div>
     <div class="sidebar-footer">
       <icon-tooltip :content="t('sideBar.icons.settings')">
@@ -70,6 +71,7 @@ import { Search, Setting, Plus } from '@element-plus/icons-vue'
 import { useI18n } from 'vue-i18n'
 import Tree from './tree.vue'
 import SideBarSearch from './search.vue'
+import BookMatter from './bookMatter/index.vue'
 import IconTooltip from '@/components/iconTooltip/index.vue'
 import { storeToRefs } from 'pinia'
 
@@ -78,6 +80,7 @@ const searchButton = ref<HTMLButtonElement | null>(null)
 const layoutStore = useLayoutStore()
 const projectStore = useProjectStore()
 const editorStore = useEditorStore()
+const { currentFile } = storeToRefs(editorStore)
 
 const dragBar = ref<HTMLDivElement | null>(null)
 
