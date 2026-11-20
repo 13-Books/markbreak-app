@@ -310,7 +310,11 @@ class Selection {
                 this._state = null;
                 this._image.clear();
                 this._table.clear();
-                this._muya.editor.activeContentBlock = null;
+                // Keep the focused block lit in focus mode when the native
+                // selection collapses (click on chrome / gutter). Clearing
+                // activeContentBlock here dims the whole page.
+                if (!this._muya.options.focusMode)
+                    this._muya.editor.activeContentBlock = null;
                 this._text.collapse();
             }
             finally {
@@ -326,10 +330,25 @@ class Selection {
         if (!docChanged && signature === this._lastPublished)
             return;
         this._lastPublished = signature;
+        this.syncFocusModeSelectionClass(selection);
         this._muya.eventCenter.emit('selection-change', {
             selection,
             docChanged,
         });
+    }
+
+    /** Brighten every top-level block while a non-collapsed selection is active. */
+    syncFocusModeSelectionClass(selection: TSelection | null = this.getSelection()) {
+        if (!this._muya.options.focusMode) {
+            this._muya.domNode.classList.remove(CLASS_NAMES.MU_FOCUS_HAS_SELECTION);
+            return;
+        }
+        const hasSelection = selection != null
+            && (selection.kind !== SelectionType.TEXT || !selection.context.isCollapsed);
+        this._muya.domNode.classList.toggle(
+            CLASS_NAMES.MU_FOCUS_HAS_SELECTION,
+            hasSelection,
+        );
     }
 
     cancel() {

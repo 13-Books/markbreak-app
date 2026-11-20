@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
-import { evaluateTable, stripHiddenColumns } from './markbreakCalc'
+import assert from 'node:assert/strict'
+import { describe, it } from 'node:test'
+import { evaluateTable, stripHiddenColumns } from './markbreakCalc.ts'
 
 describe('markbreakCalc §8', () => {
   it('evaluates the fixture first table (hidden Factor column)', () => {
@@ -9,20 +10,21 @@ describe('markbreakCalc §8', () => {
       ['Pears', '4', '5', '2', '=@Qty*@{Pack price}*@Factor'],
       ['Total', '=SUM(C2R1:C2R2)', '=AVERAGE(C3R1:C3R2)', '', '=SUM(C5R1:C5R2)']
     ])
-    expect(table).not.toBeNull()
-    const visible = stripHiddenColumns(table!)
-    expect(visible.headers.map((c) => c.text)).toEqual([
-      'Item',
-      'Qty',
-      'Pack price',
-      'Line total'
-    ])
-    expect(visible.body.map((r) => r.map((c) => c.text))).toEqual([
-      ['Apples', '2', '3', '60'],
-      ['Pears', '4', '5', '40'],
-      ['Total', '6', '4', '100']
-    ])
-    expect(visible.body[0][3].calc).toBe('=C2*C3*C4')
+    assert.ok(table)
+    const visible = stripHiddenColumns(table)
+    assert.deepEqual(
+      visible.headers.map((c) => c.text),
+      ['Item', 'Qty', 'Pack price', 'Line total']
+    )
+    assert.deepEqual(
+      visible.body.map((r) => r.map((c) => c.text)),
+      [
+        ['Apples', '2', '3', '60'],
+        ['Pears', '4', '5', '40'],
+        ['Total', '6', '4', '100']
+      ]
+    )
+    assert.equal(visible.body[0][3].calc, '=C2*C3*C4')
   })
 
   it('covers aggregates, literals, escapes and errors', () => {
@@ -43,18 +45,32 @@ describe('markbreakCalc §8', () => {
       ['Missing', '=C9R9']
     ])!
     const byName = Object.fromEntries(table.body.map((r) => [r[0].text, r[1].text]))
-    expect(byName).toMatchObject({
-      Smallest: '2',
-      Largest: '6',
-      Counted: '3',
-      Product: '48',
-      Specific: '720',
-      Percent: '1',
-      Literal: 'C2R2*180',
-      Escaped: '=C2R2',
-      Broken: '#DIV/0!',
-      Missing: '#REF!'
-    })
+    assert.deepEqual(
+      {
+        Smallest: byName.Smallest,
+        Largest: byName.Largest,
+        Counted: byName.Counted,
+        Product: byName.Product,
+        Specific: byName.Specific,
+        Percent: byName.Percent,
+        Literal: byName.Literal,
+        Escaped: byName.Escaped,
+        Broken: byName.Broken,
+        Missing: byName.Missing
+      },
+      {
+        Smallest: '2',
+        Largest: '6',
+        Counted: '3',
+        Product: '48',
+        Specific: '720',
+        Percent: '1',
+        Literal: 'C2R2*180',
+        Escaped: '=C2R2',
+        Broken: '#DIV/0!',
+        Missing: '#REF!'
+      }
+    )
   })
 
   it('resolves named rows and columns', () => {
@@ -70,14 +86,24 @@ describe('markbreakCalc §8', () => {
       ['Row range', '=SUM(@Apples:@Pears)', '']
     ])!
     const byName = Object.fromEntries(table.body.map((r) => [r[0].text, r[1].text]))
-    expect(byName).toMatchObject({
-      'Cherry picking': '4',
-      Copied: '4',
-      'Named cell': '6',
-      'By number': '5',
-      'Row sum': '9',
-      'Row range': '14'
-    })
+    assert.deepEqual(
+      {
+        'Cherry picking': byName['Cherry picking'],
+        Copied: byName.Copied,
+        'Named cell': byName['Named cell'],
+        'By number': byName['By number'],
+        'Row sum': byName['Row sum'],
+        'Row range': byName['Row range']
+      },
+      {
+        'Cherry picking': '4',
+        Copied: '4',
+        'Named cell': '6',
+        'By number': '5',
+        'Row sum': '9',
+        'Row range': '14'
+      }
+    )
   })
 
   it('detects cycles', () => {
@@ -85,15 +111,19 @@ describe('markbreakCalc §8', () => {
       ['Left', 'Right'],
       ['=C2R1', '=C1R1']
     ])!
-    expect(table.body[0].map((c) => c.text)).toEqual(['#CYCLE!', '#CYCLE!'])
+    assert.deepEqual(
+      table.body[0].map((c) => c.text),
+      ['#CYCLE!', '#CYCLE!']
+    )
   })
 
   it('returns null when the table has no formulas or hidden columns', () => {
-    expect(
+    assert.equal(
       evaluateTable([
         ['A', 'B'],
         ['1', '2']
-      ])
-    ).toBeNull()
+      ]),
+      null
+    )
   })
 })

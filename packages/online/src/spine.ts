@@ -1,8 +1,32 @@
 /** Expand a MarkBreak root `book.md` (YAML `spine`) into one markdown document for the online editor. */
 
+import { isFlowBreakLine } from './markbreakBreaks'
 import { csvToMarkdownTable, isCsvSpinePath } from './csvToMarkdown'
 
 export type SpineEntry = { file: string; role?: string }
+
+const lastNonEmptyLine = (text: string): string => {
+  const lines = text.replace(/\r\n?/g, '\n').split('\n')
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if (lines[i].trim()) return lines[i]
+  }
+  return ''
+}
+
+const firstNonEmptyLine = (text: string): string => {
+  for (const line of text.replace(/\r\n?/g, '\n').split('\n')) {
+    if (line.trim()) return line
+  }
+  return ''
+}
+
+/** Insert a folio break between spine leaves when neither side already has one. */
+export function needsFolioBreakBetween(previous: string, next: string): boolean {
+  if (!previous.trim() || !next.trim()) return false
+  if (isFlowBreakLine(lastNonEmptyLine(previous))) return false
+  if (isFlowBreakLine(firstNonEmptyLine(next))) return false
+  return true
+}
 
 export function splitFrontMatter(md: string): { yaml: string | null; body: string } {
   const text = md.replace(/^\uFEFF/, '')
@@ -90,29 +114,36 @@ export async function expandSpineMarkdown(
   for (const entry of entries) {
     const url = resolveSpineFileUrl(rootUrl, entry.file)
     const child = await fetchText(url)
-    parts.push('')
+    const chunkParts: string[] = []
     if (entry.role) {
-      parts.push(`<!-- markbreak: ${entry.file} role=${entry.role} -->`)
+      chunkParts.push(`<!-- markbreak: ${entry.file} role=${entry.role} -->`)
     }
     if (isCsvSpinePath(entry.file)) {
       const table = csvToMarkdownTable(child)
-      if (table) parts.push(table)
-      continue
-    }
-    const split = splitFrontMatter(child)
-    const titleMatch = split.yaml?.match(/^title\s*:\s*"([^"]+)"|^title\s*:\s*(.+)$/m)
-    const title = (titleMatch?.[1] ?? titleMatch?.[2]?.trim() ?? '').replace(/^["']|["']$/g, '')
-    const childBody = split.body.trim()
-    if (childBody) {
-      const first = childBody.split('\n').find((line) => line.trim()) ?? ''
-      if (first.startsWith('#')) {
-        parts.push(childBody)
-      } else if (title) {
-        parts.push(`# ${title}`, '', childBody)
-      } else {
-        parts.push(childBody)
+      if (table) chunkParts.push(table)
+    } else {
+      const split = splitFrontMatter(child)
+      const titleMatch = split.yaml?.match(/^title\s*:\s*"([^"]+)"|^title\s*:\s*(.+)$/m)
+      const title = (titleMatch?.[1] ?? titleMatch?.[2]?.trim() ?? '').replace(/^["']|["']$/g, '')
+      const childBody = split.body.trim()
+      if (childBody) {
+        const first = childBody.split('\n').find((line) => line.trim()) ?? ''
+        if (first.startsWith('#')) {
+          chunkParts.push(childBody)
+        } else if (title) {
+          chunkParts.push(`# ${title}`, '', childBody)
+        } else {
+          chunkParts.push(childBody)
+        }
       }
     }
+    const chunk = chunkParts.join('\n')
+    if (!chunk.trim()) continue
+    const previous = parts[parts.length - 1] ?? ''
+    if (needsFolioBreakBetween(previous, chunk)) {
+      parts.push('', '//break page')
+    }
+    parts.push('', chunk)
   }
 
   return {

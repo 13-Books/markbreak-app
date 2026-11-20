@@ -25,6 +25,7 @@ import { renderMenu, type MenuEntry } from './menu'
 import { loadPrefs, savePrefs } from './prefs'
 import { clearRecent, loadRecent, rememberRecent } from './recent'
 import { applyEditorWidth, applyTheme, themeNames, themes } from './themes'
+import { markFlowBreakParagraphs } from './markbreakDecorate'
 import { mountPages, type PagesMode } from './pages'
 import { expandSpineMarkdown } from './spine'
 import { resolveTocHeading } from './toc'
@@ -253,10 +254,16 @@ function showTable(): void {
   renderOutline()
 }
 
+function decorateMarkbreakChrome(): void {
+  if (tableMode() || document.body.classList.contains('is-source')) return
+  markFlowBreakParagraphs(muya.domNode)
+}
+
 function showMarkdown(text: string): void {
   document.body.classList.remove('is-table')
   // Marked/Muya block lexing is LF-only; never hand it leftover CRs.
   muya.setContent(normalizeNewlines(text))
+  decorateMarkbreakChrome()
   renderOutline()
 }
 
@@ -299,6 +306,11 @@ function setViewMode(view: OnlineViewMode): void {
   prefs.viewMode = view
   const pagesOn = view === 'pages' || view === 'spreads'
   if (pagesOn && document.body.classList.contains('is-source')) setSource(false)
+  // Pages/spreads replace the live editor — drop typewriter/focus chrome there.
+  if (pagesOn) {
+    if (prefs.typewriter) setTypewriter(false)
+    if (prefs.focus) setFocus(false)
+  }
   document.body.classList.toggle('is-pages', pagesOn)
   pages.setMarkdown(documentText)
   pages.setMode(pagesModeFor(view))
@@ -340,23 +352,52 @@ muya.on('json-change', () => {
   if (tableMode() || document.body.classList.contains('is-source')) return
   documentText = muya.getMarkdown()
   showWords(documentText)
+  decorateMarkbreakChrome()
   renderOutline()
+  pages.setMarkdown(documentText)
 })
+
+/** Match desktop typewriter offset (upper third), not vertical centre — centre
+ *  scrolling fights focus mode by yanking the lit block through dimmed neighbours. */
+const TYPEWRITER_Y = 320
+let typewriterScrollFrame = 0
+
+function scrollTypewriterToCaret(y: number): void {
+  const container = muya.domNode
+  const next = container.scrollTop + y - TYPEWRITER_Y
+  if (Math.abs(container.scrollTop - next) <= 2) return
+  if (typewriterScrollFrame) cancelAnimationFrame(typewriterScrollFrame)
+  const start = container.scrollTop
+  const delta = next - start
+  const begun = performance.now()
+  const duration = 100
+  const step = (now: number) => {
+    const t = Math.min(1, (now - begun) / duration)
+    // ease-out quad
+    container.scrollTop = start + delta * (1 - (1 - t) * (1 - t))
+    if (t < 1) typewriterScrollFrame = requestAnimationFrame(step)
+    else typewriterScrollFrame = 0
+  }
+  typewriterScrollFrame = requestAnimationFrame(step)
+}
 
 muya.on('selection-change', (changes: ISelectionChangePayload) => {
   if (!document.body.classList.contains('is-typewriter')) return
+  if (prefs.viewMode !== 'editor') return
   const y = changes.selection?.context.cursorCoords?.y
   if (y == null) return
-  const container = muya.domNode
-  const top = container.getBoundingClientRect().top
-  const next = container.scrollTop + y - top - container.clientHeight / 2
-  if (Math.abs(container.scrollTop - next) > 2) container.scrollTop = next
+  scrollTypewriterToCaret(y)
 })
 
 fontSizeInput.value = String(prefs.fontSize)
 lineHeightInput.value = String(prefs.lineHeight)
 codeFontSizeInput.value = String(prefs.codeFontSize)
 editorWidthInput.value = prefs.editorLineWidth
+if (prefs.typewriter && prefs.focus) {
+  prefs.focus = false
+  muya.setFocusMode(false)
+  remember()
+}
 document.body.classList.toggle('is-typewriter', prefs.typewriter)
 syncToc()
 
@@ -445,12 +486,23 @@ function setSource(on: boolean): void {
 }
 
 function setFocus(on: boolean): void {
+  if (on && prefs.viewMode !== 'editor') setViewMode('editor')
+  // Online typewriter + focus both claim vertical attention; keep one at a time.
+  if (on && prefs.typewriter) {
+    prefs.typewriter = false
+    document.body.classList.toggle('is-typewriter', false)
+  }
   prefs.focus = on
   muya.setFocusMode(on)
   remember()
 }
 
 function setTypewriter(on: boolean): void {
+  if (on && prefs.viewMode !== 'editor') setViewMode('editor')
+  if (on && prefs.focus) {
+    prefs.focus = false
+    muya.setFocusMode(false)
+  }
   prefs.typewriter = on
   document.body.classList.toggle('is-typewriter', on)
   remember()
@@ -760,8 +812,18 @@ function menuEntries(): MenuEntry[] {
           checked: document.body.classList.contains('is-source'),
           disabled: prefs.viewMode !== 'editor'
         },
-        { label: 'Typewriter', action: 'typewriter', checked: prefs.typewriter },
-        { label: 'Focus', action: 'focus', checked: prefs.focus },
+        {
+          label: 'Typewriter',
+          action: 'typewriter',
+          checked: prefs.typewriter,
+          disabled: prefs.viewMode !== 'editor'
+        },
+        {
+          label: 'Focus',
+          action: 'focus',
+          checked: prefs.focus,
+          disabled: prefs.viewMode !== 'editor'
+        },
         { label: '—', action: 'sep' },
         { label: 'Contents', action: 'contents', checked: prefs.showToc }
       ]

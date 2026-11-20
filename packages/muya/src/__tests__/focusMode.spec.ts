@@ -84,4 +84,11 @@ describe('muya focus mode', () => {
         muya.setFocusMode(false);
         expect(muya.domNode.classList.contains(FOCUS_MODE_CLASS)).toBe(false);
     });
+
+    it('setFocusMode(false) clears mu-focus-has-selection', () => {
+        const muya = bootMuya({ focusMode: true });
+        muya.domNode.classList.add('mu-focus-has-selection');
+        muya.setFocusMode(false);
+        expect(muya.domNode.classList.contains('mu-focus-has-selection')).toBe(false);
+    });
 });

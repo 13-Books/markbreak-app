@@ -1,34 +1,35 @@
-import { describe, expect, it } from 'vitest'
-import { breakKind, buildSpreadPairs, FLOW_BREAK_LINES, isFlowBreakLine } from './markbreakBreaks'
+import assert from 'node:assert/strict'
+import { describe, it } from 'node:test'
+import { breakKind, buildSpreadPairs, FLOW_BREAK_LINES, isFlowBreakLine } from './markbreakBreaks.ts'
 
 describe('online markbreakBreaks', () => {
   it('accepts only canonical //break lines and tight TeX forms', () => {
-    expect(breakKind('//break')).toBe('column')
-    expect(breakKind('  //break page  ')).toBe('page')
-    expect(breakKind('//break odd')).toBe('odd')
-    expect(breakKind('//break even')).toBe('even')
-    expect(breakKind('\\newpage')).toBe('page')
-    expect(breakKind('\\newpage{}')).toBe('page')
-    expect(breakKind('\\pagebreak{}')).toBe('page')
-    expect(breakKind('\\columnbreak')).toBe('column')
-    expect(breakKind('\\cleardoublepage')).toBe('odd')
-    expect(breakKind(FLOW_BREAK_LINES.page)).toBe('page')
+    assert.equal(breakKind('//break'), 'column')
+    assert.equal(breakKind('  //break page  '), 'page')
+    assert.equal(breakKind('//break odd'), 'odd')
+    assert.equal(breakKind('//break even'), 'even')
+    assert.equal(breakKind('\\newpage'), 'page')
+    assert.equal(breakKind('\\newpage{}'), 'page')
+    assert.equal(breakKind('\\pagebreak{}'), 'page')
+    assert.equal(breakKind('\\columnbreak'), 'column')
+    assert.equal(breakKind('\\cleardoublepage'), 'odd')
+    assert.equal(breakKind(FLOW_BREAK_LINES.page), 'page')
   })
 
   it('rejects loose lookalikes', () => {
-    expect(breakKind('---')).toBeNull()
-    expect(breakKind('//break pages')).toBeNull()
-    expect(breakKind('//breakpage')).toBeNull()
-    expect(breakKind('// break')).toBeNull()
-    expect(breakKind('prefix //break')).toBeNull()
-    expect(breakKind('\\newpage}')).toBeNull()
-    expect(breakKind('\\newpage{')).toBeNull()
-    expect(breakKind('\\newpage{x}')).toBeNull()
-    expect(isFlowBreakLine('===')).toBe(false)
+    assert.equal(breakKind('---'), null)
+    assert.equal(breakKind('//break pages'), null)
+    assert.equal(breakKind('//breakpage'), null)
+    assert.equal(breakKind('// break'), null)
+    assert.equal(breakKind('prefix //break'), null)
+    assert.equal(breakKind('\\newpage}'), null)
+    assert.equal(breakKind('\\newpage{'), null)
+    assert.equal(breakKind('\\newpage{x}'), null)
+    assert.equal(isFlowBreakLine('==='), false)
   })
 
   it('builds verso/recto spreads with page 1 on the right', () => {
-    expect(buildSpreadPairs(['p1', 'p2', 'p3', 'p4'])).toEqual([
+    assert.deepEqual(buildSpreadPairs(['p1', 'p2', 'p3', 'p4']), [
       { verso: null, recto: 'p1' },
       { verso: 'p2', recto: 'p3' },
       { verso: 'p4', recto: null }

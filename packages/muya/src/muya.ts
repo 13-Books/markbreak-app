@@ -480,12 +480,16 @@ export class Muya {
     }
 
     setFocusMode(focusMode: boolean) {
-        if (focusMode)
+        if (focusMode) {
             this.domNode.classList.add(CLASS_NAMES.MU_FOCUS_MODE);
-        else
+        }
+        else {
             this.domNode.classList.remove(CLASS_NAMES.MU_FOCUS_MODE);
+            this.domNode.classList.remove(CLASS_NAMES.MU_FOCUS_HAS_SELECTION);
+        }
 
         this.options.focusMode = focusMode;
+        this.editor.selection.syncFocusModeSelectionClass();
     }
 
     selectAll() {
