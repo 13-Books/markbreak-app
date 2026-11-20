@@ -132,9 +132,9 @@
       "reloadImages": "Обновить изображения",
       "showDeveloperTools": "Инструменты разработчика",
       "reloadWindow": "Перезагрузить окно",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Режим страниц",
+      "spreadsMode": "Режим разворотов",
+      "cycleViewMode": "Следующий вид"
     },
     "format": {
       "format": "Формат",
@@ -910,9 +910,9 @@
       "textDirection": "Направление текста",
       "actualSize": "Реальный размер",
       "devToggleDeveloperTools": "Переключить инструменты разработчика",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Режим страниц",
+      "spreadsMode": "Режим разворотов",
+      "cycleViewMode": "Следующий вид"
     },
     "tabs": {
       "cycleForward": "Следующая вкладка",

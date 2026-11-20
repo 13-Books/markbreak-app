@@ -132,9 +132,9 @@
       "reloadImages": "Bilder neu laden",
       "showDeveloperTools": "Entwicklertools anzeigen",
       "reloadWindow": "Fenster neu laden",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Seitenmodus",
+      "spreadsMode": "Doppelseitenmodus",
+      "cycleViewMode": "Nächste Ansicht"
     },
     "format": {
       "format": "Format",
@@ -910,9 +910,9 @@
       "textDirection": "Textrichtung",
       "actualSize": "Tatsächliche Größe",
       "devToggleDeveloperTools": "Entwicklertools umschalten",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Seitenmodus",
+      "spreadsMode": "Doppelseitenmodus",
+      "cycleViewMode": "Nächste Ansicht"
     },
     "tabs": {
       "cycleForward": "Vorwärts wechseln",

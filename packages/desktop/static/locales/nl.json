@@ -132,9 +132,9 @@
       "reloadImages": "Afbeeldingen herladen",
       "showDeveloperTools": "Ontwikkelaarshulpmiddelen tonen",
       "reloadWindow": "Venster herladen",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Paginaweergave",
+      "spreadsMode": "Spreadweergave",
+      "cycleViewMode": "Volgende weergave"
     },
     "format": {
       "format": "Opmaak",
@@ -910,9 +910,9 @@
       "textDirection": "Tekstrichting",
       "actualSize": "Werkelijke grootte",
       "devToggleDeveloperTools": "Ontwikkelaarshulpmiddelen in-/uitschakelen",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Paginaweergave",
+      "spreadsMode": "Spreadweergave",
+      "cycleViewMode": "Volgende weergave"
     },
     "tabs": {
       "cycleForward": "Volgende tabblad",

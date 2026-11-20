@@ -132,9 +132,9 @@
       "reloadImages": "重新載入圖片",
       "showDeveloperTools": "顯示開發者工具",
       "reloadWindow": "重新載入視窗",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "頁面模式",
+      "spreadsMode": "跨頁模式",
+      "cycleViewMode": "下一個檢視"
     },
     "format": {
       "format": "格式",
@@ -910,9 +910,9 @@
       "textDirection": "文字方向",
       "actualSize": "實際大小",
       "devToggleDeveloperTools": "切換開發者工具",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "頁面模式",
+      "spreadsMode": "跨頁模式",
+      "cycleViewMode": "下一個檢視"
     },
     "tabs": {
       "cycleForward": "向前循環",

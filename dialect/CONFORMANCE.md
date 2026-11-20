@@ -1,12 +1,13 @@
-# MarkBreak 0.5.2 conformance matrix (v0.1.0)
+# MarkBreak 0.7.0 conformance matrix (v0.1.0)
 
-Pinned profile: `dialect/markbreak` **0.5.2**. Normative text: `dialect/markbreak/specification.md`.
+Pinned profile: `dialect/markbreak` **0.7.0**. Normative text: `dialect/markbreak/specification.md`.
 
 | Construct | Preview (Pages/Spreads) | DOCX | HTML | Print-proof PDF | Pandoc PDF | ICML |
 |-----------|-------------------------|------|------|-----------------|------------|------|
 | YAML `role:` (closed set) | Section chrome when present | Pandoc Div `role=` + Docx custom style `Role <role>` | Div/class | Same as preview | Pandoc Div | `ParagraphStyle/{role}` |
 | Unknown `role` | Preserve | Preserve | Preserve | Preserve | Preserve | Style name preserved |
 | `spine:` multi-file | N/A in single-tab v0.1.0 | Concat + role Divs | Same | N/A | Same as DOCX | Same as DOCX path |
+| `spine` `.csv` file | N/A in single-tab v0.1.0 | One table in that role Div | Same | N/A | Same as DOCX | Same as DOCX path |
 | `meta:` / `layout:` | Trim/margins/type from Rig or prefs | Writer copies page + meta | Stylesheet from prefs/Rig | Geometry from preview | Geometry via export.sh | Fragment; layout is InDesign’s job |
 | `//break` (normal advance) | Folio boundary | Column break | `break-before` | Folio page | Column/TeX | `Br type="nextColumn"` |
 | `//break page` | Forced folio page | Page break | `break-before: page` | Forced page | Page break | `Br type="nextPage"` |

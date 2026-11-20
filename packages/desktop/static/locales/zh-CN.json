@@ -132,9 +132,9 @@
       "reloadImages": "重新加载图片",
       "showDeveloperTools": "显示开发者工具",
       "reloadWindow": "重新加载窗口",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "页面模式",
+      "spreadsMode": "跨页模式",
+      "cycleViewMode": "下一个视图"
     },
     "format": {
       "format": "格式",
@@ -910,9 +910,9 @@
       "devReload": "开发者重载",
       "reloadImages": "重新加载图片",
       "textDirection": "文本方向",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "页面模式",
+      "spreadsMode": "跨页模式",
+      "cycleViewMode": "下一个视图"
     },
     "tabs": {
       "cycleForward": "向前循环",

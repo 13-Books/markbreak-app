@@ -132,9 +132,9 @@
       "reloadImages": "Görselleri Yeniden Yükle",
       "showDeveloperTools": "Geliştirici Araçlarını Göster",
       "reloadWindow": "Pencereyi Yeniden Yükle",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Sayfa Modu",
+      "spreadsMode": "Açılım Modu",
+      "cycleViewMode": "Sonraki Görünüm"
     },
     "format": {
       "format": "Biçim",
@@ -910,9 +910,9 @@
       "textDirection": "Metin Yönü",
       "actualSize": "Gerçek Boyut",
       "devToggleDeveloperTools": "Geliştirici Araçlarını Aç/Kapat",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Sayfa Modu",
+      "spreadsMode": "Açılım Modu",
+      "cycleViewMode": "Sonraki Görünüm"
     },
     "tabs": {
       "cycleForward": "İleri Geç",

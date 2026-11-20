@@ -132,9 +132,9 @@
       "reloadImages": "Ricarica immagini",
       "showDeveloperTools": "Mostra strumenti di sviluppo",
       "reloadWindow": "Ricarica finestra",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Modalità pagine",
+      "spreadsMode": "Modalità facciate",
+      "cycleViewMode": "Vista successiva"
     },
     "format": {
       "format": "Formato",
@@ -910,9 +910,9 @@
       "textDirection": "Direzione testo",
       "actualSize": "Dimensioni correnti",
       "devToggleDeveloperTools": "Attiva/disattiva strumenti di sviluppo",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "Modalità pagine",
+      "spreadsMode": "Modalità facciate",
+      "cycleViewMode": "Vista successiva"
     },
     "tabs": {
       "cycleForward": "Passa alla scheda successiva",

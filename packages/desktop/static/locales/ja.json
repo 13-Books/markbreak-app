@@ -132,9 +132,9 @@
       "reloadImages": "画像の再読み込み",
       "showDeveloperTools": "開発者ツールの表示",
       "reloadWindow": "ウィンドウの再読み込み",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "ページモード",
+      "spreadsMode": "見開きモード",
+      "cycleViewMode": "次の表示"
     },
     "format": {
       "format": "フォーマット",
@@ -910,9 +910,9 @@
       "textDirection": "テキスト方向",
       "actualSize": "実際のサイズ",
       "devToggleDeveloperTools": "開発者ツールの切り替え",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "ページモード",
+      "spreadsMode": "見開きモード",
+      "cycleViewMode": "次の表示"
     },
     "tabs": {
       "cycleForward": "前方に循環",

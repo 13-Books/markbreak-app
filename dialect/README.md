@@ -8,7 +8,7 @@ The Pandoc filter and fixtures live in **[13-Books/markbreak](https://github.com
 | `export.sh` | Docx/PDF via Pandoc + submodule filter |
 | `CONFORMANCE.md` | v0.1.0 construct × format matrix |
 
-**Pinned profile:** `0.5.2` (`v0.5.2`). See `markbreak/VERSION` after init.
+**Pinned profile:** `0.7.0` (`v0.7.0`). See `markbreak/VERSION` after init.
 
 ```bash
 git submodule update --init --recursive

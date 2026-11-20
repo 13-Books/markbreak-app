@@ -132,9 +132,9 @@
       "reloadImages": "이미지 새로고침",
       "showDeveloperTools": "개발자 도구 보기",
       "reloadWindow": "창 새로고침",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "페이지 모드",
+      "spreadsMode": "스프레드 모드",
+      "cycleViewMode": "다음 보기"
     },
     "format": {
       "format": "서식",
@@ -910,9 +910,9 @@
       "textDirection": "텍스트 방향",
       "actualSize": "실제 크기",
       "devToggleDeveloperTools": "개발자 도구 전환",
-      "pagesMode": "Pages Mode",
-      "spreadsMode": "Spreads Mode",
-      "cycleViewMode": "Cycle View Mode"
+      "pagesMode": "페이지 모드",
+      "spreadsMode": "스프레드 모드",
+      "cycleViewMode": "다음 보기"
     },
     "tabs": {
       "cycleForward": "앞으로 순환",
