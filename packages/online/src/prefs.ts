@@ -1,3 +1,5 @@
+export type OnlineViewMode = 'editor' | 'pages' | 'spreads'
+
 export interface OnlinePrefs {
   fontSize: number
   lineHeight: number
@@ -6,6 +8,7 @@ export interface OnlinePrefs {
   focus: boolean
   typewriter: boolean
   showToc: boolean
+  viewMode: OnlineViewMode
   theme: string
   hideQuickInsertHint: boolean
   autoPairBracket: boolean
@@ -26,6 +29,7 @@ const DEFAULTS: OnlinePrefs = {
   focus: false,
   typewriter: false,
   showToc: true,
+  viewMode: 'editor',
   theme: 'light',
   hideQuickInsertHint: false,
   autoPairBracket: true,
@@ -57,6 +61,10 @@ export function loadPrefs(knownThemes: readonly string[]): OnlinePrefs {
       focus: flag(parsed.focus, DEFAULTS.focus),
       typewriter: flag(parsed.typewriter, DEFAULTS.typewriter),
       showToc: flag(parsed.showToc, DEFAULTS.showToc),
+      viewMode:
+        parsed.viewMode === 'pages' || parsed.viewMode === 'spreads' || parsed.viewMode === 'editor'
+          ? parsed.viewMode
+          : DEFAULTS.viewMode,
       theme,
       hideQuickInsertHint: flag(parsed.hideQuickInsertHint, DEFAULTS.hideQuickInsertHint),
       autoPairBracket: flag(parsed.autoPairBracket, DEFAULTS.autoPairBracket),

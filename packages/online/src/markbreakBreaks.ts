@@ -1,0 +1,35 @@
+/** Slim MarkBreak flow-break helpers for the online pages view. */
+
+export type FlowBreakKind = 'column' | 'page' | 'odd' | 'even'
+
+const NEWPAGE_RE = /^\\newpage\{?\}?$/
+const PAGEBREAK_RE = /^\\pagebreak\{?\}?$/
+const COLUMNBREAK_RE = /^\\columnbreak\{?\}?$/
+const CLEARDOUBLE_RE = /^\\cleardoublepage\{?\}?$/
+
+export const breakKind = (command: string | null | undefined): FlowBreakKind | null => {
+  if (command == null) return null
+  const s = command.replace(/^\s+/, '').replace(/\s+$/, '')
+  if (!s) return null
+  if (s === '//break page' || NEWPAGE_RE.test(s) || PAGEBREAK_RE.test(s)) return 'page'
+  if (s === '//break' || s === '\f' || COLUMNBREAK_RE.test(s)) return 'column'
+  if (s === '//break odd' || CLEARDOUBLE_RE.test(s)) return 'odd'
+  if (s === '//break even') return 'even'
+  return null
+}
+
+export const isFlowBreakLine = (line: string): boolean => breakKind(line) != null
+
+/** Spread pairing: page 1 alone on recto, then 2|3, 4|5, … */
+export const buildSpreadPairs = <T>(pages: T[]): Array<{ verso: T | null; recto: T | null }> => {
+  const spreads: Array<{ verso: T | null; recto: T | null }> = []
+  if (pages.length === 0) return [{ verso: null, recto: null }]
+  spreads.push({ verso: null, recto: pages[0] ?? null })
+  for (let i = 1; i < pages.length; i += 2) {
+    spreads.push({
+      verso: pages[i] ?? null,
+      recto: pages[i + 1] ?? null
+    })
+  }
+  return spreads
+}

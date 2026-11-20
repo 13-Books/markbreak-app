@@ -25,8 +25,10 @@ import { renderMenu, type MenuEntry } from './menu'
 import { loadPrefs, savePrefs } from './prefs'
 import { clearRecent, loadRecent, rememberRecent } from './recent'
 import { applyEditorWidth, applyTheme, themeNames, themes } from './themes'
+import { mountPages, type PagesMode } from './pages'
 import { expandSpineMarkdown } from './spine'
 import { resolveTocHeading } from './toc'
+import type { OnlineViewMode } from './prefs'
 
 import './style.css'
 
@@ -216,6 +218,10 @@ Muya.use(TableRowColumMenu)
 
 const editorMount = document.getElementById('editor')
 if (!editorMount) throw new Error('Missing editor mount')
+const pagesMount = document.getElementById('pagesMount')
+if (!pagesMount) throw new Error('Missing pages mount')
+
+const pages = mountPages(pagesMount)
 
 const muya = new Muya(editorMount, {
   markdown: '',
@@ -275,11 +281,28 @@ function applyDocument(text: string): void {
   if (document.body.classList.contains('is-source')) source.value = documentText
   if (tableMode()) showTable()
   else showMarkdown(documentText)
+  pages.setMarkdown(documentText)
   rememberRecent({
     name: fileName(),
     url: loadedUrl || undefined,
     text: loadedUrl ? undefined : documentText
   })
+}
+
+function pagesModeFor(view: OnlineViewMode): PagesMode {
+  if (view === 'pages') return 'pages'
+  if (view === 'spreads') return 'spreads'
+  return 'off'
+}
+
+function setViewMode(view: OnlineViewMode): void {
+  prefs.viewMode = view
+  const pagesOn = view === 'pages' || view === 'spreads'
+  if (pagesOn && document.body.classList.contains('is-source')) setSource(false)
+  document.body.classList.toggle('is-pages', pagesOn)
+  pages.setMarkdown(documentText)
+  pages.setMode(pagesModeFor(view))
+  remember()
 }
 
 function remember(): void {
@@ -447,9 +470,13 @@ tocEl.addEventListener('click', (ev) => {
   const link = (ev.target as Element).closest('a')
   if (!link) return
   const index = Number(link.getAttribute('data-index'))
+  ev.preventDefault()
+  if (prefs.viewMode === 'pages' || prefs.viewMode === 'spreads') {
+    pages.goToHeading(index)
+    return
+  }
   const target = resolveTocHeading(muya.domNode, index)
   if (!target) return
-  ev.preventDefault()
   leaveSource()
   target.scrollIntoView({ block: 'start' })
 })
@@ -723,7 +750,16 @@ function menuEntries(): MenuEntry[] {
     {
       label: 'View',
       children: [
-        { label: 'Source', action: 'source', checked: document.body.classList.contains('is-source') },
+        { label: 'Editor', action: 'view-editor', checked: prefs.viewMode === 'editor' },
+        { label: 'Pages', action: 'view-pages', checked: prefs.viewMode === 'pages' },
+        { label: 'Spreads', action: 'view-spreads', checked: prefs.viewMode === 'spreads' },
+        { label: '—', action: 'sep' },
+        {
+          label: 'Source',
+          action: 'source',
+          checked: document.body.classList.contains('is-source'),
+          disabled: prefs.viewMode !== 'editor'
+        },
         { label: 'Typewriter', action: 'typewriter', checked: prefs.typewriter },
         { label: 'Focus', action: 'focus', checked: prefs.focus },
         { label: '—', action: 'sep' },
@@ -838,7 +874,17 @@ async function runAction(action: string): Promise<void> {
     case 'select-all':
       await editCommand('selectAll')
       break
+    case 'view-editor':
+      setViewMode('editor')
+      break
+    case 'view-pages':
+      setViewMode('pages')
+      break
+    case 'view-spreads':
+      setViewMode('spreads')
+      break
     case 'source':
+      if (prefs.viewMode !== 'editor') setViewMode('editor')
       setSource(!document.body.classList.contains('is-source'))
       break
     case 'typewriter':
@@ -900,18 +946,15 @@ void (async function boot() {
   renderOutline()
   if (params.get('url')) {
     await loadUrl(params.get('url') || '')
-    return
-  }
-  if (params.has('text')) {
+  } else if (params.has('text')) {
     hintPath = ''
     applyDocument(params.get('text') || '')
     setStatus('Loaded from ?text=')
-    return
-  }
-  if (params.get('spec') === '1' || params.get('spec') === 'true') {
+  } else if (params.get('spec') === '1' || params.get('spec') === 'true') {
     await loadUrl(SPEC_URL)
-    return
+  } else {
+    setStatus('')
+    filenameEl.textContent = 'Untitled'
   }
-  setStatus('')
-  filenameEl.textContent = 'Untitled'
+  if (prefs.viewMode !== 'editor') setViewMode(prefs.viewMode)
 })()
