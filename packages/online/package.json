@@ -6,13 +6,15 @@
   "description": "markbreak.app writer. Mounts @muyajs/core the way the desktop editor does.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "vitest run"
   },
   "dependencies": {
     "@muyajs/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^6.0.3",
-    "vite": "^8.3.5"
+    "vite": "^8.3.5",
+    "vitest": "^3.2.4"
   }
 }

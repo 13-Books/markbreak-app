@@ -24,6 +24,15 @@ describe('markbreakBreaks', () => {
     expect(breakKind('\\cleardoublepage')).toBe('odd')
     expect(breakKind('---')).toBeNull()
     expect(breakKind('# Chapter')).toBeNull()
+    // Loose / partial forms must not match.
+    expect(breakKind('//break pages')).toBeNull()
+    expect(breakKind('//breakpage')).toBeNull()
+    expect(breakKind('// break')).toBeNull()
+    expect(breakKind('say //break')).toBeNull()
+    expect(breakKind('\\newpage}')).toBeNull()
+    expect(breakKind('\\newpage{')).toBeNull()
+    expect(breakKind('\\newpage{ }')).toBeNull()
+    expect(breakKind('\\newpage{x}')).toBeNull()
   })
 
   it('migrates legacy TeX page markers', () => {

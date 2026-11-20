@@ -1,5 +1,7 @@
 /** Expand a MarkBreak root `book.md` (YAML `spine`) into one markdown document for the online editor. */
 
+import { csvToMarkdownTable, isCsvSpinePath } from './csvToMarkdown'
+
 export type SpineEntry = { file: string; role?: string }
 
 export function splitFrontMatter(md: string): { yaml: string | null; body: string } {
@@ -88,14 +90,19 @@ export async function expandSpineMarkdown(
   for (const entry of entries) {
     const url = resolveSpineFileUrl(rootUrl, entry.file)
     const child = await fetchText(url)
-    const split = splitFrontMatter(child)
-    const titleMatch = split.yaml?.match(/^title\s*:\s*"([^"]+)"|^title\s*:\s*(.+)$/m)
-    const title = (titleMatch?.[1] ?? titleMatch?.[2]?.trim() ?? '').replace(/^["']|["']$/g, '')
-    const childBody = split.body.trim()
     parts.push('')
     if (entry.role) {
       parts.push(`<!-- markbreak: ${entry.file} role=${entry.role} -->`)
     }
+    if (isCsvSpinePath(entry.file)) {
+      const table = csvToMarkdownTable(child)
+      if (table) parts.push(table)
+      continue
+    }
+    const split = splitFrontMatter(child)
+    const titleMatch = split.yaml?.match(/^title\s*:\s*"([^"]+)"|^title\s*:\s*(.+)$/m)
+    const title = (titleMatch?.[1] ?? titleMatch?.[2]?.trim() ?? '').replace(/^["']|["']$/g, '')
+    const childBody = split.body.trim()
     if (childBody) {
       const first = childBody.split('\n').find((line) => line.trim()) ?? ''
       if (first.startsWith('#')) {

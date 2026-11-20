@@ -89,6 +89,8 @@ const COMMAND_KEY_MAP: Record<string, string> = {
   'paragraph.horizontal-line': 'commands.paragraph.horizontalLine',
   'paragraph.flow-break': 'commands.paragraph.flowBreak',
   'paragraph.flow-break-page': 'commands.paragraph.flowBreakPage',
+  'paragraph.flow-break-odd': 'commands.paragraph.flowBreakOdd',
+  'paragraph.flow-break-even': 'commands.paragraph.flowBreakEven',
   'paragraph.math-formula': 'commands.paragraph.mathFormula',
   'paragraph.front-matter': 'commands.paragraph.frontMatter',
 

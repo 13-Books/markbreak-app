@@ -238,6 +238,20 @@ export default function(
         }
       },
       {
+        id: 'flowBreakOddMenuItem',
+        label: t('menu.paragraph.flowBreakOdd'),
+        click(_menuItem, focusedWindow) {
+          actions.flowBreakOdd(focusedWindow as BrowserWindow | undefined)
+        }
+      },
+      {
+        id: 'flowBreakEvenMenuItem',
+        label: t('menu.paragraph.flowBreakEven'),
+        click(_menuItem, focusedWindow) {
+          actions.flowBreakEven(focusedWindow as BrowserWindow | undefined)
+        }
+      },
+      {
         id: 'frontMatterMenuItem',
         label: t('menu.paragraph.frontMatter'),
         type: 'checkbox',

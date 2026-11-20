@@ -5,7 +5,7 @@ Private writer for [markbreak.app](https://markbreak.app). Emits the open [MarkB
 | Piece | Location |
 |-------|----------|
 | Open profile (SoT) | Git submodule `dialect/markbreak` → [13-Books/markbreak](https://github.com/13-Books/markbreak) |
-| Pinned profile | **0.5.2** (`v0.5.2`) — see `dialect/markbreak/VERSION` |
+| Pinned profile | **0.7.0** (`v0.7.0`) — see `dialect/markbreak/VERSION` |
 | Conformance matrix | [dialect/CONFORMANCE.md](dialect/CONFORMANCE.md) |
 | Dialect export | `dialect/export.sh` (filter from submodule; sibling `../markbreak` for local hackery only) |
 | Site stub | `site/` → markbreak.app |
@@ -16,8 +16,8 @@ Private writer for [markbreak.app](https://markbreak.app). Emits the open [MarkB
 ```powershell
 git submodule update --init --recursive
 # adopt a newer profile:
-#   cd dialect/markbreak && git fetch && git checkout v0.5.2
-#   cd ../.. && git add dialect/markbreak && git commit -m "Bump MarkBreak profile to 0.5.2"
+#   cd dialect/markbreak && git fetch && git checkout v0.7.0
+#   cd ../.. && git add dialect/markbreak && git commit -m "Bump MarkBreak profile to 0.7.0"
 ```
 
 Never vendor a private `markbreak.lua` next to `export.sh`.

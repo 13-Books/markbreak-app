@@ -5,6 +5,7 @@
 import { Muya } from '@muyajs/core'
 import { getBookPageSize } from './bookPageSizes'
 import { buildSpreadPairs } from './markbreakBreaks'
+import { applyCalculationsToTables } from './markbreakCalc'
 import { collectSegments, layoutPages, type LaidOutPage } from './pageLayout'
 
 const PX_PER_PT = 96 / 72
@@ -123,6 +124,9 @@ export function mountPages(host: HTMLElement): PagesController {
       if (gen !== generation) return
       const container = editorEl.querySelector('.mu-container')
       if (!container) return
+      // MarkBreak §8: show calculated results (and drop hidden columns) in the
+      // folio preview — same reader surface as export, not raw `=C2*C3`.
+      applyCalculationsToTables(container)
       pages = layoutPages(collectSegments(container), measureHost, (el) => el.scrollHeight <= el.clientHeight)
       if (index >= pages.length) index = Math.max(0, pages.length - 1)
       render()
@@ -206,14 +210,19 @@ export function mountPages(host: HTMLElement): PagesController {
   const onKey = (event: KeyboardEvent): void => {
     if (mode === 'off' || shell.hidden) return
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return
+    // Only when the pages surface actually has focus — never steal arrows from
+    // the TOC, menus, or a still-mounted editor underneath.
+    const active = document.activeElement
+    if (!(active === view || (active instanceof Node && view.contains(active)))) return
     const target = event.target
     if (
       target instanceof HTMLElement &&
       (target.closest('input, textarea, select, [contenteditable="true"]') ||
-        target.isContentEditable)
+        target.isContentEditable) &&
+      !view.contains(target) &&
+      target !== view
     ) {
-      // Pages view itself is focusable; allow arrows there.
-      if (!view.contains(target) && target !== view) return
+      return
     }
     switch (event.key) {
       case 'ArrowRight':

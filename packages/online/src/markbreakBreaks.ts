@@ -2,19 +2,28 @@
 
 export type FlowBreakKind = 'column' | 'page' | 'odd' | 'even'
 
-const NEWPAGE_RE = /^\\newpage\{?\}?$/
-const PAGEBREAK_RE = /^\\pagebreak\{?\}?$/
-const COLUMNBREAK_RE = /^\\columnbreak\{?\}?$/
-const CLEARDOUBLE_RE = /^\\cleardoublepage\{?\}?$/
+/** Canonical manuscript lines — exact match only (after trim). */
+export const FLOW_BREAK_LINES: Record<FlowBreakKind, string> = {
+  column: '//break',
+  page: '//break page',
+  odd: '//break odd',
+  even: '//break even'
+}
+
+// TeX forms: optional empty `{}` only — not `\newpage}` / `\newpage{`.
+const NEWPAGE_RE = /^\\newpage(\{\})?$/
+const PAGEBREAK_RE = /^\\pagebreak(\{\})?$/
+const COLUMNBREAK_RE = /^\\columnbreak(\{\})?$/
+const CLEARDOUBLE_RE = /^\\cleardoublepage(\{\})?$/
 
 export const breakKind = (command: string | null | undefined): FlowBreakKind | null => {
   if (command == null) return null
   const s = command.replace(/^\s+/, '').replace(/\s+$/, '')
   if (!s) return null
-  if (s === '//break page' || NEWPAGE_RE.test(s) || PAGEBREAK_RE.test(s)) return 'page'
-  if (s === '//break' || s === '\f' || COLUMNBREAK_RE.test(s)) return 'column'
-  if (s === '//break odd' || CLEARDOUBLE_RE.test(s)) return 'odd'
-  if (s === '//break even') return 'even'
+  if (s === FLOW_BREAK_LINES.page || NEWPAGE_RE.test(s) || PAGEBREAK_RE.test(s)) return 'page'
+  if (s === FLOW_BREAK_LINES.column || s === '\f' || COLUMNBREAK_RE.test(s)) return 'column'
+  if (s === FLOW_BREAK_LINES.odd || CLEARDOUBLE_RE.test(s)) return 'odd'
+  if (s === FLOW_BREAK_LINES.even) return 'even'
   return null
 }
 

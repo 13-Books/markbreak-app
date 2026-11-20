@@ -69,6 +69,8 @@ const COMMANDS = Object.freeze({
   PARAGRAPH_HORIZONTAL_LINE: 'paragraph.horizontal-line',
   PARAGRAPH_FLOW_BREAK: 'paragraph.flow-break',
   PARAGRAPH_FLOW_BREAK_PAGE: 'paragraph.flow-break-page',
+  PARAGRAPH_FLOW_BREAK_ODD: 'paragraph.flow-break-odd',
+  PARAGRAPH_FLOW_BREAK_EVEN: 'paragraph.flow-break-even',
   PARAGRAPH_HTML_BLOCK: 'paragraph.html-block',
   PARAGRAPH_LOOSE_LIST_ITEM: 'paragraph.loose-list-item',
   PARAGRAPH_MATH_FORMULA: 'paragraph.math-formula',

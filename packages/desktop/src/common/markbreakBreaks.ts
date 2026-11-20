@@ -1,5 +1,5 @@
 /**
- * Flow-break helpers aligned with dialect/markbreak tools/markbreak.lua (0.5.2).
+ * Flow-break helpers aligned with dialect/markbreak tools/markbreak.lua (0.7.0).
  * Folio pages for the page view are delimited by these markers — not by thematic breaks.
  */
 
@@ -13,10 +13,11 @@ export const FLOW_BREAK_LINES: Record<FlowBreakKind, string> = {
   even: '//break even'
 }
 
-const NEWPAGE_RE = /^\\newpage\{?\}?$/
-const PAGEBREAK_RE = /^\\pagebreak\{?\}?$/
-const COLUMNBREAK_RE = /^\\columnbreak\{?\}?$/
-const CLEARDOUBLE_RE = /^\\cleardoublepage\{?\}?$/
+// Optional empty `{}` only — reject `\newpage}` / `\newpage{`.
+const NEWPAGE_RE = /^\\newpage(\{\})?$/
+const PAGEBREAK_RE = /^\\pagebreak(\{\})?$/
+const COLUMNBREAK_RE = /^\\columnbreak(\{\})?$/
+const CLEARDOUBLE_RE = /^\\cleardoublepage(\{\})?$/
 
 /** A line that is only a flow break (trimmed). Thematic `---` is not a flow break. */
 export const breakKind = (command: string | null | undefined): FlowBreakKind | null => {

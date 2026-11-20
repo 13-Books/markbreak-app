@@ -97,6 +97,18 @@ export const flowBreakPage = (win: Win): void => {
   }
 }
 
+export const flowBreakOdd = (win: Win): void => {
+  if (win && win.webContents) {
+    win.webContents.send('mt::editor-insert-flow-break', { kind: 'odd' })
+  }
+}
+
+export const flowBreakEven = (win: Win): void => {
+  if (win && win.webContents) {
+    win.webContents.send('mt::editor-insert-flow-break', { kind: 'even' })
+  }
+}
+
 export const htmlBlock = (win: Win): void => {
   transformEditorElement(win, 'html')
 }

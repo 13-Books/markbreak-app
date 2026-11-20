@@ -120,7 +120,24 @@ const windowsBash = (): string | null => {
 
 const FRONT_MATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---/
 
-/** Copy manuscript-relative meta/layout into the temp export folder when named in YAML. */
+const isSafeRelative = (rel: string): boolean =>
+  !!rel && !rel.includes('..') && !path.isAbsolute(rel)
+
+const stageRelativeFile = async(
+  sourceDir: string,
+  stagingDir: string,
+  rel: string
+): Promise<boolean> => {
+  if (!isSafeRelative(rel)) return false
+  const from = path.join(sourceDir, rel)
+  if (!existsSync(from)) return false
+  const dest = path.join(stagingDir, rel)
+  await mkdir(path.dirname(dest), { recursive: true })
+  await copyFile(from, dest)
+  return true
+}
+
+/** Copy manuscript-relative meta/layout/spine files into the temp export folder. */
 const stageLinkedAssets = async(
   markdown: string,
   sourcePath: string | undefined,
@@ -131,21 +148,21 @@ const stageLinkedAssets = async(
   const match = FRONT_MATTER_RE.exec(markdown)
   if (!match) return markdown
   const yaml = match[1]
-  let changed = false
   for (const key of ['meta', 'layout'] as const) {
     const keyRe = new RegExp(`^${key}:\\s*["']?([^"'\\n]+)["']?\\s*$`, 'm')
     const hit = keyRe.exec(yaml)
     if (!hit) continue
-    const rel = hit[1].trim()
-    if (!rel || rel.includes('..') || path.isAbsolute(rel)) continue
-    const from = path.join(sourceDir, rel)
-    if (!existsSync(from)) continue
-    const dest = path.join(stagingDir, rel)
-    await mkdir(path.dirname(dest), { recursive: true })
-    await copyFile(from, dest)
-    changed = true
+    await stageRelativeFile(sourceDir, stagingDir, hit[1].trim())
   }
-  void changed
+  // Spine entries (Markdown or CSV) must sit beside the staged root for the Lua filter.
+  const spineBlock = /^spine:\s*\n((?:[ \t]+-[\s\S]*?)(?=\n[^\s]|\n*$))/m.exec(`\n${yaml}\n`)
+  if (spineBlock) {
+    for (const line of spineBlock[1].split('\n')) {
+      const file = /file:\s*["']?([^"',}\n]+)["']?/.exec(line)
+      if (!file) continue
+      await stageRelativeFile(sourceDir, stagingDir, file[1].trim())
+    }
+  }
   return markdown
 }
 

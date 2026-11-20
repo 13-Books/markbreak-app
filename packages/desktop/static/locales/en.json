@@ -84,6 +84,8 @@
       "horizontalRule": "Horizontal Rule",
       "flowBreak": "Flow Break",
       "flowBreakPage": "Page Break",
+      "flowBreakOdd": "Odd Page Break",
+      "flowBreakEven": "Even Page Break",
       "frontMatter": "Front Matter"
     },
     "window": {
@@ -863,6 +865,8 @@
       "horizontalLine": "Horizontal Line",
       "flowBreak": "Flow Break",
       "flowBreakPage": "Page Break",
+      "flowBreakOdd": "Odd Page Break",
+      "flowBreakEven": "Even Page Break",
       "frontMatter": "Front Matter",
       "resetParagraph": "Reset Paragraph",
       "mathBlock": "Math Block",

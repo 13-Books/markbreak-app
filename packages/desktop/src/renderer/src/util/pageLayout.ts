@@ -6,7 +6,7 @@
  * after each placement. Overflowing blocks split structurally: tables by row
  * (header repeated), lists by item, code by line, prose by word.
  */
-import { isFlowBreakLine } from 'common/markbreakBreaks'
+import { breakKind, isFlowBreakLine } from 'common/markbreakBreaks'
 
 export interface LaidOutPage {
   html: string
@@ -35,6 +35,20 @@ export const collectSegments = (container: Element): Element[][] => {
   for (const child of Array.from(container.children)) {
     if (child.classList.contains('mu-frontmatter')) continue
     if (isFlowBreakBlock(child)) {
+      // 1-based folio index of the next content page after this break.
+      let next = segments.length + 1
+      const kind = breakKind(child.textContent ?? '')
+      if (kind === 'odd') {
+        while (next % 2 === 0) {
+          segments.push([])
+          next++
+        }
+      } else if (kind === 'even') {
+        while (next % 2 === 1) {
+          segments.push([])
+          next++
+        }
+      }
       segments.push([])
       continue
     }

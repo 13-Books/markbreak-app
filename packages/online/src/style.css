@@ -459,6 +459,12 @@ body.is-table.is-source .csv-view { display: none; }
 
 .csv-view th { background: var(--editorColor04); }
 
+.csv-view td.mb-calc,
+.page-body td.mb-calc,
+.page-body th.mb-calc {
+  cursor: help;
+}
+
 .csv-view .mode-tag {
   font: 600 0.7rem "Open Sans", sans-serif;
   letter-spacing: 0.08em;

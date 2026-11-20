@@ -1,3 +1,5 @@
+import { evaluateTable, stripHiddenColumns, type CalcCell } from './markbreakCalc'
+
 function parseDelimited(text: string, delim: string): string[][] {
   const rows: string[][] = []
   let row: string[] = []
@@ -67,25 +69,43 @@ function escapeHtml(s: string): string {
     .replace(/"/g, '&quot;')
 }
 
+function cellHtml(cell: CalcCell, tag: 'th' | 'td'): string {
+  const attrs = cell.calc
+    ? ` data-calc="${escapeHtml(cell.calc)}" title="${escapeHtml(cell.calc)}" class="mb-calc"`
+    : ''
+  return `<${tag}${attrs}>${escapeHtml(cell.text)}</${tag}>`
+}
+
 export function renderCsvHtml(text: string, delim: string, label: string): string {
   const rows = parseDelimited(text, delim)
   if (!rows.length) {
     return '<p class="mode-tag">' + label + '</p><p><em>Empty</em></p>'
   }
-  const head = rows[0]
-  const body = rows.slice(1)
-  let html = '<p class="mode-tag">' + label + ' · ' + rows.length + ' rows</p><table><thead><tr>'
-  head.forEach((cell) => {
-    html += '<th>' + escapeHtml(cell) + '</th>'
-  })
+
+  const evaluated = evaluateTable(rows)
+  const table = evaluated ? stripHiddenColumns(evaluated) : null
+  const head = table?.headers.map((c) => c.text) ?? rows[0]
+  const bodyCells: CalcCell[][] =
+    table?.body ??
+    rows.slice(1).map((r) =>
+      head.map((_, c) => ({ text: r[c] ?? '' }))
+    )
+  // When there are no formulas, still render plain cells from the raw grid.
+  const headCells: CalcCell[] = table?.headers ?? head.map((text) => ({ text }))
+
+  let html =
+    '<p class="mode-tag">' +
+    label +
+    ' · ' +
+    (bodyCells.length + 1) +
+    ' rows</p><table><thead><tr>'
+  for (const cell of headCells) html += cellHtml(cell, 'th')
   html += '</tr></thead><tbody>'
-  body.forEach((r) => {
+  for (const r of bodyCells) {
     html += '<tr>'
-    for (let c = 0; c < head.length; c++) {
-      html += '<td>' + escapeHtml(r[c] ?? '') + '</td>'
-    }
+    for (let c = 0; c < headCells.length; c++) html += cellHtml(r[c] ?? { text: '' }, 'td')
     html += '</tr>'
-  })
+  }
   html += '</tbody></table>'
   return html
 }

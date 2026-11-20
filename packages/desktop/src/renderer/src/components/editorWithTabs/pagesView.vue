@@ -153,6 +153,7 @@ import { getMuyaLocale } from '@/util/muyaLocale'
 import { collectSegments, layoutPages, type LaidOutPage } from '@/util/pageLayout'
 import { isDarkThemeId, resolveMermaidTheme } from 'common/theme'
 import { buildSpreadPairs } from 'common/markbreakBreaks'
+import { applyCalculationsToTables } from 'common/markbreakCalc'
 import { getBookPageSize, pageAspectRatio } from 'common/bookPageSizes'
 import { parseBookFrontMatter } from 'common/bookFrontMatter'
 import { lintBookCss } from 'common/cssLint'
@@ -341,6 +342,8 @@ const relayout = async(): Promise<void> => {
     if (generation !== layoutGeneration) return
     const container = editorEl.querySelector('.mu-container')
     if (!container) return
+    // MarkBreak §8: show calculated results in the folio preview (same as online Pages).
+    applyCalculationsToTables(container)
     pages.value = layoutPages(
       collectSegments(container),
       host,
