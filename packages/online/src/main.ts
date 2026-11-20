@@ -25,6 +25,7 @@ import { renderMenu, type MenuEntry } from './menu'
 import { loadPrefs, savePrefs } from './prefs'
 import { clearRecent, loadRecent, rememberRecent } from './recent'
 import { applyEditorWidth, applyTheme, themeNames, themes } from './themes'
+import { expandSpineMarkdown } from './spine'
 import { resolveTocHeading } from './toc'
 
 import './style.css'
@@ -453,16 +454,26 @@ tocEl.addEventListener('click', (ev) => {
   target.scrollIntoView({ block: 'start' })
 })
 
+async function fetchTextCors(url: string): Promise<string> {
+  const res = await fetch(url, { mode: 'cors' })
+  if (!res.ok) throw new Error(res.status + ' ' + res.statusText + ' for ' + url)
+  return res.text()
+}
+
 async function loadUrl(u: string): Promise<void> {
   if (!u) return
   loadedUrl = u
   hintPath = u
   setStatus('Loading ' + u + ' …')
   try {
-    const res = await fetch(u, { mode: 'cors' })
-    if (!res.ok) throw new Error(res.status + ' ' + res.statusText)
-    applyDocument(await res.text())
-    setStatus('Loaded ' + fileName() + ' · ' + resolveMode())
+    const root = await fetchTextCors(u)
+    const expanded = await expandSpineMarkdown(root, u, fetchTextCors)
+    applyDocument(expanded.markdown)
+    setStatus(
+      expanded.expanded
+        ? 'Loaded ' + fileName() + ' · spine (' + expanded.files + ' files)'
+        : 'Loaded ' + fileName() + ' · ' + resolveMode()
+    )
     const next = new URL(location.href)
     next.searchParams.set('url', u)
     next.searchParams.delete('text')
