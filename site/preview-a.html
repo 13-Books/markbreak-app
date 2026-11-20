@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MarkBreak — write print manuscripts</title>
+  <meta name="description" content="MarkBreak — Desktop writer for print manuscripts. Roles in YAML. //break in the file. Pages and Spreads you can see while you draft." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0a0a0a;
+      --paper: #f7f4ef;
+      --muted: #5c564e;
+      --line: rgba(255, 255, 255, 0.14);
+      --coral: #e85d4c;
+      --leaf: #2f6b4f;
+      --gold: #c4a035;
+      --sky: #3d6ea5;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Source Serif 4", Georgia, serif;
+      background: var(--ink);
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      color: #f3efe8;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-brand {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.1rem;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    .nav-links a { text-decoration: none; opacity: 0.72; }
+    .nav-links a:hover { opacity: 1; }
+
+    .hero {
+      color: #f7f4ef;
+      padding: 2.5rem 1.5rem 0;
+      max-width: 72rem;
+      margin: 0 auto;
+    }
+    .brand {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      letter-spacing: -0.05em;
+      line-height: 0.92;
+      margin: 0 0 1rem;
+      animation: rise 0.7s ease both;
+    }
+    .hero h1 {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(1.35rem, 3vw, 1.85rem);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin: 0 0 0.75rem;
+      max-width: 28rem;
+      animation: rise 0.7s ease 0.08s both;
+    }
+    .lede {
+      margin: 0 0 1.5rem;
+      color: rgba(247, 244, 239, 0.72);
+      font-size: 1.05rem;
+      max-width: 34rem;
+      animation: rise 0.7s ease 0.14s both;
+    }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-bottom: 2.25rem;
+      animation: rise 0.7s ease 0.2s both;
+    }
+    .cta a {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.78rem 1.15rem;
+      border: 1px solid transparent;
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+    .cta a.primary { background: var(--coral); color: #fff; }
+    .cta a.primary:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    .cta a.secondary {
+      background: transparent;
+      color: #f7f4ef;
+      border-color: var(--line);
+    }
+    .cta a.secondary:hover { border-color: #fff; }
+
+    .hero-shot {
+      display: block;
+      width: calc(100% + 3rem);
+      margin-left: -1.5rem;
+      margin-right: -1.5rem;
+      height: auto;
+      animation: floatIn 1s ease 0.18s both;
+    }
+
+    .panel {
+      padding: 4rem 1.5rem;
+      color: #f7f4ef;
+    }
+    .panel-inner {
+      max-width: 68rem;
+      margin: 0 auto;
+      display: grid;
+      gap: 1.75rem;
+      align-items: center;
+    }
+    @media (min-width: 860px) {
+      .panel-inner.split { grid-template-columns: 1fr 1.15fr; gap: 2.5rem; }
+      .panel-inner.split.flip > :first-child { order: 2; }
+    }
+    .panel h2 {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin: 0 0 0.75rem;
+    }
+    .panel p { margin: 0 0 0.9rem; max-width: 36rem; opacity: 0.9; }
+    .panel code {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.92em;
+      background: rgba(0, 0, 0, 0.22);
+      padding: 0.08em 0.35em;
+    }
+    .panel img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .panel.coral { background: var(--coral); color: #fff; }
+    .panel.leaf { background: var(--leaf); }
+    .panel.gold { background: var(--gold); color: #1a1408; }
+    .panel.sky { background: var(--sky); }
+    .panel.paper {
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .panel.paper p { opacity: 0.85; color: var(--muted); }
+    .panel.ink { background: var(--ink); border-top: 1px solid var(--line); }
+
+    .view-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0 0 1rem;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .view-tabs button {
+      background: transparent;
+      border: 1px solid rgba(10, 10, 10, 0.18);
+      color: inherit;
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      font: inherit;
+    }
+    .view-tabs button[aria-selected="true"] {
+      background: var(--ink);
+      color: #f7f4ef;
+      border-color: var(--ink);
+    }
+    .shot-frame { position: relative; }
+    .shot-frame img { width: 100%; height: auto; display: none; }
+    .shot-frame img.is-active { display: block; }
+
+    .download-head { max-width: 40rem; margin-bottom: 1.5rem; }
+    .build-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+    .build-picker select {
+      font: inherit;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid rgba(10, 10, 10, 0.2);
+      background: #fff;
+      min-width: min(100%, 18rem);
+    }
+    .build-picker a {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 700;
+      text-decoration: none;
+      background: var(--ink);
+      color: #f7f4ef;
+      padding: 0.75rem 1.15rem;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+
+    .site-footer {
+      background: #050505;
+      color: rgba(247, 244, 239, 0.72);
+      padding: 2.5rem 1.5rem 1.25rem;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 0.9rem;
+    }
+    .footer-inner {
+      max-width: 68rem;
+      margin: 0 auto 2rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+    @media (min-width: 720px) {
+      .footer-inner { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+    }
+    .footer-brand {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #f7f4ef;
+      text-decoration: none;
+      letter-spacing: -0.03em;
+    }
+    .footer-tag { margin: 0.4rem 0 0; max-width: 18rem; }
+    .footer-col h2 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(247, 244, 239, 0.45);
+      margin: 0 0 0.6rem;
+    }
+    .footer-col ul { list-style: none; margin: 0; padding: 0; }
+    .footer-col a { text-decoration: none; color: #f7f4ef; opacity: 0.8; }
+    .footer-col a:hover { opacity: 1; }
+    .footer-bar {
+      max-width: 68rem;
+      margin: 0 auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+    }
+    .footer-bar a { color: #f7f4ef; text-decoration: none; opacity: 0.75; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Primary">
+    <a class="nav-brand" href="./">MarkBreak</a>
+    <div class="nav-links">
+      <a href="guides/">Guides</a>
+      <a href="https://markbreak.com">Specification</a>
+      <a href="edit.html?theme=nightfox">Try online</a>
+      <a href="#download">Download</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <p class="brand">MarkBreak</p>
+    <h1>Writing from start to printed.</h1>
+    <p class="lede">Set the role. Mark the break. See the spread while you draft — Desktop that ships what the dialect promises.</p>
+    <div class="cta">
+      <a class="primary" href="#download">Download desktop</a>
+      <a class="secondary" href="edit.html?theme=nightfox">Try online</a>
+    </div>
+    <img class="hero-shot" src="assets/product/spreads-morris.png" width="1550" height="926" alt="MarkBreak Desktop in Spreads view — Morris Ideal Book opening with blank verso and chapter recto" />
+  </header>
+
+  <section class="panel paper">
+    <div class="panel-inner split">
+      <div>
+        <h2>Write as you mean it.</h2>
+        <p>Real-time WYSIWYG with the manuscript open on disk. Source mode when you want the marks naked. No account. Plain files.</p>
+        <p><code>role: chapter</code> stays visible in the front matter — the print job starts in the YAML, not in a sidebar checkbox.</p>
+      </div>
+      <img src="assets/product/editor-morris.png" width="1550" height="926" alt="MarkBreak editor showing YAML role and The Ideal Book chapter" />
+    </div>
+  </section>
+
+  <section class="panel leaf">
+    <div class="panel-inner split flip">
+      <div>
+        <h2>Pages &amp; Spreads — not a marketing preview.</h2>
+        <p>iA talks about book-like preview. We ship folio Pages and facing Spreads in the Desktop window, so the turn is something you can check before export.</p>
+        <div class="view-tabs" role="tablist" aria-label="View mode">
+          <button type="button" role="tab" aria-selected="true" data-shot="pages">Pages</button>
+          <button type="button" role="tab" aria-selected="false" data-shot="spreads">Spreads</button>
+          <button type="button" role="tab" aria-selected="false" data-shot="editor">Editor</button>
+        </div>
+      </div>
+      <div class="shot-frame" id="view-shots">
+        <img class="is-active" data-shot="pages" src="assets/product/pages-morris.png" width="1550" height="926" alt="Pages view" />
+        <img data-shot="spreads" src="assets/product/spreads-morris.png" width="1550" height="926" alt="Spreads view" />
+        <img data-shot="editor" src="assets/product/editor-morris.png" width="1550" height="926" alt="Editor view" />
+      </div>
+    </div>
+  </section>
+
+  <section class="panel coral">
+    <div class="panel-inner">
+      <div>
+        <h2>Roles &amp; breaks stay in the file.</h2>
+        <p>One role per leaf. <code>//break</code> advances the story; <code>//break page</code> forces a turn; odd and even when the side must be specific. Tables that calculate — Markdown or CSV. The open rules live on <a href="https://markbreak.com">markbreak.com</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel gold">
+    <div class="panel-inner split">
+      <div>
+        <h2>Focus when the sentence matters.</h2>
+        <p>Highlight the line you are in. Fade the rest. Typewriter pacing when you want the page to follow the caret — the quiet tools MarkText and iA writers expect, beside the print dialect they do not ship.</p>
+      </div>
+      <img src="assets/product/focus-morris.png" width="1550" height="926" alt="MarkBreak Focus mode on The Ideal Book" />
+    </div>
+  </section>
+
+  <section class="panel sky" id="download">
+    <div class="panel-inner">
+      <div class="download-head">
+        <h2>Download MarkBreak</h2>
+        <p>Windows, macOS, Linux. Open a blank page and write the first line of your book — the path stays clear to Docx and print.</p>
+      </div>
+      <div class="build-picker">
+        <label class="visually-hidden" for="build-select">Choose a build</label>
+        <select id="build-select">
+          <optgroup label="Windows">
+            <option value="win-x64-setup">Windows x64 installer (.exe)</option>
+            <option value="win-arm64-setup">Windows ARM64 installer (.exe)</option>
+            <option value="win-x64-zip">Windows x64 portable (.zip)</option>
+            <option value="win-arm64-zip">Windows ARM64 portable (.zip)</option>
+          </optgroup>
+          <optgroup label="macOS">
+            <option value="mac-arm64-dmg">macOS Apple Silicon (.dmg)</option>
+            <option value="mac-x64-dmg">macOS Intel (.dmg)</option>
+          </optgroup>
+          <optgroup label="Linux">
+            <option value="linux-x64-appimage">Linux x64 AppImage</option>
+            <option value="linux-x64-deb">Linux x64 .deb</option>
+            <option value="linux-x64-rpm">Linux x64 .rpm</option>
+            <option value="linux-x64-snap">Linux x64 .snap</option>
+            <option value="linux-x64-targz">Linux x64 .tar.gz</option>
+            <option value="linux-arm64-appimage">Linux ARM64 AppImage</option>
+            <option value="linux-arm64-deb">Linux ARM64 .deb</option>
+            <option value="linux-arm64-rpm">Linux ARM64 .rpm</option>
+            <option value="linux-arm64-targz">Linux ARM64 .tar.gz</option>
+          </optgroup>
+        </select>
+        <a id="build-link" href="https://github.com/13-Books/markbreak-app/releases/latest">Download</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <a class="footer-brand" href="./">MarkBreak</a>
+        <p class="footer-tag">Writing from start to printed.</p>
+      </div>
+      <div class="footer-col">
+        <h2>Download</h2>
+        <ul>
+          <li><a href="https://github.com/13-Books/markbreak-app/releases/latest" data-asset="win-x64-setup">Windows</a></li>
+          <li><a href="https://github.com/13-Books/markbreak-app/releases/latest" data-asset="mac-arm64-dmg">macOS</a></li>
+          <li><a href="https://github.com/13-Books/markbreak-app/releases/latest" data-asset="linux-x64-appimage">Linux</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Kinship</h2>
+        <ul>
+          <li><a href="https://markbreak.com">markbreak.com</a></li>
+          <li><a href="https://plaintexthumans.com">Plain Text Humans</a></li>
+          <li><a href="https://github.com/13-Books/markbreak-app">GitHub</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="guides/">Getting started</a></li>
+          <li><a href="edit.html?theme=nightfox">Try online</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <span>© 2026 MarkBreak · preview A — dialect panels</span>
+      <span><a href="preview-b.html">B</a> · <a href="preview-c.html">C</a> · <a href="./">Live index</a></span>
+    </div>
+  </footer>
+  <script>
+    const releasesPage = 'https://github.com/13-Books/markbreak-app/releases/latest'
+    const assetPatterns = {
+      'win-x64-setup': /^markbreak-win-x64-.+-setup\.exe$/,
+      'win-arm64-setup': /^markbreak-win-arm64-.+-setup\.exe$/,
+      'win-x64-zip': /^markbreak-win-x64-.+\.zip$/,
+      'win-arm64-zip': /^markbreak-win-arm64-.+\.zip$/,
+      'mac-arm64-dmg': /^markbreak-mac-arm64-.+\.dmg$/,
+      'mac-x64-dmg': /^markbreak-mac-x64-.+\.dmg$/,
+      'linux-x64-appimage': /^markbreak-linux-\d.+\.AppImage$/,
+      'linux-x64-deb': /^markbreak-linux-\d.+\.deb$/,
+      'linux-x64-rpm': /^markbreak-linux-\d.+\.rpm$/,
+      'linux-x64-snap': /^markbreak-linux-\d.+\.snap$/,
+      'linux-x64-targz': /^markbreak-linux-\d.+\.tar\.gz$/,
+      'linux-arm64-appimage': /^markbreak-linux-arm64-.+\.AppImage$/,
+      'linux-arm64-deb': /^markbreak-linux-arm64-.+\.deb$/,
+      'linux-arm64-rpm': /^markbreak-linux-arm64-.+\.rpm$/,
+      'linux-arm64-targz': /^markbreak-linux-arm64-.+\.tar\.gz$/,
+    }
+    const assetUrls = {}
+    const buildSelect = document.getElementById('build-select')
+    const buildLink = document.getElementById('build-link')
+    const syncBuildLink = () => {
+      buildLink.href = assetUrls[buildSelect.value] ?? releasesPage
+    }
+    const preferBuild = () => {
+      const ua = navigator.userAgent
+      if (/Windows/i.test(ua)) return 'win-x64-setup'
+      if (/Mac OS X|Macintosh/i.test(ua)) return 'mac-arm64-dmg'
+      if (/Linux/i.test(ua)) return 'linux-x64-appimage'
+      return 'win-x64-setup'
+    }
+    buildSelect.value = preferBuild()
+    buildSelect.addEventListener('change', syncBuildLink)
+    syncBuildLink()
+    fetch('https://api.github.com/repos/13-Books/markbreak-app/releases/latest')
+      .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+      .then((release) => {
+        for (const [key, pattern] of Object.entries(assetPatterns)) {
+          const asset = release.assets.find((candidate) => pattern.test(candidate.name))
+          if (asset) assetUrls[key] = asset.browser_download_url
+        }
+        for (const link of document.querySelectorAll('a[data-asset]')) {
+          link.href = assetUrls[link.dataset.asset] ?? releasesPage
+        }
+        syncBuildLink()
+      })
+      .catch(() => {})
+
+    const tabs = document.querySelectorAll('.view-tabs button')
+    const shots = document.querySelectorAll('#view-shots img')
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const key = tab.dataset.shot
+        tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)))
+        shots.forEach((img) => img.classList.toggle('is-active', img.dataset.shot === key))
+      })
+    })
+  </script>
+</body>
+</html>

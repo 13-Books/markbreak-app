@@ -4,49 +4,44 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MarkBreak — write print manuscripts</title>
-  <meta name="description" content="MarkBreak — writing from start to printed. Set the role. Mark the page break. Tables that calculate — Markdown or CSV. Keep the source synced." />
+  <meta name="description" content="MarkBreak — Desktop writer for print manuscripts. Roles in YAML. //break in the file. Pages and Spreads you can see while you draft." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --ink: #07131f;
-      --ink-soft: #132536;
-      --paper: #f4f8fc;
-      --mist: #d7e6f2;
-      --muted: #4a6074;
-      --teal: #0d9f8a;
-      --teal-deep: #087a6a;
-      --flare: #ff7a45;
-      --line: rgba(7, 19, 31, 0.12);
-      --glow: rgba(13, 159, 138, 0.28);
+      --ink: #14181d;
+      --paper: #e9eef3;
+      --panel: #f7f9fb;
+      --muted: #5a6672;
+      --line: rgba(20, 24, 29, 0.12);
+      --accent: #c45b4a;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       color: var(--ink);
-      font-family: Sora, system-ui, sans-serif;
+      font-family: Figtree, system-ui, sans-serif;
       background:
-        radial-gradient(900px 520px at 85% -10%, rgba(255, 122, 69, 0.22), transparent 55%),
-        radial-gradient(1100px 640px at -5% 0%, rgba(13, 159, 138, 0.2), transparent 50%),
-        linear-gradient(180deg, #eaf3fa 0%, var(--paper) 38%, #e7f1f4 100%);
+        radial-gradient(900px 480px at 10% -5%, rgba(196, 91, 74, 0.08), transparent 55%),
+        linear-gradient(180deg, #dfe7ef 0%, var(--paper) 32%, #e4ebf2 100%);
       line-height: 1.55;
     }
-    a { color: var(--teal-deep); }
+    a { color: var(--accent); }
     .nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      max-width: 68rem;
+      max-width: 70rem;
       margin: 0 auto;
       padding: 1.1rem 1.5rem;
     }
     .nav-brand {
-      font-family: Fraunces, Georgia, serif;
+      font-family: Literata, Georgia, serif;
       font-weight: 700;
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       letter-spacing: -0.03em;
       text-decoration: none;
       color: var(--ink);
@@ -54,460 +49,234 @@
     .nav-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.35rem 1.15rem;
-      font-size: 0.92rem;
+      gap: 0.35rem 1.1rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      line-height: 1.3;
     }
     .nav-links a { color: var(--muted); text-decoration: none; }
     .nav-links a:hover { color: var(--ink); }
 
     .hero {
-      position: relative;
-      overflow: hidden;
-      min-height: min(92vh, 54rem);
-      display: grid;
-      align-items: end;
-      max-width: 68rem;
+      max-width: 70rem;
       margin: 0 auto;
-      padding: 2rem 1.5rem 3.5rem;
+      padding: 1.5rem 1.5rem 0;
     }
-    .hero-copy { max-width: min(46rem, 100%); z-index: 2; }
-    .hero .brand {
-      font-family: Fraunces, Georgia, serif;
+    .brand {
+      font-family: Literata, Georgia, serif;
       font-weight: 700;
-      font-size: clamp(3.2rem, 9vw, 5.6rem);
+      font-size: clamp(3rem, 9vw, 5.2rem);
       letter-spacing: -0.045em;
       line-height: 0.92;
-      margin: 0 0 1.1rem;
+      margin: 0 0 1rem;
       animation: rise 0.7s ease both;
     }
     .hero h1 {
-      font-family: Fraunces, Georgia, serif;
+      font-family: Literata, Georgia, serif;
       font-weight: 500;
-      font-size: clamp(1.45rem, 3.2vw, 2rem);
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
       letter-spacing: -0.03em;
       line-height: 1.2;
-      margin: 0 0 0.85rem;
-      max-width: none;
-      white-space: nowrap;
+      margin: 0 0 0.8rem;
+      max-width: 28rem;
       animation: rise 0.7s ease 0.08s both;
     }
-    .hero .lede {
-      margin: 0 0 1.6rem;
+    .lede {
+      margin: 0 0 1.5rem;
       color: var(--muted);
       font-size: 1.05rem;
-      max-width: none;
-      white-space: nowrap;
+      max-width: 34rem;
       animation: rise 0.7s ease 0.14s both;
     }
     .cta {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.7rem;
+      margin-bottom: 1.75rem;
       animation: rise 0.7s ease 0.2s both;
     }
     .cta a {
       font-weight: 600;
       text-decoration: none;
-      padding: 0.78rem 1.2rem;
-      border-radius: 999px;
-      transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+      padding: 0.78rem 1.15rem;
+      transition: transform 0.18s ease, background 0.18s ease;
     }
     .cta a.primary {
       background: var(--ink);
-      color: #f7fcff;
+      color: #f4f7fa;
     }
-    .cta a.primary:hover { background: var(--teal-deep); transform: translateY(-1px); }
+    .cta a.primary:hover { transform: translateY(-1px); background: #000; }
     .cta a.secondary {
       background: rgba(255, 255, 255, 0.55);
       color: var(--ink);
       border: 1px solid var(--line);
-      backdrop-filter: blur(8px);
     }
-    .cta a.secondary:hover { border-color: var(--teal); color: var(--teal-deep); }
+    .cta a.secondary:hover { border-color: var(--ink); }
 
-    .hero-stage {
-      position: absolute;
-      inset: auto 0 0 auto;
-      width: min(52%, 34rem);
-      height: min(78%, 36rem);
-      pointer-events: none;
-      z-index: 1;
-      animation: floatIn 1s ease 0.15s both;
-    }
-    .hero-glow {
-      position: absolute;
-      inset: 8% 4% 12% 8%;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255, 122, 69, 0.45), transparent 42%),
-        radial-gradient(circle at 70% 70%, rgba(13, 159, 138, 0.5), transparent 46%);
-      filter: blur(18px);
-      animation: pulse 5.5s ease-in-out infinite;
-    }
-    .editor-mock {
-      position: absolute;
-      inset: 4% 6% 2% 10%;
-      border-radius: 18px;
-      background: linear-gradient(165deg, #102437 0%, #0a1826 100%);
-      color: #d7e8f4;
-      box-shadow:
-        0 30px 60px rgba(7, 19, 31, 0.35),
-        0 0 0 1px rgba(255, 255, 255, 0.08);
-      padding: 1.1rem 1.2rem 1.3rem;
-      font-family: ui-monospace, "Cascadia Code", monospace;
-      font-size: 0.78rem;
-      line-height: 1.55;
-      overflow: hidden;
-    }
-    .editor-mock .chrome {
+    .hero-switch {
       display: flex;
       gap: 0.35rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
+      animation: rise 0.7s ease 0.22s both;
     }
-    .editor-mock .chrome i {
-      width: 0.55rem;
-      height: 0.55rem;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.18);
-      display: block;
+    .hero-switch button {
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
     }
-    .editor-mock .chrome i:nth-child(1) { background: #ff7a45; }
-    .editor-mock .chrome i:nth-child(2) { background: #f0c14a; }
-    .editor-mock .chrome i:nth-child(3) { background: #0d9f8a; }
-    .editor-mock .kw { color: #7be7d4; }
-    .editor-mock .role { color: #ffb089; }
-    .editor-mock .break { color: #9ecbff; }
-    .editor-mock .dim { color: rgba(215, 232, 244, 0.45); }
+    .hero-switch button[aria-selected="true"] {
+      background: var(--ink);
+      color: #f4f7fa;
+      border-color: var(--ink);
+    }
+    .hero-stage {
+      position: relative;
+      width: calc(100% + 3rem);
+      margin-left: -1.5rem;
+      margin-right: -1.5rem;
+      animation: floatIn 1s ease 0.18s both;
+    }
+    .hero-stage img {
+      width: 100%;
+      height: auto;
+      display: none;
+      vertical-align: top;
+    }
+    .hero-stage img.is-active { display: block; }
 
-    .band {
-      max-width: 68rem;
+    main {
+      max-width: 70rem;
       margin: 0 auto;
-      padding: 0 1.5rem 1.25rem;
+      padding: 0 1.5rem 4rem;
     }
-    section.block {
-      padding: 3.2rem 0 3.75rem;
+    .block {
+      padding: 3.5rem 0;
       border-top: 1px solid var(--line);
     }
-    section.block:first-of-type {
-      padding-bottom: 1.875rem;
-    }
-    section.block#download {
-      margin-top: 2.5rem;
-      padding-top: 1.5rem;
-      padding-bottom: 2.5rem;
-    }
-    section.block h2 {
-      font-family: Fraunces, Georgia, serif;
+    .block h2 {
+      font-family: Literata, Georgia, serif;
       font-weight: 700;
-      font-size: clamp(1.6rem, 3vw, 2.1rem);
+      font-size: clamp(1.55rem, 3vw, 2.05rem);
       letter-spacing: -0.03em;
       line-height: 1.15;
-      margin: 0 0 0.7rem;
-      max-width: none;
-      white-space: nowrap;
+      margin: 0 0 0.75rem;
+      max-width: 28rem;
     }
-    section.block > p {
+    .block p {
+      margin: 0 0 0.9rem;
       color: var(--muted);
-      margin: 0 0 1.4rem;
-      max-width: 42ch;
+      max-width: 38rem;
+      font-size: 1.02rem;
+    }
+    .block code {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.9em;
+      color: var(--ink);
+      background: rgba(20, 24, 29, 0.06);
+      padding: 0.08em 0.35em;
     }
     .split {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 1.5rem 2rem;
-      align-items: start;
+      gap: 1.75rem;
+      align-items: center;
     }
-    p code, li code {
-      font-family: ui-monospace, "Cascadia Code", monospace;
-      font-size: 1.05em;
-      font-weight: 400;
-      line-height: 1;
-      vertical-align: baseline;
-      background: rgba(7, 19, 31, 0.06);
-      padding: 0.12em 0.38em;
-      border-radius: 4px;
+    @media (min-width: 880px) {
+      .split { grid-template-columns: 1fr 1.2fr; gap: 2.5rem; }
+      .split.flip > :first-child { order: 2; }
     }
-    pre {
-      margin: 0;
-      background: var(--ink);
-      color: #e7f4ff;
-      padding: 1.1rem 1.15rem;
-      border-radius: 14px;
-      overflow-x: auto;
-      font-size: 0.86rem;
-      line-height: 1.5;
-      box-shadow: 0 16px 40px rgba(7, 19, 31, 0.18);
+    .shot {
+      width: 100%;
+      height: auto;
+      display: block;
+      box-shadow: 0 18px 48px rgba(20, 24, 29, 0.12);
     }
-    pre .t { color: #7be7d4; }
-    pre .r { color: #ffb089; }
-    .pill-row {
+
+    .download-head { max-width: 38rem; margin-bottom: 1.4rem; }
+    .build-picker {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.55rem;
-      margin-top: 1rem;
-      margin-bottom: 0.875rem;
-    }
-    .pill {
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 0.45rem 0.8rem;
-      border-radius: 999px;
-      background: rgba(13, 159, 138, 0.12);
-      color: var(--teal-deep);
-    }
-    .pill.warm {
-      background: rgba(255, 122, 69, 0.14);
-      color: #b84a1f;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.85rem;
-    }
-    .step {
-      text-decoration: none;
-      color: inherit;
-      padding: 1.15rem 1rem 1.2rem;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.62);
-      border: 1px solid var(--line);
-      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-      min-height: 9.5rem;
-    }
-    .step:hover {
-      transform: translateY(-3px);
-      border-color: rgba(13, 159, 138, 0.45);
-      box-shadow: 0 14px 30px rgba(7, 19, 31, 0.08);
-    }
-    .step .n {
-      display: inline-flex;
+      gap: 0.65rem;
       align-items: center;
-      justify-content: center;
-      width: 1.7rem;
-      height: 1.7rem;
-      border-radius: 50%;
-      background: var(--ink);
-      color: #fff;
-      font-size: 0.78rem;
+    }
+    .build-picker select {
+      font: inherit;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      min-width: min(100%, 18rem);
+    }
+    .build-picker a {
       font-weight: 700;
-      margin-bottom: 0.75rem;
-    }
-    .step h3 {
-      font-family: Fraunces, Georgia, serif;
-      font-size: 1.15rem;
-      line-height: 1.25;
-      margin: 0 0 0.35rem;
-      letter-spacing: -0.02em;
-    }
-    .step p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .download-head {
-      margin-bottom: 1.85rem;
+      text-decoration: none;
+      background: var(--ink);
+      color: #f4f7fa;
+      padding: 0.75rem 1.15rem;
     }
     .visually-hidden {
       position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0;
     }
-    .build-picker {
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: stretch;
-      gap: 0.55rem;
-      max-width: 100%;
-    }
-    .build-picker select,
-    .build-picker a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 3.1rem;
-      padding: 0.75rem 1.15rem;
-      border-radius: 999px;
-      font: inherit;
-      font-weight: 600;
-      border: 0;
-      background: var(--ink);
-      color: #f4f8fc;
-      transition: background 0.18s ease, transform 0.18s ease;
-      white-space: nowrap;
-    }
-    .build-picker select {
-      flex: 1 1 16rem;
-      max-width: 100%;
-      appearance: none;
-      -webkit-appearance: none;
-      cursor: pointer;
-      padding-right: 2.4rem;
-      background-image:
-        linear-gradient(45deg, transparent 50%, #f4f8fc 50%),
-        linear-gradient(135deg, #f4f8fc 50%, transparent 50%);
-      background-position:
-        calc(100% - 1.15rem) calc(50% - 0.15rem),
-        calc(100% - 0.75rem) calc(50% - 0.15rem);
-      background-size: 0.4rem 0.4rem, 0.4rem 0.4rem;
-      background-repeat: no-repeat;
-    }
-    .build-picker select:hover,
-    .build-picker a:hover {
-      background-color: var(--teal-deep);
-      transform: translateY(-1px);
-    }
-    .build-picker select:hover {
-      background-image:
-        linear-gradient(45deg, transparent 50%, #f4f8fc 50%),
-        linear-gradient(135deg, #f4f8fc 50%, transparent 50%);
-    }
-    .build-picker select:focus-visible,
-    .build-picker a:focus-visible {
-      outline: 2px solid var(--teal);
-      outline-offset: 2px;
-    }
-    .build-picker a {
-      flex: 0 0 auto;
-      text-decoration: none;
-      padding-inline: 1.35rem;
-    }
-    .build-picker select option {
-      color: var(--ink);
-      background: #fff;
-    }
+
     .site-footer {
-      margin-top: 0.75rem;
-      background:
-        linear-gradient(180deg, transparent, rgba(7, 19, 31, 0.03) 20%),
-        #0b1826;
-      color: rgba(244, 248, 252, 0.72);
+      background: var(--ink);
+      color: rgba(244, 247, 250, 0.7);
+      padding: 2.5rem 1.5rem 1.25rem;
+      font-size: 0.9rem;
     }
-    .site-footer a {
-      color: rgba(244, 248, 252, 0.78);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .site-footer a:hover { color: #7be7d4; }
     .footer-inner {
-      max-width: 68rem;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 1.5rem;
+      max-width: 70rem;
+      margin: 0 auto 2rem;
       display: grid;
-      grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
-      gap: 2rem 1.5rem;
+      gap: 1.5rem;
+    }
+    @media (min-width: 720px) {
+      .footer-inner { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
     }
     .footer-brand {
-      font-family: Fraunces, Georgia, serif;
+      font-family: Literata, Georgia, serif;
       font-weight: 700;
-      font-size: 1.45rem;
-      letter-spacing: -0.03em;
-      color: #f4f8fc;
+      font-size: 1.2rem;
+      color: #f4f7fa;
       text-decoration: none;
-      display: inline-block;
-      margin-bottom: 0.55rem;
+      letter-spacing: -0.03em;
     }
-    .footer-brand:hover { color: #7be7d4; }
-    .footer-tag {
-      margin: 0;
-      max-width: 28ch;
-      font-size: 0.92rem;
-      line-height: 1.5;
-      color: rgba(244, 248, 252, 0.55);
-    }
+    .footer-tag { margin: 0.4rem 0 0; max-width: 18rem; }
     .footer-col h2 {
-      margin: 0 0 0.85rem;
-      font-family: Sora, system-ui, sans-serif;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      color: rgba(244, 248, 252, 0.42);
+      letter-spacing: 0.08em;
+      color: rgba(244, 247, 250, 0.4);
+      margin: 0 0 0.55rem;
     }
-    .footer-col ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      gap: 0.55rem;
-    }
-    .footer-col a { font-size: 0.92rem; }
+    .footer-col ul { list-style: none; margin: 0; padding: 0; }
+    .footer-col a { text-decoration: none; color: #f4f7fa; opacity: 0.82; }
+    .footer-col a:hover { opacity: 1; }
     .footer-bar {
-      max-width: 68rem;
+      max-width: 70rem;
       margin: 0 auto;
-      padding: 1.1rem 1.5rem 1.75rem;
-      border-top: 1px solid rgba(244, 248, 252, 0.1);
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem 1.25rem;
       justify-content: space-between;
-      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
       font-size: 0.82rem;
-      color: rgba(244, 248, 252, 0.42);
     }
-    .footer-bar a { color: rgba(244, 248, 252, 0.55); font-weight: 500; }
-    .footer-bar a:hover { color: #7be7d4; }
+    .footer-bar a { color: #f4f7fa; text-decoration: none; opacity: 0.75; }
 
     @keyframes rise {
-      from { opacity: 0; transform: translateY(14px); }
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: none; }
     }
     @keyframes floatIn {
-      from { opacity: 0; transform: translate(18px, 24px) scale(0.98); }
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: none; }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.85; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.04); }
-    }
-
-    @media (max-width: 900px) {
-      .hero { min-height: auto; padding-bottom: 2rem; }
-      .hero h1,
-      .hero .lede,
-      section.block h2 { white-space: normal; }
-      .hero-stage {
-        position: relative;
-        width: 100%;
-        height: 19.25rem;
-        inset: auto;
-        margin: 1.75rem 0 0;
-      }
-      .editor-mock { inset: 0; }
-      .split, .steps { grid-template-columns: 1fr; }
-      .build-picker { width: 100%; }
-      .build-picker select,
-      .build-picker a { flex: 1 1 100%; }
-      .footer-inner { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 640px) {
-      .nav {
-        flex-wrap: wrap;
-        gap: 0.6rem 1rem;
-        padding: 1rem 1.5rem 0.5rem;
-      }
-      .nav-links {
-        width: 100%;
-        justify-content: space-between;
-        gap: 0.35rem 0.5rem;
-        font-size: 0.85rem;
-      }
-      .hero { padding-top: 1.25rem; }
-      .step { min-height: 0; }
-    }
-    @media (max-width: 359px) {
-      .nav-links { justify-content: flex-start; column-gap: 1rem; }
-    }
-    @media (max-width: 560px) {
-      .footer-inner { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -523,111 +292,66 @@
   </nav>
 
   <header class="hero">
-    <div class="hero-copy">
-      <p class="brand">MarkBreak</p>
-      <h1>Writing from start to printed.</h1>
-      <p class="lede">Set the role. Mark the page break. Let tables calculate — CSV from the start. Keep the source synced.</p>
-      <div class="cta">
-        <a class="primary" href="#download">Download desktop</a>
-        <a class="secondary" href="edit.html?theme=nightfox">Try online</a>
-      </div>
+    <p class="brand">MarkBreak</p>
+    <h1>Writing from start to printed.</h1>
+    <p class="lede">Set the role. Mark the break. See Pages and Spreads while you draft — Desktop that keeps the print contract visible.</p>
+    <div class="cta">
+      <a class="primary" href="#download">Download desktop</a>
+      <a class="secondary" href="edit.html?theme=nightfox">Try online</a>
     </div>
-    <div class="hero-stage" aria-hidden="true">
-      <div class="hero-glow"></div>
-      <div class="editor-mock">
-        <div class="chrome"><i></i><i></i><i></i></div>
-        <div><span class="dim">---</span></div>
-        <div><span class="kw">title:</span> "Commit Don't Push"</div>
-        <div><span class="kw">role:</span> <span class="role">chapter</span></div>
-        <div><span class="dim">---</span></div>
-        <div>&nbsp;</div>
-        <div># Genesis</div>
-        <div>&nbsp;</div>
-        <div>The gate was never gospel.</div>
-        <div>&nbsp;</div>
-        <div><span class="break">//break</span></div>
-        <div>&nbsp;</div>
-        <div># After the break</div>
-      </div>
+    <div class="hero-switch" role="tablist" aria-label="Product view">
+      <button type="button" role="tab" aria-selected="true" data-shot="spreads">Spreads</button>
+      <button type="button" role="tab" aria-selected="false" data-shot="pages">Pages</button>
+      <button type="button" role="tab" aria-selected="false" data-shot="editor">Editor</button>
+    </div>
+    <div class="hero-stage" id="hero-shots">
+      <img class="is-active" data-shot="spreads" src="assets/product/spreads-morris.png" width="1550" height="926" alt="Spreads view — Ideal Book" />
+      <img data-shot="pages" src="assets/product/pages-morris.png" width="1550" height="926" alt="Pages view — Ideal Book" />
+      <img data-shot="editor" src="assets/product/editor-morris.png" width="1550" height="926" alt="Editor with role front matter" />
     </div>
   </header>
 
-  <main class="band">
+  <main>
     <section class="block">
-      <h2>Built for the page, not the feed.</h2>
-      <p>
-        Headings start chapters on a Kindle. Print needs a mark in the file.
-        MarkBreak is the writer that keeps that contract visible while you draft.
-      </p>
-      <div class="pill-row">
-        <span class="pill">YAML roles</span>
-        <span class="pill">Page breaks in-file</span>
-        <span class="pill">Tables that calculate · CSV</span>
-        <span class="pill warm">Pandoc-ready</span>
-        <span class="pill">Online drafts · desktop exports</span>
+      <div class="split">
+        <div>
+          <h2>Write as you mean it.</h2>
+          <p>Real-time WYSIWYG. Source mode when you want the marks naked. Themes, tables, math, diagrams, footnotes — the editor parity MarkText writers expect, on plain files with no account.</p>
+          <p><code>role: chapter</code> lives in the YAML. The print job starts in the file.</p>
+        </div>
+        <img class="shot" src="assets/product/editor-morris.png" width="1550" height="926" alt="MarkBreak editor showing role and Ideal Book" />
       </div>
+    </section>
+
+    <section class="block">
+      <div class="split flip">
+        <div>
+          <h2>Pages &amp; Spreads — actually shipped.</h2>
+          <p>Others advertise a book-like preview. MarkBreak Desktop opens folio Pages and facing Spreads so you can check the turn before export — the gap between drafting and print, closed in one window.</p>
+        </div>
+        <img class="shot" src="assets/product/pages-morris.png" width="1550" height="926" alt="Pages view of The Ideal Book" />
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Roles &amp; breaks stay in the file.</h2>
+      <p>One role per leaf. <code>//break</code> advances the story; <code>//break page</code> forces a turn; odd and even when the side must be specific. Tables that calculate — Markdown or CSV spine leaves. Open rules on <a href="https://markbreak.com">markbreak.com</a>.</p>
     </section>
 
     <section class="block">
       <div class="split">
         <div>
-          <h2>The dialect stays small.</h2>
-          <p>
-            One role per file. A hard break when the next page must start.
-            Tables that calculate when a cell starts with <code>=</code> — in Markdown or CSV.
-            The open rules live on markbreak.com; the app writes files that follow them.
-          </p>
-          <p>
-            Prefer <code>role:</code> in YAML. Use <code>//break</code> for the normal advance. Use <code>//break page</code> to force a page.
-            A scene pause is still <code>---</code>. CSV is supported from the start: same <code>=</code> dialect, results on export.
-          </p>
+          <h2>Focus when the sentence matters.</h2>
+          <p>Highlight the line you are in. Fade the rest. Typewriter pacing when you want the page to follow the caret — quiet tools beside a dialect built for print.</p>
         </div>
-        <pre><code><span class="dim">---</span>
-<span class="t">role:</span> <span class="r">epilog</span>
-<span class="dim">---</span>
-
-# After the gates
-
-The check fails when Word
-has no real page break.
-
-<span class="t">//break</span></code></pre>
-      </div>
-    </section>
-
-    <section class="block" id="guides">
-      <h2>Getting started</h2>
-      <p>Four short steps — open, label, break, ship.</p>
-      <div class="steps">
-        <a class="step" href="guides/01-open.html">
-          <span class="n">1</span>
-          <h3>Open the writer</h3>
-          <p>Draft online. Use desktop when you need export.</p>
-        </a>
-        <a class="step" href="guides/02-role.html">
-          <span class="n">2</span>
-          <h3>Set the role</h3>
-          <p>Chapter, epilog, dedication — in YAML.</p>
-        </a>
-        <a class="step" href="guides/03-pagebreak.html">
-          <span class="n">3</span>
-          <h3>Mark the break</h3>
-          <p>Write the page turn into the file.</p>
-        </a>
-        <a class="step" href="guides/04-export.html">
-          <span class="n">4</span>
-          <h3>Export &amp; verify</h3>
-          <p>Desktop only. Gate the Docx.</p>
-        </a>
+        <img class="shot" src="assets/product/focus-morris.png" width="1550" height="926" alt="Focus mode on The Ideal Book" />
       </div>
     </section>
 
     <section class="block" id="download">
       <div class="download-head">
-        <div>
-          <h2>Download MarkBreak</h2>
-          <p>Open a blank page and write the first line of your new book. MarkBreak keeps the path clear all the way to print.</p>
-        </div>
+        <h2>Download MarkBreak</h2>
+        <p>Windows, macOS, Linux. Open a blank page and write the first line — the path stays clear to Docx and print.</p>
       </div>
       <div class="build-picker">
         <label class="visually-hidden" for="build-select">Choose a build</label>
@@ -674,19 +398,18 @@ has no real page break.
         </ul>
       </div>
       <div class="footer-col">
-        <h2>Guides</h2>
+        <h2>Kinship</h2>
         <ul>
-          <li><a href="guides/">Getting started</a></li>
-          <li><a href="guides/02-role.html">Set the role</a></li>
-          <li><a href="guides/03-pagebreak.html">Mark the break</a></li>
-          <li><a href="guides/04-export.html">Export &amp; verify</a></li>
+          <li><a href="https://markbreak.com">markbreak.com</a></li>
+          <li><a href="https://plaintexthumans.com">Plain Text Humans</a></li>
+          <li><a href="https://github.com/13-Books/markbreak-app">GitHub</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h2>Specification</h2>
+        <h2>Guides</h2>
         <ul>
-          <li><a href="https://markbreak.com">markbreak.com</a></li>
-          <li><a href="https://markbreak.com/specification.md">Read the specification</a></li>
+          <li><a href="guides/">Getting started</a></li>
+          <li><a href="edit.html?theme=nightfox">Try online</a></li>
         </ul>
       </div>
     </div>
@@ -700,8 +423,6 @@ has no real page break.
     </div>
   </footer>
   <script>
-    // Release filenames carry the version, so resolve them from the latest
-    // release; the releases page href stays as the fallback if this fails.
     const releasesPage = 'https://github.com/13-Books/markbreak-app/releases/latest'
     const assetPatterns = {
       'win-x64-setup': /^markbreak-win-x64-.+-setup\.exe$/,
@@ -736,7 +457,6 @@ has no real page break.
     buildSelect.value = preferBuild()
     buildSelect.addEventListener('change', syncBuildLink)
     syncBuildLink()
-
     fetch('https://api.github.com/repos/13-Books/markbreak-app/releases/latest')
       .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
       .then((release) => {
@@ -750,6 +470,16 @@ has no real page break.
         syncBuildLink()
       })
       .catch(() => {})
+
+    const tabs = document.querySelectorAll('.hero-switch button')
+    const shots = document.querySelectorAll('#hero-shots img')
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const key = tab.dataset.shot
+        tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)))
+        shots.forEach((img) => img.classList.toggle('is-active', img.dataset.shot === key))
+      })
+    })
   </script>
 </body>
 </html>
