@@ -85,15 +85,15 @@ export function mountPages(host: HTMLElement): PagesController {
           img.complete
             ? null
             : new Promise((resolve) => {
-                img.addEventListener('load', resolve, { once: true })
-                img.addEventListener('error', resolve, { once: true })
-              })
+              img.addEventListener('load', resolve, { once: true })
+              img.addEventListener('error', resolve, { once: true })
+            })
         )
       ),
       new Promise((resolve) => setTimeout(resolve, 3000))
     ])
 
-  const relayout = async (): Promise<void> => {
+  const relayout = async(): Promise<void> => {
     const gen = ++generation
     if (mode === 'off' || !markdown.trim()) {
       pages = []

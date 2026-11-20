@@ -4,7 +4,7 @@
  * imprint props — the "Word-saved" fixture for import tests (no pandoc needed).
  */
 import { deflateRawSync } from 'node:zlib'
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -76,7 +76,7 @@ const br = (type) =>
   `<w:p><w:r><w:br w:type="${type}"/></w:r></w:p>`
 
 const oddSect = () =>
-  `<w:p><w:pPr><w:sectPr><w:type w:val="oddPage"/></w:sectPr></w:pPr></w:p>`
+  '<w:p><w:pPr><w:sectPr><w:type w:val="oddPage"/></w:sectPr></w:pPr></w:p>'
 
 const twips = (mm) => Math.round(mm * 1440 / 25.4)
 const w = twips(250)

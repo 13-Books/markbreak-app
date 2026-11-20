@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync, readFileSync, rmSync, existsSync } from 'node:fs'
+import { copyFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { createRequire } from 'node:module'
@@ -12,7 +12,7 @@ require.resolve('mammoth')
 
 const { rewriteBreaksToSentinels } = await import(
   pathToFileURL(path.join(root, 'packages/desktop/src/main/utils/docxBreaks.ts')).href
-).catch(async() => {
+).catch(async () => {
   // Plain JS fallback: duplicate the tiny regex for the smoke.
   return {
     rewriteBreaksToSentinels: (xml) =>

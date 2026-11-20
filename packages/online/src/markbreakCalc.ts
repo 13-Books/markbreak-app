@@ -113,7 +113,7 @@ const tokenize = (formula: string): Token[] => {
           i = close + 1
         }
       } else {
-        const word = formula.slice(i).match(/^@([\w.\-]+)/)
+        const word = formula.slice(i).match(/^@([\w.-]+)/)
         if (!word) throw new Error('#VALUE!')
         tokens.push({ kind: 'header', name: word[1] })
         i += word[0].length
@@ -151,7 +151,7 @@ const tokenize = (formula: string): Token[] => {
         i += rc[0].length
         continue
       }
-      const word = rest.match(/^[A-Za-z_][A-Za-z0-9_.\-]*/)?.[0]
+      const word = rest.match(/^[A-Za-z_][A-Za-z0-9_.-]*/)?.[0]
       if (!word) throw new Error('#VALUE!')
       tokens.push({ kind: 'ident', name: word })
       i += word.length
@@ -532,7 +532,7 @@ export function evaluateTable(rows: string[][]): CalcTable | null {
     } catch (err) {
       rec.state = 2
       rec.err = catchError(err)
-      throw new Error(rec.err)
+      throw new Error(rec.err, { cause: err })
     }
   }
 
