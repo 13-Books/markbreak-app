@@ -6,6 +6,8 @@ This file provides guidance to AI agents when working with code in this reposito
 
 MarkText is a WYSIWYG markdown editor built on Electron + Vue 3. It supports CommonMark, GitHub Flavored Markdown, math (KaTeX), Mermaid diagrams, PlantUML, and multiple editing modes (focus, typewriter, source-code).
 
+MarkBreak builds on that base for **print manuscripts**: YAML `role:`, in-file `//break`, Pages/Spreads, and tables that calculate (Markdown or CSV spine). Do **not** adopt Cooklang (or other recipe markup) into the dialect or app — same plain-text kinship, wrong domain; a docs nod later is enough.
+
 - **Version**: see `package.json`
 - **License**: MIT
 - **Repository**: <https://github.com/marktext/marktext>

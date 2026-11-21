@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MarkBreak — write print manuscripts</title>
+  <meta name="description" content="MarkBreak — Desktop writer for print manuscripts. Roles in YAML. //break in the file. Pages and Spreads while you draft." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #121214;
+      --surface: #1a1a1f;
+      --surface-2: #232329;
+      --ink: #eeeeee;
+      --muted: #9a9aa3;
+      --hairline: rgba(255, 255, 255, 0.08);
+      --accent: #e85d4c;
+      --accent-soft: #f08a7d;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Figtree, system-ui, sans-serif;
+      background: var(--bg);
+      line-height: 1.6;
+    }
+    a { color: var(--accent-soft); }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      max-width: 70rem;
+      margin: 0 auto;
+      padding: 1.1rem 1.5rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .nav-brand {
+      font-family: Literata, Georgia, serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.15rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .nav-links a { color: var(--muted); text-decoration: none; }
+    .nav-links a:hover { color: var(--ink); }
+
+    .hero {
+      max-width: 70rem;
+      margin: 0 auto;
+      padding: 3.25rem 1.5rem 0;
+    }
+    .brand {
+      font-family: Literata, Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2.8rem, 8vw, 4.6rem);
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+      margin: 0 0 1rem;
+      animation: rise 0.7s ease both;
+    }
+    .hero h1 {
+      font-family: Literata, Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(1.45rem, 3.2vw, 2rem);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin: 0 0 0.85rem;
+      max-width: 28rem;
+      animation: rise 0.7s ease 0.08s both;
+    }
+    .lede {
+      margin: 0 0 1.5rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 34rem;
+      animation: rise 0.7s ease 0.14s both;
+    }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.85rem 1.25rem;
+      margin-bottom: 2rem;
+      animation: rise 0.7s ease 0.2s both;
+    }
+    .cta a.primary {
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.75rem 1.15rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      transition: transform 0.18s ease, filter 0.18s ease;
+    }
+    .cta a.primary:hover { transform: translateY(-1px); filter: brightness(1.06); }
+    .cta a.quiet {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--accent-soft);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .code-panel {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+      padding: 1.4rem 1.55rem;
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      overflow-x: auto;
+      animation: floatIn 1s ease 0.18s both;
+    }
+    .code-panel .dim { color: rgba(238, 238, 238, 0.35); }
+    .code-panel .kw { color: #e8a87c; }
+    .code-panel .role { color: var(--accent); font-weight: 600; }
+    .code-panel .brk { color: #7ec8a3; }
+
+    main {
+      max-width: 70rem;
+      margin: 0 auto;
+      padding: 0 1.5rem 3.5rem;
+    }
+    .block {
+      padding: 3.5rem 0;
+      border-top: 1px solid var(--hairline);
+    }
+    .block h2 {
+      font-family: Literata, Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(1.55rem, 3vw, 2.05rem);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin: 0 0 0.75rem;
+      max-width: 28rem;
+    }
+    .block p {
+      margin: 0 0 0.9rem;
+      color: var(--muted);
+      max-width: 38rem;
+      font-size: 1.02rem;
+    }
+    .block code {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.9em;
+      color: var(--ink);
+      background: var(--surface-2);
+      padding: 0.08em 0.35em;
+      border-radius: 4px;
+    }
+
+    .claim-grid {
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 720px) {
+      .claim-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .claim-card {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+      padding: 1.35rem 1.4rem;
+    }
+    .claim-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 0.45rem;
+    }
+    .claim-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      max-width: none;
+    }
+
+    .download-head { max-width: 38rem; margin-bottom: 1.4rem; }
+    .build-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+    .build-picker select {
+      font: inherit;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid var(--hairline);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 8px;
+      min-width: min(100%, 18rem);
+    }
+    .build-picker a {
+      font-weight: 700;
+      text-decoration: none;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.15rem;
+      border-radius: 8px;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+    }
+
+    .site-footer {
+      background: #0d0d10;
+      color: var(--muted);
+      padding: 2.5rem 1.5rem 1.25rem;
+      font-size: 0.9rem;
+      border-top: 1px solid var(--hairline);
+    }
+    .footer-inner {
+      max-width: 70rem;
+      margin: 0 auto 2rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+    @media (min-width: 720px) {
+      .footer-inner { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+    }
+    .footer-brand {
+      font-family: Literata, Georgia, serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.03em;
+    }
+    .footer-tag { margin: 0.4rem 0 0; max-width: 18rem; }
+    .footer-col h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(238, 238, 238, 0.35);
+      margin: 0 0 0.55rem;
+    }
+    .footer-col ul { list-style: none; margin: 0; padding: 0; }
+    .footer-col a { text-decoration: none; color: var(--ink); opacity: 0.82; }
+    .footer-col a:hover { opacity: 1; }
+    .footer-bar {
+      max-width: 70rem;
+      margin: 0 auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+    }
+    .footer-bar a { color: var(--ink); text-decoration: none; opacity: 0.75; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Primary">
+    <a class="nav-brand" href="./">MarkBreak</a>
+    <div class="nav-links">
+      <a href="guides/">Guides</a>
+      <a href="https://markbreak.com">Specification</a>
+      <a href="edit.html?theme=nightfox">Try online</a>
+      <a href="#download">Download</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <p class="brand">MarkBreak</p>
+    <h1>Writing from start to printed.</h1>
+    <p class="lede">The free desktop writer for print manuscripts. Roles and breaks live in the file — so the page survives any app.</p>
+    <div class="cta">
+      <a class="primary" href="#download">Download desktop</a>
+      <a class="quiet" href="edit.html?theme=nightfox">Try online</a>
+    </div>
+    <pre class="code-panel" aria-label="MarkBreak dialect sample"><code><span class="dim">---</span>
+<span class="kw">title:</span> "Commit Don't Push"
+<span class="kw">role:</span> <span class="role">chapter</span>
+<span class="dim">---</span>
+
+# Genesis
+
+The gate was never gospel.
+
+<span class="brk">//break</span>
+
+# After the break</code></pre>
+  </header>
+
+  <main>
+    <section class="block">
+      <h2>Your manuscript stays yours.</h2>
+      <div class="claim-grid">
+        <article class="claim-card">
+          <h3>Plain files on disk.</h3>
+          <p>No account. Open the folder anywhere. Sync with whatever you already use.</p>
+        </article>
+        <article class="claim-card">
+          <h3>Open formats, long life.</h3>
+          <p>Pandoc Markdown you can read in decades. Processors may ignore unknown lines; humans never have to.</p>
+        </article>
+        <article class="claim-card">
+          <h3>Pages &amp; Spreads.</h3>
+          <p>Folio and facing spreads in the Desktop window — check the turn before export.</p>
+        </article>
+        <article class="claim-card">
+          <h3>Focus &amp; typewriter.</h3>
+          <p>Highlight the sentence. Fade the rest. Quiet tools beside a dialect built for print.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Roles &amp; breaks stay in the file.</h2>
+      <p>One <code>role</code> per leaf. <code>//break</code> advances the story; <code>//break page</code> forces a turn; odd and even when the side must be specific. Tables that calculate — Markdown or CSV spine leaves. Open rules on <a href="https://markbreak.com">markbreak.com</a>.</p>
+    </section>
+
+    <section class="block" id="download">
+      <div class="download-head">
+        <h2>Download MarkBreak.</h2>
+        <p>Windows, macOS, Linux. Open a blank page and write the first line — the path stays clear to Docx and print.</p>
+      </div>
+      <div class="build-picker">
+        <label class="visually-hidden" for="build-select">Choose a build</label>
+        <select id="build-select">
+          <optgroup label="Windows">
+            <option value="win-x64-setup">Windows x64 installer (.exe)</option>
+            <option value="win-arm64-setup">Windows ARM64 installer (.exe)</option>
+            <option value="win-x64-zip">Windows x64 portable (.zip)</option>
+            <option value="win-arm64-zip">Windows ARM64 portable (.zip)</option>
+          </optgroup>
+          <optgroup label="macOS">
+            <option value="mac-arm64-dmg">macOS Apple Silicon (.dmg)</option>
+            <option value="mac-x64-dmg">macOS Intel (.dmg)</option>
+          </optgroup>
+          <optgroup label="Linux">
+            <option value="linux-x64-appimage">Linux x64 AppImage</option>
+            <option value="linux-x64-deb">Linux x64 .deb</option>
+            <option value="linux-x64-rpm">Linux x64 .rpm</option>
+            <option value="linux-x64-snap">Linux x64 .snap</option>
+            <option value="linux-x64-targz">Linux x64 .tar.gz</option>
+            <option value="linux-arm64-appimage">Linux ARM64 AppImage</option>
+            <option value="linux-arm64-deb">Linux ARM64 .deb</option>
+            <option value="linux-arm64-rpm">Linux ARM64 .rpm</option>
+            <option value="linux-arm64-targz">Linux ARM64 .tar.gz</option>
+          </optgroup>
+        </select>
+        <a id="build-link" href="https://github.com/13-Books/markbreak-app/releases/latest">Download</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <a class="footer-brand" href="./">MarkBreak</a>
+        <p class="footer-tag">Writing from start to printed.</p>
+      </div>
+      <div class="footer-col">
+        <h2>Download</h2>
+        <ul>
+          <li><a href="https://github.com/13-Books/markbreak-app/releases/latest" data-asset="win-x64-setup">Windows</a></li>
+          <li><a href="https://github.com/13-Books/markbreak-app/releases/latest" data-asset="mac-arm64-dmg">macOS</a></li>
+          <li><a href="https://github.com/13-Books/markbreak-app/releases/latest" data-asset="linux-x64-appimage">Linux</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Kinship</h2>
+        <ul>
+          <li><a href="https://markbreak.com">markbreak.com</a></li>
+          <li><a href="https://plaintexthumans.com">Plain Text Humans</a></li>
+          <li><a href="https://github.com/13-Books/markbreak-app">GitHub</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="guides/">Getting started</a></li>
+          <li><a href="edit.html?theme=nightfox">Try online</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <span>© 2026 MarkBreak · preview C — quiet product</span>
+      <span><a href="preview-a.html">A</a> · <a href="preview-b.html">B</a> · <a href="./">Live index</a></span>
+    </div>
+  </footer>
+  <script src="assets/download-releases.js"></script>
+</body>
+</html>
